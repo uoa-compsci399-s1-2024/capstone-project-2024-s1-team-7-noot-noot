@@ -25,7 +25,7 @@ export default function ProfileScreen() {
     return (
         <View style={[styles.container, {backgroundColor:theme.backgroundColor}]}>
             <StatusBar barStyle={theme.barStyle}/>
-            <Text style={[styles.title, {color:theme.color}]}>Profile</Text>
+            <Text style={[styles.title, {color:theme.color}]}>t</Text>
             <Switch
                 value={darkMode}
                 onValueChange={toggleDarkMode}

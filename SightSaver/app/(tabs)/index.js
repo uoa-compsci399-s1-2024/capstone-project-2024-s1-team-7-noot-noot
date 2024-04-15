@@ -9,7 +9,7 @@ export default function IndexScreen() {
     <View style={[styles.container, {backgroundColor:theme.backgroundColor}]}>
       <StatusBar barStyle={theme.barStyle}/>
       <Text style={[styles.title, {color:theme.color}]}>Index</Text>
-      <Image source={theme.image} style={styles.imageStyle}/>
+      {/* <Image source={theme.image} style={styles.imageStyle}/> */}
     </View>
   );
 }
