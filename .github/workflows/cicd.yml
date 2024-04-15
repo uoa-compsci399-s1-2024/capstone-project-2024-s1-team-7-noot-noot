@@ -21,7 +21,7 @@ jobs:
       - name: Upload Artifact for deployment job
         uses: actions/upload-artifact@v2
         with:
-          name: SightSaver
+          name: Backend_API - NootNoot
           path: ${{ github.workspace }}/target/*.jar
   deploy:
     runs-on: ubuntu-latest
@@ -30,7 +30,7 @@ jobs:
       - name: Download Artifact from build job
         uses: actions/download-artifact@v2
         with:
-          name: SightSaver
+          name: Backend_API - NootNoot
       - name: Deploy to Azure App Service
         uses: azure/webapps-deploy@v2
         with:
