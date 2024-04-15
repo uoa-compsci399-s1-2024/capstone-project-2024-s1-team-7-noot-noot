@@ -8,8 +8,9 @@ export default function IndexScreen() {
   return (
     <View style={[styles.container, {backgroundColor:theme.backgroundColor}]}>
       <StatusBar barStyle={theme.barStyle}/>
-      <Text style={[styles.title, {color:theme.color}]}>Index</Text>
       <Image source={theme.image} style={styles.imageStyle}/>
+      <Text style={[styles.title, {color:theme.color}]}>Weekly Sunlight</Text>
+  
     </View>
   );
 }
@@ -20,7 +21,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
   title: {
-    fontSize: 20,
-    fontWeight: 'bold',
+    fontSize: 40,
+    fontWeight: 'light',
   },
 });
