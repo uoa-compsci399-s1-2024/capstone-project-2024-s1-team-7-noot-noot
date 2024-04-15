@@ -33,10 +33,10 @@ jobs:
           name: SightSaver
       - name: Deploy to Azure App Service
         uses: azure/webapps-deploy@v2
-          with:
-            app-name: SightSaver-API
-            publish-profile: ${{ secrets.azureWebAppPublishProfile }}
-            package: '*.jar'
+        with:
+          app-name: SightSaver-API
+          publish-profile: ${{ secrets.azureWebAppPublishProfile }}
+          package: '*.jar'
 
 
 
