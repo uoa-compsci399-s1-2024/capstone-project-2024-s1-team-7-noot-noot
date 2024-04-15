@@ -36,7 +36,7 @@ jobs:
         with:
           app-name: SightSaver-API
           publish-profile: ${{ secrets.azureWebAppPublishProfile }}
-          package: '*.jar'
+#          package: '*.jar'
 
 
 
