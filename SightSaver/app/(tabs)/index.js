@@ -9,7 +9,7 @@ export default function IndexScreen() {
     <View style={[styles.container, {backgroundColor:theme.backgroundColor}]}>
       <StatusBar barStyle={theme.barStyle}/>
       <Image source={theme.image} style={styles.imageStyle}/>
-      <Text style={[styles.title, {color:theme.color}]}>Weekly Sunlight</Text>
+      <Text style={[styles.title, {color:theme.color}]}>Weekly Sunlight!</Text>
   
     </View>
   );
