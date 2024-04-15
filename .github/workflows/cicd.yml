@@ -9,13 +9,13 @@ jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-    - name: Checkout Source
-      uses: actions/checkout@v3
-    - name: Setup Java
-      uses: actions/setup-java@3
-      with:
-        distribution: 'temurin'
-        java-version: '21'
+      - name: Checkout Source
+        uses: actions/checkout@v3
+      - name: Setup Java
+        uses: actions/setup-java@3
+        with:
+          distribution: 'temurin'
+          java-version: '21'
       - name: Build Project
         run: mvn clean install -DskipTests
       - name: Upload Artifact for deployment job
@@ -37,7 +37,4 @@ jobs:
             with:
               app-name: SightSaver-API
               publish-profile: ${{ secrets.azureWebAppPublishProfile }}
-              package: '*.jar'
-
-
-
+              packag
