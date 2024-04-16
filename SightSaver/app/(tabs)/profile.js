@@ -62,8 +62,7 @@ const handleSyncDataPress = () => {
     // Render the profile screen
     return (
         <View style={[themedStyles.container]}>
-           
-           
+        
 
             {/* Parent Profile */}
                 <View style={themedStyles.headerContent}>

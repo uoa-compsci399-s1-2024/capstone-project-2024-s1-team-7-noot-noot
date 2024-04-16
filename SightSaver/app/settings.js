@@ -9,10 +9,10 @@ export default function SettingsScreen() {
     return (
         <View style={styles.container}>
             {/* Back button */}
-            <TouchableOpacity style={styles.backButton} onPress={() => navigation.goBack()}>
+            {/* <TouchableOpacity style={styles.backButton} onPress={() => navigation.goBack()}>
                 <Ionicons name="arrow-back" size={24} color="black" />
                 <Text style={styles.backButtonText}>Back</Text>
-            </TouchableOpacity>
+            </TouchableOpacity> */}
 
             {/* Settings options */}
             <View style={styles.optionsContainer}>
