@@ -9,15 +9,6 @@ var date = moment()
       .utcOffset('+12.00')
       .format("dddd Do MMMM");   ;
 import { BarChart, LineChart, PieChart, PopulationPyramid } from 'react-native-gifted-charts';
-const barData = [
-  {value: 1.7, label: 'M',},
-  {value: 1.1, label: 'T', frontColor: '#B28009'},
-  {value: 1.5, label: 'W', frontColor: '#B28009'},
-  {value: 2.05, label: 'T'},
-  {value: 2.8, label: 'F', frontColor: '#B28009'},
-  {value: 1.8, label: 'S'},
-  {value: 1.2, label: 'S'},
-];
 
 const pieData = [
   {value: 70, color: '#FFBC1F'},
@@ -57,12 +48,26 @@ export default function IndexScreen() {
             <View style={styles.barSpace}>
                 < BarChart style={{textColor:theme.color}}
                     barWidth={22}
-                    noOfSections={3}
+                    noOfSections={2}
+                    height={80}
+                    yAxisLabelTexts={['0', '2', '4']}
                     barBorderRadius={8}
                     frontColor="#E6AA1F"
-                    data={barData}
+                    data={[{value: 1.0, label: 'M',},
+                          {value: 2.1, label: 'T', frontColor: '#B28009'},
+                          {value: 2.0, label: 'W', frontColor: '#B28009'},
+                          {value: 1.5, label: 'T'},
+                          {value: 2.8, label: 'F', frontColor: '#B28009'},
+                          {value: 0.8, label: 'S'},
+                          {value: 0.2, label: 'S'},
+                    ]}
                     yAxisThickness={0}
                     xAxisThickness={0}
+                    showReferenceLine1
+                    referenceLine1Position={4.9}
+                    referenceLine1Config={{
+                        color: '#B28009',
+                    }}
                 />
             </View>
     </View>
@@ -96,7 +101,6 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
   barSpace: {
-    height:'30%',
     justifyContent: 'center',
   },
   buttonStyle: {
