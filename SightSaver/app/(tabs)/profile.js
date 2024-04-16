@@ -4,6 +4,8 @@ import { EventRegister } from 'react-native-event-listeners';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import themeContext from '@/constants/themeContext';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
+import { Link } from 'expo-router';
+import { Ionicons } from '@expo/vector-icons';
 
 export default function ProfileScreen() {
     const [darkMode, setDarkMode] = useState(false);
@@ -41,7 +43,7 @@ const handleSyncDataPress = () => {
         };
         initializeDarkMode();
     }, []);
-
+ 
     // Handle toggling dark mode
     const toggleDarkMode = async (value) => {
         setDarkMode(value);
@@ -60,6 +62,9 @@ const handleSyncDataPress = () => {
     // Render the profile screen
     return (
         <View style={[themedStyles.container]}>
+           
+           
+
             {/* Parent Profile */}
                 <View style={themedStyles.headerContent}>
                     <MaterialCommunityIcons name="face-man-profile" size={100} color="black" />
@@ -69,8 +74,16 @@ const handleSyncDataPress = () => {
                         <Text style={themedStyles.userInfo}>info@company.com</Text>
                     </View>
                 </View>
-
-            {/* Children buttons */}
+            {/* Settings icon */}
+            <View style={themedStyles.settingsIconContainer}>
+              <Link 
+              href= '/settings' asChild>
+                  <TouchableOpacity style={themedStyles.settingsIcon}>
+                      <Ionicons name="settings-outline" size={40} color={theme.color} />
+                  </TouchableOpacity>
+              </Link>
+            </View>
+          {/* Children buttons */}
             <View style={{justifyContent:"center", alignItems:"center"}}>
               <Text style={[themedStyles.title,{fontWeight:"bold",fontSize:20}]}>Display Data for:</Text>
               {/* Child 1 Button */}
@@ -225,6 +238,14 @@ function getThemedStyles(theme) {
         circlePressed: {
             backgroundColor: 'green',
         },
+        settingsIconContainer: {
+          alignSelf: 'flex-end', // Position the icon to the right side
+          marginRight: 15,
+          // marginTop: 10,
+      },
+      settingsIcon: {
+          paddingRight: 10,
+      },
     });
 }
 
