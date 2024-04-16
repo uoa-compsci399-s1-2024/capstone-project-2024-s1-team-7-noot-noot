@@ -7,8 +7,7 @@ import java.util.HashMap;
 
 @RestController
 public class TestController {
-
-    @GetMapping
+    @GetMapping("/test")
     public Object hello() {
         java.util.Map<String, String> object = new HashMap<>();
         object.put("name", "test name");
