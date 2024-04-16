@@ -13,7 +13,8 @@ export default function ProfileScreen() {
     const [isSyncing, setIsSyncing] = useState(false);
 
     const theme = useContext(themeContext);     // Access theme context
-    
+    const themedStyles = getThemedStyles(theme);
+
  // Function to handle sync data button press
 const handleSyncDataPress = () => {
   // Start the sync process
@@ -57,7 +58,7 @@ const handleSyncDataPress = () => {
     };
 
     // Get the styles based on the current theme
-    const themedStyles = getThemedStyles(theme);
+    ;
 
     // Render the profile screen
     return (
