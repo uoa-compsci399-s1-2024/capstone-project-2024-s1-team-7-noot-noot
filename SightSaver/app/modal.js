@@ -8,7 +8,7 @@ export default function IndexScreen() {
   return (
     <View style={[styles.container, {backgroundColor:theme.backgroundColor}]}>
       <StatusBar barStyle={theme.barStyle}/>
-      <Text style={[styles.title, {color:theme.color}]}>Index</Text>
+      <Text style={[styles.title, {color:theme.color}]}>Modal</Text>
     </View>
   );
 }

@@ -9,7 +9,6 @@ var date = moment()
       .utcOffset('+12.00')
       .format("dddd Do MMMM");   ;
 import { BarChart, LineChart, PieChart, PopulationPyramid } from 'react-native-gifted-charts';
-
 const pieData = [
   {value: 70, color: '#FFBC1F'},
   {value: 30, color: '#F6D78D'}
@@ -68,6 +67,12 @@ export default function IndexScreen() {
                     referenceLine1Config={{
                         color: '#B28009',
                     }}
+                    noOfSections={3}
+                    barBorderRadius={8}
+                    frontColor="#E6AA1F"
+                    data={barData}
+                    yAxisThickness={0}
+                    xAxisThickness={0}
                 />
             </View>
     </View>
@@ -114,5 +119,4 @@ const styles = StyleSheet.create({
     height: 20,
     paddingHorizontal: 5,
     marginTop: 10,
-  },
 });
