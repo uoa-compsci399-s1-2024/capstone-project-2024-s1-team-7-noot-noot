@@ -16,8 +16,8 @@ jobs:
         with:
           distribution: 'temurin'
           java-version: '21'
-      - name: Build Project
-        run: mvn -B package --file pom.xml
+#      - name: Build Project
+#        run: mvn -B package --file pom.xml
       - name: Upload Artifact for deployment job
         uses: actions/upload-artifact@v2
         with:
