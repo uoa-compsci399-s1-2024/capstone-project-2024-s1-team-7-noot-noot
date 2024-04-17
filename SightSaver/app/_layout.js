@@ -10,6 +10,7 @@ import React, { useState, useEffect } from 'react';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { StatusBar } from 'react-native';
 
+
 export { ErrorBoundary } from 'expo-router';
 
 // Define DarkModeManager for managing dark mode state
@@ -81,6 +82,7 @@ export default function RootLayout() {
             <Stack theme={darkMode === true ? DarkTheme : DefaultTheme}>
                 <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
                 <Stack.Screen name="modal" options={{ presentation: 'modal' }} />
+                <Stack.Screen name="settings" options={{title:'SettingsScreen'}}/>
             </Stack>
         </themeContext.Provider>
     );
