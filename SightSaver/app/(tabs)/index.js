@@ -119,4 +119,5 @@ const styles = StyleSheet.create({
     height: 20,
     paddingHorizontal: 5,
     marginTop: 10,
+  }
 });
