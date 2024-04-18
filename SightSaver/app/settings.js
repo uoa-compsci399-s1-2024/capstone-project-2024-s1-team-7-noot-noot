@@ -2,12 +2,17 @@ import React from 'react';
 import { View, Text, TouchableOpacity, StyleSheet } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import { Ionicons } from '@expo/vector-icons';
+import { StatusBar } from 'react-native';
+import Colors from '@/constants/Colors';
+import { useColorScheme } from '@/components/useColorScheme';
 
 export default function SettingsScreen() {
     const navigation = useNavigation();
+    const colorScheme = useColorScheme();
 
     return (
         <View style={styles.container}>
+            <StatusBar barStyle={barStyle=Colors[colorScheme ?? 'light'].barStyle}/>
             {/* Back button */}
             {/* <TouchableOpacity style={styles.backButton} onPress={() => navigation.goBack()}>
                 <Ionicons name="arrow-back" size={24} color="black" />
@@ -15,18 +20,18 @@ export default function SettingsScreen() {
             </TouchableOpacity> */}
 
             {/* Settings options */}
-            <View style={styles.optionsContainer}>
-                <TouchableOpacity style={styles.option}>
-                    <Text style={styles.optionText}>Accessibility</Text>
+            <View style={[styles.optionsContainer, {backgroundColor:Colors[colorScheme ?? 'light'].background}]}>
+                <TouchableOpacity style={[styles.option, {borderBottomColor:Colors[colorScheme ?? 'light'].seperator}]}>
+                    <Text style={[styles.optionText, {color:Colors[colorScheme ?? 'light'].text}]}>Accessibility</Text>
                 </TouchableOpacity>
-                <TouchableOpacity style={styles.option}>
-                    <Text style={styles.optionText}>Data Safety</Text>
+                <TouchableOpacity style={[styles.option, {borderBottomColor:Colors[colorScheme ?? 'light'].seperator}]}>
+                    <Text style={[styles.optionText, {color:Colors[colorScheme ?? 'light'].text}]}>Data Safety</Text>
                 </TouchableOpacity>
-                <TouchableOpacity style={styles.option}>
-                    <Text style={styles.optionText}>Device</Text>
+                <TouchableOpacity style={[styles.option, {borderBottomColor:Colors[colorScheme ?? 'light'].seperator}]}>
+                    <Text style={[styles.optionText, {color:Colors[colorScheme ?? 'light'].text}]}>Device</Text>
                 </TouchableOpacity>
-                <TouchableOpacity style={styles.option}>
-                    <Text style={styles.optionText}>Account</Text>
+                <TouchableOpacity style={[styles.option, {borderBottomColor:Colors[colorScheme ?? 'light'].seperator}]}>
+                    <Text style={[styles.optionText, {color:Colors[colorScheme ?? 'light'].text}]}>Account</Text>
                 </TouchableOpacity>
             </View>
         </View>
@@ -36,7 +41,6 @@ export default function SettingsScreen() {
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        padding: 16,
     },
     backButton: {
         flexDirection: 'row',
@@ -46,7 +50,6 @@ const styles = StyleSheet.create({
     backButtonText: {
         marginLeft: 8,
         fontSize: 16,
-        color: 'black',
     },
     optionsContainer: {
         flex: 1,
@@ -54,10 +57,9 @@ const styles = StyleSheet.create({
     option: {
         paddingVertical: 12,
         borderBottomWidth: 1,
-        borderBottomColor: '#ccc',
+        paddingHorizontal: 16,
     },
     optionText: {
         fontSize: 18,
-        color: 'black',
     },
 });

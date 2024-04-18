@@ -1,30 +1,38 @@
-import React, { useState, useContext } from 'react';
+import React from 'react';
+import Ionicons from '@expo/vector-icons/Ionicons';
 import { Link, Tabs } from 'expo-router';
 import { Pressable } from 'react-native';
-import { Ionicons } from '@expo/vector-icons';
-import themeContext from '@/constants/themeContext';
-import { Dimensions } from 'react-native';
-const screenWidth = Dimensions.get('window').width;
+
+import Colors from '@/constants/Colors';
+import { useColorScheme } from '@/components/useColorScheme';
 
 // You can explore the built-in icon families and icons on the web at https://icons.expo.fyi/
 function TabBarIcon(props) {
   return <Ionicons size={28} style={{ marginBottom: -5}} {...props} />;
 }
 
+
 export default function TabLayout() {
-  const theme = useContext(themeContext)
+  const colorScheme = useColorScheme();
+
   return (
     <Tabs
       screenOptions={{
         headerTitle: '',
-        headerStyle: { backgroundColor: theme.backgroundColor, borderTopWidth: 0, elevation: 0 },
-        tabBarStyle: { backgroundColor: theme.backgroundColor, borderTopWidth: 1, elevation: 0, borderColor: theme.borderColor, height: 60, paddingBottom: 5 },
+        headerStyle: { backgroundColor: Colors[colorScheme ?? 'light'].background, borderTopWidth: 0, elevation: 0 },
+        tabBarStyle: { backgroundColor: Colors[colorScheme ?? 'light'].background, borderColor: Colors[colorScheme ?? 'light'].background, borderTopWidth: 1, elevation: 0, height: 60, paddingBottom: 5 },
+        tabBarLabelStyle: { fontSize: 12 },
       }}>
       <Tabs.Screen
         name="index"
         options={{
           title: 'Home',
-          tabBarIcon: ({ color }) => <TabBarIcon name="home-outline" color={color} />,
+          tabBarIcon: ({ focused }) => (
+            <TabBarIcon 
+              name="home-outline" 
+              color={focused ? Colors[colorScheme ?? 'light'].tabIconSelected : Colors[colorScheme ?? 'light'].tabIconDefault} 
+            />
+          ),
           headerRight: () => (
             <Link href="/modal" asChild>
               <Pressable>
@@ -33,6 +41,7 @@ export default function TabLayout() {
                     name="menu"
                     size={25}
                     style={{ marginRight: 15, opacity: pressed ? 0.5 : 1 }}
+                    color={Colors[colorScheme ?? 'light'].text}
                   />
                 )}
               </Pressable>
@@ -44,7 +53,12 @@ export default function TabLayout() {
         name="learn"
         options={{
           title: 'Learn',
-          tabBarIcon: ({ color }) => <TabBarIcon name="glasses-outline" color={color} />,
+          tabBarIcon: ({ focused }) => (
+            <TabBarIcon 
+              name="glasses-outline" 
+              color={focused ? Colors[colorScheme ?? 'light'].tabIconSelected : Colors[colorScheme ?? 'light'].tabIconDefault} 
+            />
+          ),
           headerRight: () => (
             <Link href="/modal" asChild>
               <Pressable>
@@ -53,6 +67,7 @@ export default function TabLayout() {
                     name="menu"
                     size={25}
                     style={{ marginRight: 15, opacity: pressed ? 0.5 : 1 }}
+                    color={Colors[colorScheme ?? 'light'].text}
                   />
                 )}
               </Pressable>
@@ -64,7 +79,12 @@ export default function TabLayout() {
         name="profile"
         options={{
           title: 'Profile',
-          tabBarIcon: ({ color }) => <TabBarIcon name="person-outline" color={color} />,
+          tabBarIcon: ({ focused }) => (
+            <TabBarIcon 
+              name="person-outline" 
+              color={focused ? Colors[colorScheme ?? 'light'].tabIconSelected : Colors[colorScheme ?? 'light'].tabIconDefault} 
+            />
+          ),
           headerRight: () => (
             <Link href="/modal" asChild>
               <Pressable>
@@ -73,6 +93,7 @@ export default function TabLayout() {
                     name="menu"
                     size={25}
                     style={{ marginRight: 15, opacity: pressed ? 0.5 : 1 }}
+                    color={Colors[colorScheme ?? 'light'].text}
                   />
                 )}
               </Pressable>
