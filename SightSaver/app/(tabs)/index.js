@@ -1,10 +1,12 @@
-import React, { useState, useContext } from 'react';
-import { StyleSheet, Text, View, Button, Pressable, onPress, Image } from 'react-native';
+import { StyleSheet, Button, Pressable, onPress, Image } from 'react-native';
+import { Text, View } from '@/components/Themed';
 import { useNavigation } from '@react-navigation/native';
-import themeContext from '@/constants/themeContext';
-import { StatusBar } from 'react-native';
 import moment from "moment";
 import { AntDesign } from '@expo/vector-icons';
+import Colors from '@/constants/Colors';
+import { useColorScheme } from '@/components/useColorScheme';
+import { StatusBar } from 'react-native';
+
 var date = moment()
       .utcOffset('+12.00')
       .format("dddd Do MMMM");   ;
@@ -14,23 +16,20 @@ const pieData = [
   {value: 30, color: '#F6D78D'}
 ];
 export default function IndexScreen() {
-  const theme = useContext(themeContext)
+  const colorScheme = useColorScheme();
   const navigation = useNavigation()
   return (
-    <View style={[styles.container, {backgroundColor:theme.backgroundColor}]}>
-      <StatusBar barStyle={theme.barStyle}/>
-      <View style={styles.logoSpace}>
-          <Image source={theme.image} style={styles.imageStyle}/>
-      </View>
+    <View style={[styles.container, {backgroundColor:Colors[colorScheme ?? 'light'].background}]}>
+      <StatusBar barStyle={barStyle=Colors[colorScheme ?? 'light'].barStyle}/>
       <View style={styles.titleSpace}>
-          <Text style={[styles.title, {color:theme.color}]}>Weekly Sunlight</Text>
+          <Text style={[styles.title, {color:Colors[colorScheme ?? 'light'].text},]}>Weekly Sunlight</Text>
       </View>
       <View style={styles.dateSpace}>
-          <Text style={{color:theme.color}}>{date}</Text>
+          <Text style={{color:Colors[colorScheme ?? 'light'].text}}>{date}</Text>
       </View>
       <View style={styles.menuSpace}>
-          <Pressable style={[styles.buttonStyle, {backgroundColor:theme.backgroundColor}, {borderColor:theme.color}]} onPress={() => navigation.navigate("learn")}>
-              <Text style={[styles.text,{color:theme.color}]}>{title="Weekly "}<AntDesign name="down" size={10} style={{color:theme.color}} /></Text>
+          <Pressable style={[styles.buttonStyle, {backgroundColor:Colors[colorScheme ?? 'light'].buttonColor}, {borderWidth:0}]} onPress={() => navigation.navigate("learn")}>
+              <Text style={[styles.text,{color:Colors[colorScheme ?? 'light'].text}]}>{title="Weekly "}<AntDesign name="down" size={10} style={{color:Colors[colorScheme ?? 'light'].text}} /></Text>
           </Pressable> 
       </View>
       <View style={styles.pieSpace}>
@@ -40,12 +39,12 @@ export default function IndexScreen() {
                 borderRadius={15}
                 data={pieData}
                 centerLabelComponent={() => {
-                return <Text style={{fontSize: 30}}>70%</Text>;
+                return <Text style={{fontSize: 30, color: 'black'}}>70%</Text>;
                 }}
             />
             </View>
             <View style={styles.barSpace}>
-                < BarChart style={{textColor:theme.color}}
+                < BarChart style={{textColor:Colors[colorScheme ?? 'light'].text}}
                     barWidth={22}
                     noOfSections={2}
                     height={80}
@@ -69,6 +68,7 @@ export default function IndexScreen() {
                     }}
                 />
             </View>
+            <View style={[styles.separator, {backgroundColor: Colors[colorScheme ?? 'light'].seperator}]}/>
     </View>
   );
 }
@@ -81,9 +81,6 @@ const styles = StyleSheet.create({
   title: {
     fontSize: 40,
     fontWeight: 'light',
-  },
-  logoSpace:{
-    height: '10%',
   },
   titleSpace: {
     height: '7%',
@@ -105,6 +102,7 @@ const styles = StyleSheet.create({
   buttonStyle: {
     backgroundColor: 'white',
     padding: 10,
+    paddingHorizontal: 40,
     borderRadius: 5,
     borderWidth: 1,
   },
@@ -113,4 +111,11 @@ const styles = StyleSheet.create({
     height: 20,
     paddingHorizontal: 5,
     marginTop: 10,
-}});
+  },
+  separator: {
+    position: 'absolute',
+    bottom: 0,
+    height: 1,
+    width: '100%',
+  },
+});

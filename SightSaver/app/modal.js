@@ -1,14 +1,15 @@
-import { StyleSheet, Text, View } from 'react-native';
-import themeContext from '@/constants/themeContext';
+import { Platform, StyleSheet } from 'react-native';
+import { Text, View } from '@/components/Themed';
 import { StatusBar } from 'react-native';
-import React, { useState, useContext } from 'react';
+import Colors from '@/constants/Colors';
+import { useColorScheme } from '@/components/useColorScheme';
 
-export default function IndexScreen() {
-  const theme = useContext(themeContext)
+export default function ModalScreen() {
+  const colorScheme = useColorScheme();
   return (
-    <View style={[styles.container, {backgroundColor:theme.backgroundColor}]}>
-      <StatusBar barStyle={theme.barStyle}/>
-      <Text style={[styles.title, {color:theme.color}]}>Modal</Text>
+    <View style={styles.container}>
+      <Text style={styles.title}>Modal</Text>
+      <StatusBar barStyle={barStyle=Colors[colorScheme ?? 'light'].barStyle}/>
     </View>
   );
 }
@@ -22,10 +23,5 @@ const styles = StyleSheet.create({
   title: {
     fontSize: 20,
     fontWeight: 'bold',
-  },
-  separator: {
-    marginVertical: 30,
-    height: 1,
-    width: '80%',
   },
 });
