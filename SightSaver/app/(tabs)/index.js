@@ -67,12 +67,6 @@ export default function IndexScreen() {
                     referenceLine1Config={{
                         color: '#B28009',
                     }}
-                    noOfSections={3}
-                    barBorderRadius={8}
-                    frontColor="#E6AA1F"
-                    data={barData}
-                    yAxisThickness={0}
-                    xAxisThickness={0}
                 />
             </View>
     </View>
