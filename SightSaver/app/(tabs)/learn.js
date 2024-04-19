@@ -23,8 +23,8 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
   title: {
-    fontSize: 20,
-    fontWeight: 'bold',
+    fontSize: 40,
+    fontWeight: 'light',
   },
   separator: {
     position: 'absolute',

@@ -1,4 +1,4 @@
-import { StyleSheet, Button, Pressable, onPress, Image } from 'react-native';
+import { StyleSheet, Button, Pressable,useState, onPress, Image } from 'react-native';
 import { Text, View } from '@/components/Themed';
 import { useNavigation } from '@react-navigation/native';
 import moment from "moment";
@@ -6,7 +6,7 @@ import { AntDesign } from '@expo/vector-icons';
 import Colors from '@/constants/Colors';
 import { useColorScheme } from '@/components/useColorScheme';
 import { StatusBar } from 'react-native';
-
+import { Dropdown } from 'react-native-element-dropdown';
 var date = moment()
       .utcOffset('+12.00')
       .format("dddd Do MMMM");   ;
@@ -15,6 +15,33 @@ const pieData = [
   {value: 70, color: '#FFBC1F'},
   {value: 30, color: '#F6D78D'}
 ];
+var dropdownData = [
+  { label: 'Daily', value: '/DailyStats' }, //fix this
+  { label: 'Monthly', value: 2 },
+  { label: 'Yearly', value: 3 },
+];
+
+const DropdownComponent = () => {
+  const [value, setValue] = useState(null);
+
+  const renderItem = item => {
+    return (
+      <View style={styles.item}>
+        <Text style={styles.textItem}>{item.label}</Text>
+        {item.value === value && (
+          <AntDesign
+            style={styles.icon}
+            color="black"
+            name="Safety"
+            size={20}
+          />
+        )}
+      </View>
+    );
+  };
+};
+
+
 export default function IndexScreen() {
   const colorScheme = useColorScheme();
   const navigation = useNavigation()
@@ -28,10 +55,23 @@ export default function IndexScreen() {
           <Text style={{color:Colors[colorScheme ?? 'light'].text}}>{date}</Text>
       </View>
       <View style={styles.menuSpace}>
-          <Pressable style={[styles.buttonStyle, {backgroundColor:Colors[colorScheme ?? 'light'].buttonColor}, {borderWidth:0}]} onPress={() => navigation.navigate("learn")}>
+          <Pressable style={[styles.buttonStyle, {backgroundColor:Colors[colorScheme ?? 'light'].buttonColor}, {borderWidth:0}]} onPress={() => navigation.navigate("DailyStats")}>
               <Text style={[styles.text,{color:Colors[colorScheme ?? 'light'].text}]}>{title="Weekly "}<AntDesign name="down" size={10} style={{color:Colors[colorScheme ?? 'light'].text}} /></Text>
           </Pressable> 
       </View>
+
+    <Dropdown
+      style={Dropdownstyles.dropdown}
+      data={dropdownData}
+      maxHeight={300}
+      labelField="label"
+      valueField="value"
+      placeholder="Weekly"
+      searchPlaceholder="Search..."
+      onChange={item => {
+        setValue(item.value);
+      }}
+    />      
       <View style={styles.pieSpace}>
             <PieChart
                 donut
@@ -118,4 +158,26 @@ const styles = StyleSheet.create({
     height: 1,
     width: '100%',
   },
+  
+});
+
+const Dropdownstyles = StyleSheet.create({
+  dropdown: {
+    margin: 16,
+    height: 50,
+    width: '30%',
+    borderRadius: 5,
+    padding: 12,
+    elevation: 1,
+  },
+  dropdownIcon: {
+    marginRight: 5,
+  },
+  dropdownItem: {
+    padding: 17,
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+  },
+
 });
