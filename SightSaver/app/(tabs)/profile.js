@@ -191,7 +191,7 @@ const styles = StyleSheet.create({
     marginRight: 10, // Add margin between the circle and the text
   },
   circlePressed: {
-    backgroundColor: '#2BB828',
+    backgroundColor: '#539DF3',
   },
   settingsIconContainer: {
     alignSelf: 'flex-end', // Position the icon to the right side
