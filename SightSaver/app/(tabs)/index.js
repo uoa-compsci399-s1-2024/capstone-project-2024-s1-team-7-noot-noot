@@ -7,6 +7,7 @@ import Colors from '@/constants/Colors';
 import { useColorScheme } from '@/components/useColorScheme';
 import { StatusBar } from 'react-native';
 import { Dropdown } from 'react-native-element-dropdown';
+import DailyScreen from '../DailyStats';
 var date = moment()
       .utcOffset('+12.00')
       .format("dddd Do MMMM");   ;
@@ -68,9 +69,9 @@ export default function IndexScreen() {
       valueField="value"
       placeholder="Weekly"
       searchPlaceholder="Search..."
-      onChange={item => {
-        setValue(item.value);
-      }}
+      onChange={item => 
+        navigation.navigate("DailyStats")
+      }
     />      
       <View style={styles.pieSpace}>
             <PieChart
