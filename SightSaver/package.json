@@ -15,6 +15,7 @@
   "dependencies": {
     "@expo-google-fonts/outfit": "^0.2.3",
     "@expo/vector-icons": "^14.0.0",
+    "@react-native-async-storage/async-storage": "^1.23.1",
     "@react-navigation/native": "^6.1.17",
     "device": "^0.3.12",
     "eas": "^0.1.0",

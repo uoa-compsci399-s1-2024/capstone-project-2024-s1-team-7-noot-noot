@@ -52,7 +52,7 @@ export default function SettingsScreens() {
             <Stack.Screen name="Accessibility" component={AccessibilityScreen} />
             <Stack.Screen name="Data Safety" component={DataSafetyScreen} />
             <Stack.Screen name="Device" component={DeviceScreen} />
-            <Stack.Screen name="Account" component={AccountScreen} />
+            <Stack.Screen name="Account" component={AccountScreen} options={{ headerShown: false }}/>
         </Stack.Navigator>
     );
 }
