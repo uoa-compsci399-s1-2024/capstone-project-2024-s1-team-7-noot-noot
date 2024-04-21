@@ -1,4 +1,4 @@
-import { StyleSheet } from 'react-native';
+import { StyleSheet, ScrollView } from 'react-native';
 import { Text, View } from '@/components/Themed';
 import Colors from '@/constants/Colors';
 import { useColorScheme } from '@/components/useColorScheme';
@@ -8,14 +8,15 @@ import { StatusBar } from 'react-native';
 export default function LearnScreen() {
   const colorScheme = useColorScheme();
   return (
+    <ScrollView>
     <View style={styles.container}>
       <StatusBar barStyle={barStyle=Colors[colorScheme ?? 'light'].barStyle}/>
       <View style={styles.textContainer}>
       <Text style={[styles.title, {color: Colors[colorScheme ?? 'light'].text}]}>
-        Learn
+        Learn about Myopia
       </Text>
       <Text style={[styles.subTitle, {color: Colors[colorScheme ?? 'light'].subTitle}]}>
-        Myopia{"\n"}
+        What is myopia?{"\n"}
       </Text>
 
           <Text style={styles.centerText}>
@@ -57,10 +58,16 @@ export default function LearnScreen() {
                 Ipsum dolor sit amet consectetur adipiscing elit ut. Risus ultricies tristique nulla aliquet. Feugiat nibh sed pulvinar proin gravida hendrerit lectus a.
                 Facilisi etiam dignissim diam quis enim lobortis scelerisque. Amet risus nullam eget felis eget nunc. Ultrices eros in cursus turpis massa tincidunt.
                 Ipsum dolor sit amet consectetur adipiscing elit ut.{"\n"}
+
+                Ipsum dolor sit amet consectetur adipiscing elit ut. Risus ultricies tristique nulla aliquet. Feugiat nibh sed pulvinar proin gravida hendrerit lectus a.
+                Facilisi etiam dignissim diam quis enim lobortis scelerisque. Amet risus nullam eget felis eget nunc. Ultrices eros in cursus turpis massa tincidunt.
+                Ipsum dolor sit amet consectetur adipiscing elit ut.{"\n"}
           </Text>
       </View>
+
       <View style={[styles.separator, {backgroundColor: Colors[colorScheme ?? 'light'].seperator}]}/>
     </View>
+    </ScrollView>
   );
 }
 
@@ -77,6 +84,7 @@ const styles = StyleSheet.create({
   title: {
     fontSize: 40,
     fontWeight: 'light',
+    paddingBottom:10,
   },
   centerText:{
     textAlign: 'center',
