@@ -1,115 +1,68 @@
-import { StyleSheet, Button, Pressable,useState, onPress, Image } from 'react-native';
-import { Text, View } from '@/components/Themed';
-import { useNavigation } from '@react-navigation/native';
-import moment from "moment";
-import { AntDesign } from '@expo/vector-icons';
-import Colors from '@/constants/Colors';
+import React, { useState, useEffect } from 'react';
+import { StyleSheet, StatusBar, View, Text } from 'react-native';
 import { useColorScheme } from '@/components/useColorScheme';
-import { StatusBar } from 'react-native';
+import Colors from '@/constants/Colors';
 import { Dropdown } from 'react-native-element-dropdown';
-import DailyScreen from '../DailyStats';
-var date = moment()
-      .utcOffset('+12.00')
-      .format("dddd Do MMMM");   ;
-import { BarChart, LineChart, PieChart, PopulationPyramid } from 'react-native-gifted-charts';
-const pieData = [
-  {value: 70, color: '#FFBC1F'},
-  {value: 30, color: '#F6D78D'}
-];
+import DailyScreen from '../(stats)/DailyStats';
+import WeeklyScreen from '../(stats)/WeeklyStats';
+import MonthlyScreen from '../(stats)/MonthlyStats';
+import YearlyScreen from '../(stats)/YearlyStats';
+
 var dropdownData = [
-  { label: 'Daily', value: '/DailyStats' }, //fix this
-  { label: 'Monthly', value: 2 },
-  { label: 'Yearly', value: 3 },
+  { label: 'Daily', value: 'Daily Sunlight' },
+  { label: 'Weekly', value: 'Weekly Sunlight' },
+  { label: 'Monthly', value: 'Monthly Sunlight' },
+  { label: 'Yearly', value: 'Yearly Sunlight' },
 ];
-
-const DropdownComponent = () => {
-  const [value, setValue] = useState(null);
-
-  const renderItem = item => {
-    return (
-      <View style={styles.item}>
-        <Text style={styles.textItem}>{item.label}</Text>
-        {item.value === value && (
-          <AntDesign
-            style={styles.icon}
-            color="black"
-            name="Safety"
-            size={20}
-          />
-        )}
-      </View>
-    );
-  };
-};
-
 
 export default function IndexScreen() {
   const colorScheme = useColorScheme();
-  const navigation = useNavigation()
+  const [selectedItem, setSelectedItem] = useState(dropdownData.find(item => item.label === 'Weekly'));
+  const [dropdownDataState, setDropdownDataState] = useState(dropdownData);
+
+  const renderContent = () => {
+    switch (selectedItem?.value) {
+      case 'Daily Sunlight':
+        return <DailyScreen/>;
+      case 'Weekly Sunlight':
+        return <WeeklyScreen/>;
+      case 'Monthly Sunlight':
+        return <MonthlyScreen/>;
+      case 'Yearly Sunlight':
+        return <YearlyScreen/>;
+      default:
+        return <WeeklyScreen/>;
+    }
+  };
+
+  useEffect(() => {
+    setDropdownDataState(dropdownData.filter(item => item.label !== selectedItem.label));
+  }, [selectedItem]);
+
+
   return (
     <View style={[styles.container, {backgroundColor:Colors[colorScheme ?? 'light'].background}]}>
       <StatusBar barStyle={barStyle=Colors[colorScheme ?? 'light'].barStyle}/>
       <View style={styles.titleSpace}>
-          <Text style={[styles.title, {color:Colors[colorScheme ?? 'light'].text},]}>Weekly Sunlight</Text>
-      </View>
-      <View style={styles.dateSpace}>
-          <Text style={{color:Colors[colorScheme ?? 'light'].text}}>{date}</Text>
-      </View>
-      <View style={styles.menuSpace}>
-          <Pressable style={[styles.buttonStyle, {backgroundColor:Colors[colorScheme ?? 'light'].buttonColor}, {borderWidth:0}]} onPress={() => navigation.navigate("DailyStats")}>
-              <Text style={[styles.text,{color:Colors[colorScheme ?? 'light'].text}]}>{title="Weekly "}<AntDesign name="down" size={10} style={{color:Colors[colorScheme ?? 'light'].text}} /></Text>
-          </Pressable> 
+          <Text style={[styles.title, {color:Colors[colorScheme ?? 'light'].text},]}>{selectedItem?.value || "Select a page"}</Text>
       </View>
 
-    <Dropdown
-      style={Dropdownstyles.dropdown}
-      data={dropdownData}
-      maxHeight={300}
-      labelField="label"
-      valueField="value"
-      placeholder="Weekly"
-      searchPlaceholder="Search..."
-      onChange={item => 
-        navigation.navigate("DailyStats")
-      }
-    />      
-      <View style={styles.pieSpace}>
-            <PieChart
-                donut
-                innerRadius={80}
-                borderRadius={15}
-                data={pieData}
-                centerLabelComponent={() => {
-                return <Text style={{fontSize: 30, color: 'black'}}>70%</Text>;
-                }}
-            />
-            </View>
-            <View style={styles.barSpace}>
-                < BarChart style={{textColor:Colors[colorScheme ?? 'light'].text}}
-                    barWidth={22}
-                    noOfSections={2}
-                    height={80}
-                    yAxisLabelTexts={['0', '2', '4']}
-                    barBorderRadius={8}
-                    frontColor="#E6AA1F"
-                    data={[{value: 1.0, label: 'M',},
-                          {value: 2.1, label: 'T', frontColor: '#B28009'},
-                          {value: 2.0, label: 'W', frontColor: '#B28009'},
-                          {value: 1.5, label: 'T'},
-                          {value: 2.8, label: 'F', frontColor: '#B28009'},
-                          {value: 0.8, label: 'S'},
-                          {value: 0.2, label: 'S'},
-                    ]}
-                    yAxisThickness={0}
-                    xAxisThickness={0}
-                    showReferenceLine1
-                    referenceLine1Position={4.9}
-                    referenceLine1Config={{
-                        color: '#B28009',
-                    }}
-                />
-            </View>
-            <View style={[styles.separator, {backgroundColor: Colors[colorScheme ?? 'light'].seperator}]}/>
+      <Dropdown
+        style={[Dropdownstyles.dropdown, {backgroundColor: Colors[colorScheme ?? 'light'].buttonStyle}]}
+        iconColor={Colors[colorScheme ?? 'light'].text}
+        itemTextStyle={{color: Colors[colorScheme ?? 'light'].text}}
+        itemContainerStyle={{backgroundColor: Colors[colorScheme ?? 'light'].background}}
+        data={dropdownDataState}
+        maxHeight={300}
+        labelField="label"
+        valueField="value"
+        placeholder={selectedItem?.label || "Select a page"}
+        searchPlaceholder="Search..."
+        onChange={item => setSelectedItem(item)}
+      />
+      <View style={[styles.separator, {backgroundColor: Colors[colorScheme ?? 'light'].seperator}]}/>
+
+      {renderContent()}
     </View>
   );
 }
@@ -126,18 +79,8 @@ const styles = StyleSheet.create({
   titleSpace: {
     height: '7%',
   },
-  dateSpace:{
-    height: '3%',
-  },
   menuSpace: {
     height: '8%',
-    justifyContent: 'center',
-  },
-  pieSpace: {
-    height:'40%',
-    justifyContent: 'center',
-  },
-  barSpace: {
     justifyContent: 'center',
   },
   buttonStyle: {
@@ -146,12 +89,6 @@ const styles = StyleSheet.create({
     paddingHorizontal: 40,
     borderRadius: 5,
     borderWidth: 1,
-  },
-  imageStyle: {
-    width:205,
-    height: 20,
-    paddingHorizontal: 5,
-    marginTop: 10,
   },
   separator: {
     position: 'absolute',
@@ -167,7 +104,7 @@ const Dropdownstyles = StyleSheet.create({
     margin: 16,
     height: 50,
     width: '30%',
-    borderRadius: 5,
+    borderRadius: 8,
     padding: 12,
     elevation: 1,
   },
@@ -180,5 +117,4 @@ const Dropdownstyles = StyleSheet.create({
     justifyContent: 'space-between',
     alignItems: 'center',
   },
-
 });
