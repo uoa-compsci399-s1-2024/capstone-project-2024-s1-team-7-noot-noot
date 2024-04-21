@@ -6,7 +6,9 @@ export default {
     tabIconSelected: '#539DF3',
     seperator: '#484C52',
     image: require("@/assets/images/logo-light.png"),
-    buttonColor: "#FFFFFF",
+    buttonColor: '#FFFFFF',
+    buttonColorSelected: '#e6e6e6',
+    subTitle: '#1970B4',
     barStyle: 'dark-content',
   },
   dark: {
@@ -16,7 +18,9 @@ export default {
     tabIconSelected: '#539DF3',
     seperator: '#BFC9D9',
     image: require("@/assets/images/logo-dark.png"),
-    buttonColor: "#5E5E5E",
+    buttonColor: '#5E5E5E',
+    buttonColorSelected: '#4b4b4b',
+    subTitle: '#7ec7ff',
     barStyle: 'light-content',
   },
 };

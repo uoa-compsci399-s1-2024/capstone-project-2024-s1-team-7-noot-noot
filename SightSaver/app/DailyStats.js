@@ -6,16 +6,23 @@ import { AntDesign } from '@expo/vector-icons';
 import Colors from '@/constants/Colors';
 import { useColorScheme } from '@/components/useColorScheme';
 import { StatusBar } from 'react-native';
+import { Dropdown } from 'react-native-element-dropdown';
 
 var date = moment()
       .utcOffset('+12.00')
       .format("dddd Do MMMM");   ;
 import { BarChart, LineChart, PieChart, PopulationPyramid } from 'react-native-gifted-charts';
-
-export default function DailyScreen() {
+var dropdownData = [
+  { label: 'Daily',value:'DailyStats'},
+  { label: 'Weekly',value:'index'},
+  { label: 'Monthly',value:'MonthlyStats'},
+  { label: 'Yearly',value:'YearlyStats'},
+];
+export default function DailyScreen({navigation}) {
     const colorScheme = useColorScheme();
-    const navigation = useNavigation()
+    
     return (
+      
       <View style={[styles.container, {backgroundColor:Colors[colorScheme ?? 'light'].background}]}>
         <StatusBar barStyle={barStyle=Colors[colorScheme ?? 'light'].barStyle}/>
 
@@ -25,14 +32,26 @@ export default function DailyScreen() {
         <View style={styles.dateSpace}>
             <Text style={{color:Colors[colorScheme ?? 'light'].text}}>{date}</Text>
         </View>
-
-        <View style={styles.menuSpace}>
-            <Pressable style={[styles.buttonStyle, {backgroundColor:Colors[colorScheme ?? 'light'].buttonColor}, {borderWidth:0}]} onPress={() => navigation.navigate("learn")}>
-                <Text style={[styles.text,{color:Colors[colorScheme ?? 'light'].text}]}>{title="Weekly "}<AntDesign name="down" size={10} style={{color:Colors[colorScheme ?? 'light'].text}} /></Text>
-            </Pressable> 
-        </View>
-      </View>
-    );
+        <Dropdown
+            style={[Dropdownstyles.dropdown, {backgroundColor:Colors[colorScheme ?? 'light'].buttonColor}]}
+            data={dropdownData}
+            maxHeight={300}
+            itemTextStyle={[styles.text,{color:Colors[colorScheme ?? 'light'].text}]}
+            placeholderStyle={[styles.text,{color:Colors[colorScheme ?? 'light'].text}]}
+            containerStyle={[{backgroundColor:Colors[colorScheme ?? 'light'].buttonColor}]}
+            selectedTextStyle={[styles.text,{color:Colors[colorScheme ?? 'light'].text}]}
+            activeColor={[{backgroundColor:Colors[colorScheme ?? 'light'].buttonColorSelected}]}
+            labelField="label"
+            valueField="value"
+            placeholder="Weekly"
+            searchPlaceholder="Search..."
+            onChange={(item) => 
+              navigation.navigate(item.value)
+            }
+            //onPress={() => navigation.navigate("learn")}
+          />      
+     </View>
+    )
   }
   const styles = StyleSheet.create({
     container: {
@@ -73,4 +92,26 @@ export default function DailyScreen() {
       height: 1,
       width: '100%',
     },
-  });
+    
+  }
+);
+const Dropdownstyles = StyleSheet.create({
+  dropdown: {
+    margin: 16,
+    height: 50,
+    width: '30%',
+    borderRadius: 5,
+    padding: 12,
+    elevation: 1,
+  },
+  dropdownIcon: {
+    marginRight: 5,
+  },
+  dropdownItem: {
+    padding: 17,
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+  },
+
+});

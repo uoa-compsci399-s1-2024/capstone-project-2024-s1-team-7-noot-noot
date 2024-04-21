@@ -1,4 +1,5 @@
-import { StyleSheet, Button, Pressable,useState, onPress, Image } from 'react-native';
+import { StyleSheet, Button, Pressable, onPress, SafeAreaView, Image } from 'react-native';
+import React, {useState} from 'react';
 import { Text, View } from '@/components/Themed';
 import { useNavigation } from '@react-navigation/native';
 import moment from "moment";
@@ -8,6 +9,10 @@ import { useColorScheme } from '@/components/useColorScheme';
 import { StatusBar } from 'react-native';
 import { Dropdown } from 'react-native-element-dropdown';
 import DailyScreen from '../DailyStats';
+// import MonthlyScreen from '../MonthlyStats';
+import {NavigationContainer} from '@react-navigation/native';
+import {createNativeStackNavigator} from '@react-navigation/native-stack';
+
 var date = moment()
       .utcOffset('+12.00')
       .format("dddd Do MMMM");   ;
@@ -17,33 +22,26 @@ const pieData = [
   {value: 30, color: '#F6D78D'}
 ];
 var dropdownData = [
-  { label: 'Daily', value: '/DailyStats' }, //fix this
-  { label: 'Monthly', value: 2 },
-  { label: 'Yearly', value: 3 },
+  { label: 'Daily',value:'DailyStats'},
+  { label: 'Weekly',value:'index'},
+  { label: 'Monthly',value:'MonthlyScreen'},
+  { label: 'Yearly',value:'YearlyStats'},
 ];
 
+export default function IndexScreen() {
 const DropdownComponent = () => {
   const [value, setValue] = useState(null);
 
   const renderItem = item => {
     return (
       <View style={styles.item}>
-        <Text style={styles.textItem}>{item.label}</Text>
-        {item.value === value && (
-          <AntDesign
-            style={styles.icon}
-            color="black"
-            name="Safety"
-            size={20}
-          />
-        )}
+        <Text style={styles.textItem}>Weekly</Text>
       </View>
     );
   };
 };
 
 
-export default function IndexScreen() {
   const colorScheme = useColorScheme();
   const navigation = useNavigation()
   return (
@@ -55,25 +53,25 @@ export default function IndexScreen() {
       <View style={styles.dateSpace}>
           <Text style={{color:Colors[colorScheme ?? 'light'].text}}>{date}</Text>
       </View>
-      <View style={styles.menuSpace}>
-          <Pressable style={[styles.buttonStyle, {backgroundColor:Colors[colorScheme ?? 'light'].buttonColor}, {borderWidth:0}]} onPress={() => navigation.navigate("DailyStats")}>
-              <Text style={[styles.text,{color:Colors[colorScheme ?? 'light'].text}]}>{title="Weekly "}<AntDesign name="down" size={10} style={{color:Colors[colorScheme ?? 'light'].text}} /></Text>
-          </Pressable> 
-      </View>
 
     <Dropdown
-      style={Dropdownstyles.dropdown}
+      style={[Dropdownstyles.dropdown, {backgroundColor:Colors[colorScheme ?? 'light'].buttonColor}]}
       data={dropdownData}
       maxHeight={300}
+      itemTextStyle={[styles.text,{color:Colors[colorScheme ?? 'light'].text}]}
+      placeholderStyle={[styles.text,Dropdownstyles.placeholderStyle,{color:Colors[colorScheme ?? 'light'].text}]}
+      containerStyle={[{backgroundColor:Colors[colorScheme ?? 'light'].buttonColor}]}
+      selectedTextStyle={[styles.text,{color:Colors[colorScheme ?? 'light'].text}]}
+      activeColor={[{backgroundColor:Colors[colorScheme ?? 'light'].buttonColorSelected}]}
       labelField="label"
       valueField="value"
-      placeholder="Weekly"
-      searchPlaceholder="Search..."
-      onChange={item => 
-        navigation.navigate("DailyStats")
-      }
+      onChange={ 
+        (item) => navigation.navigate(item.value)}
     />      
-      <View style={styles.pieSpace}>
+    
+    <View style={styles.pieSpace}>
+        { 
+
             <PieChart
                 donut
                 innerRadius={80}
@@ -83,7 +81,9 @@ export default function IndexScreen() {
                 return <Text style={{fontSize: 30, color: 'black'}}>70%</Text>;
                 }}
             />
-            </View>
+        }
+      </View>
+    
             <View style={styles.barSpace}>
                 < BarChart style={{textColor:Colors[colorScheme ?? 'light'].text}}
                     barWidth={22}
@@ -113,6 +113,8 @@ export default function IndexScreen() {
     </View>
   );
 }
+
+
 const styles = StyleSheet.create({
   container: {
     height: '100%',
@@ -140,13 +142,6 @@ const styles = StyleSheet.create({
   barSpace: {
     justifyContent: 'center',
   },
-  buttonStyle: {
-    backgroundColor: 'white',
-    padding: 10,
-    paddingHorizontal: 40,
-    borderRadius: 5,
-    borderWidth: 1,
-  },
   imageStyle: {
     width:205,
     height: 20,
@@ -169,7 +164,11 @@ const Dropdownstyles = StyleSheet.create({
     width: '30%',
     borderRadius: 5,
     padding: 12,
-    elevation: 1,
+    elevation: 5,
+    shadowColor: 'black',
+  },
+  placeholderStyle: {
+    justifyContent: 'center',
   },
   dropdownIcon: {
     marginRight: 5,

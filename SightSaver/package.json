@@ -15,6 +15,7 @@
   "dependencies": {
     "@expo-google-fonts/outfit": "^0.2.3",
     "@expo/vector-icons": "^14.0.0",
+    "@react-navigation/drawer": "^6.6.15",
     "@react-navigation/native": "^6.0.2",
     "eas": "^0.1.0",
     "expo": "~50.0.14",
@@ -41,7 +42,9 @@
     "react-native-safe-area-context": "4.8.2",
     "react-native-screens": "~3.29.0",
     "react-native-svg": "14.1.0",
-    "react-native-web": "~0.19.6"
+    "react-native-web": "~0.19.6",
+    "react-navigation": "^5.0.0",
+    "react-native-gesture-handler": "~2.14.0"
   },
   "devDependencies": {
     "@babel/core": "^7.20.0",
