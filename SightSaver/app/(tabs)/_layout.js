@@ -34,11 +34,11 @@ export default function TabLayout() {
             />
           ),
           headerRight: () => (
-            <Link href="/modal" asChild>
+            <Link href="/settings" asChild>
               <Pressable>
                 {({ pressed }) => (
                   <Ionicons
-                    name="menu"
+                    name="settings-outline"
                     size={25}
                     style={{ marginRight: 15, opacity: pressed ? 0.5 : 1 }}
                     color={Colors[colorScheme ?? 'light'].text}
@@ -60,11 +60,11 @@ export default function TabLayout() {
             />
           ),
           headerRight: () => (
-            <Link href="/modal" asChild>
+            <Link href="/settings" asChild>
               <Pressable>
                 {({ pressed }) => (
                   <Ionicons
-                    name="menu"
+                    name="settings-outline"
                     size={25}
                     style={{ marginRight: 15, opacity: pressed ? 0.5 : 1 }}
                     color={Colors[colorScheme ?? 'light'].text}
@@ -86,11 +86,11 @@ export default function TabLayout() {
             />
           ),
           headerRight: () => (
-            <Link href="/modal" asChild>
+            <Link href="/settings" asChild>
               <Pressable>
                 {({ pressed }) => (
                   <Ionicons
-                    name="menu"
+                    name="settings-outline"
                     size={25}
                     style={{ marginRight: 15, opacity: pressed ? 0.5 : 1 }}
                     color={Colors[colorScheme ?? 'light'].text}

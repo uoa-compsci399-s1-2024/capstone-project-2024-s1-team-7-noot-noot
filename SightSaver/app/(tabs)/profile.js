@@ -48,15 +48,6 @@ export default function ProfileScreen() {
                     <Text style={styles.userInfo}>info@company.com</Text>
                 </View>
             </View>
-        {/* Settings icon */}
-        <View style={styles.settingsIconContainer}>
-          <Link 
-          href= '/settings' asChild>
-              <TouchableOpacity style={styles.settingsIcon}>
-                  <Ionicons name="settings-outline" size={40} color={Colors[colorScheme ?? 'light'].text} />
-              </TouchableOpacity>
-          </Link>
-        </View>
       {/* Children buttons */}
         <View style={{justifyContent:"center", alignItems:"center"}}>
           <Text style={[styles.title,{fontWeight:"bold",fontSize:20}]}>Display Data for:</Text>
