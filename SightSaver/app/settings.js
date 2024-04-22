@@ -1,13 +1,16 @@
 import React from 'react';
 import { View, Text, TouchableOpacity, StyleSheet } from 'react-native';
-import { useNavigation } from '@react-navigation/native';
-import { Ionicons } from '@expo/vector-icons';
+import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { StatusBar } from 'react-native';
 import Colors from '../constants/Colors';
 import { useColorScheme } from '../components/useColorScheme';
+import AccessibilityScreen from './settingsScreens/accessibility';
+import DataSafetyScreen from './settingsScreens/dataSafety';
+import DeviceScreen from './settingsScreens/device';
+import AccountScreen from './settingsScreens/account';
 
-export default function SettingsScreen() {
-    const navigation = useNavigation();
+function Settings({navigation}) {
+    // const navigation = useNavigation();
     const colorScheme = useColorScheme();
 
     return (
@@ -21,22 +24,37 @@ export default function SettingsScreen() {
 
             {/* Settings options */}
             <View style={[styles.optionsContainer, {backgroundColor:Colors[colorScheme ?? 'light'].background}]}>
-                <TouchableOpacity style={[styles.option, {borderBottomColor:Colors[colorScheme ?? 'light'].seperator}]}>
+                <TouchableOpacity style={[styles.option, {borderBottomColor:Colors[colorScheme ?? 'light'].seperator}]} onPress={() => navigation.navigate('Accessibility')}>
                     <Text style={[styles.optionText, {color:Colors[colorScheme ?? 'light'].text}]}>Accessibility</Text>
                 </TouchableOpacity>
-                <TouchableOpacity style={[styles.option, {borderBottomColor:Colors[colorScheme ?? 'light'].seperator}]}>
+                <TouchableOpacity style={[styles.option, {borderBottomColor:Colors[colorScheme ?? 'light'].seperator}]} onPress={() => navigation.navigate('Data Safety')}>
                     <Text style={[styles.optionText, {color:Colors[colorScheme ?? 'light'].text}]}>Data Safety</Text>
                 </TouchableOpacity>
-                <TouchableOpacity style={[styles.option, {borderBottomColor:Colors[colorScheme ?? 'light'].seperator}]}>
+                <TouchableOpacity style={[styles.option, {borderBottomColor:Colors[colorScheme ?? 'light'].seperator}]} onPress={() => navigation.navigate('Device')}>
                     <Text style={[styles.optionText, {color:Colors[colorScheme ?? 'light'].text}]}>Device</Text>
                 </TouchableOpacity>
-                <TouchableOpacity style={[styles.option, {borderBottomColor:Colors[colorScheme ?? 'light'].seperator}]}>
+                <TouchableOpacity style={[styles.option, {borderBottomColor:Colors[colorScheme ?? 'light'].seperator}]} onPress={() => navigation.navigate('Account')}>
                     <Text style={[styles.optionText, {color:Colors[colorScheme ?? 'light'].text}]}>Account</Text>
                 </TouchableOpacity>
             </View>
         </View>
     );
 }
+
+
+const Stack = createNativeStackNavigator();
+export default function SettingsScreens() {
+    return (
+        <Stack.Navigator>
+            <Stack.Screen name="Settings" component={Settings} />
+            <Stack.Screen name="Accessibility" component={AccessibilityScreen} />
+            <Stack.Screen name="Data Safety" component={DataSafetyScreen} />
+            <Stack.Screen name="Device" component={DeviceScreen} />
+            <Stack.Screen name="Account" component={AccountScreen} options={{ headerShown: false }}/>
+        </Stack.Navigator>
+    );
+}
+
 
 const styles = StyleSheet.create({
     container: {

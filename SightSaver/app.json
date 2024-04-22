@@ -50,6 +50,7 @@
     "experiments": {
       "typedRoutes": true
     },
+    "owner": "sightsaver",
     "extra": {
       "router": {
         "origin": false

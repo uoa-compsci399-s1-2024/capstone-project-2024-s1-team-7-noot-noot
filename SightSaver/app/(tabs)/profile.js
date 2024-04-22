@@ -2,6 +2,7 @@ import { View, Text } from '../../components/Themed';
 import Colors from '../../constants/Colors';
 import { useColorScheme } from '../../components/useColorScheme';
 import React, { useState, useEffect, useContext } from 'react';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import { StyleSheet, Switch, TouchableOpacity, ActivityIndicator,Alert } from 'react-native';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import { Link } from 'expo-router';
@@ -39,6 +40,12 @@ export default function ProfileScreen() {
   const openModal = async () => {
     scanForDevices();
     setIsModalVisible(true);
+  };
+
+  // Handle button press
+  const handlePress = (index) => {
+      setActiveButton(index);
+      AsyncStorage.setItem('activeButton', index.toString());
   };
 
   return (

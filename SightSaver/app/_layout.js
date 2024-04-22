@@ -51,7 +51,8 @@ export default function RootLayout({isActive}) {
     <ThemeProvider value={colorScheme === 'dark' ? DarkTheme : DefaultTheme}>
       <Stack>
         <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
-        <Stack.Screen name="settings" options={{title:'Settings'}}/>
+        <Stack.Screen name="settings" options={{ headerShown: false }}/>
+        {/* <Stack.Screen name="settings" component={SettingsStack} />       */}
       </Stack>
     </ThemeProvider>
   );
