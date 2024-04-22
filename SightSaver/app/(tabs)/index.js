@@ -46,23 +46,25 @@ export default function IndexScreen() {
       <View style={styles.titleSpace}>
           <Text style={[styles.title, {color:Colors[colorScheme ?? 'light'].text},]}>{selectedItem?.value || "Select a page"}</Text>
       </View>
-
+      <View style={styles.menuSpace}>
       <Dropdown
-        style={[Dropdownstyles.dropdown, {backgroundColor: Colors[colorScheme ?? 'light'].buttonStyle}]}
+        style={[Dropdownstyles.dropdown, {backgroundColor: Colors[colorScheme ?? 'light'].buttonColor}]}
         iconColor={Colors[colorScheme ?? 'light'].text}
         itemTextStyle={{color: Colors[colorScheme ?? 'light'].text}}
+        placeholderStyle={{color: Colors[colorScheme ?? 'light'].text}}
         itemContainerStyle={{backgroundColor: Colors[colorScheme ?? 'light'].background}}
         data={dropdownDataState}
-        maxHeight={300}
+        //maxHeight={300}
         labelField="label"
         valueField="value"
         placeholder={selectedItem?.label || "Select a page"}
-        searchPlaceholder="Search..."
         onChange={item => setSelectedItem(item)}
       />
-      <View style={[styles.separator, {backgroundColor: Colors[colorScheme ?? 'light'].seperator}]}/>
-
+      </View>
+      <View stle={styles.newContent}>
       {renderContent()}
+      </View>
+      <View style={[styles.separator, {backgroundColor: Colors[colorScheme ?? 'light'].seperator}]}/>
     </View>
   );
 }
@@ -77,10 +79,15 @@ const styles = StyleSheet.create({
     fontWeight: 'light',
   },
   titleSpace: {
-    height: '7%',
+    flex: 1,
   },
   menuSpace: {
-    height: '8%',
+    flex: 2,
+    width: '100%',
+    alignItems: 'center',
+  },
+  pieSpace: {
+    height:'40%',
     justifyContent: 'center',
   },
   buttonStyle: {
@@ -95,6 +102,9 @@ const styles = StyleSheet.create({
     bottom: 0,
     height: 1,
     width: '100%',
+  },
+  newContent: {
+    flex:3,
   },
   
 });
