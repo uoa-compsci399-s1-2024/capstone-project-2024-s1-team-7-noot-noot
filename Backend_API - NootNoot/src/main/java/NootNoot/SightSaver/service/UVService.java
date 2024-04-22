@@ -12,7 +12,7 @@ import NootNoot.SightSaver.repository.UVRepository;
 public class UVService {
     
     @Autowired
-    private UVRepository uvRepository;
+    private UvRepository uvRepository;
 
     public List<UV> getAllUVValues() {
         return uvRepository.findAll();
