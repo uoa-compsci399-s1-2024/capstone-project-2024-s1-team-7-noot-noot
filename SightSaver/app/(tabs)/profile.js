@@ -2,6 +2,7 @@ import { View, Text } from '@/components/Themed';
 import Colors from '@/constants/Colors';
 import { useColorScheme } from '@/components/useColorScheme';
 import React, { useState, useEffect, useContext } from 'react';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import { StyleSheet, Switch, TouchableOpacity, ActivityIndicator,Alert } from 'react-native';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import { Link } from 'expo-router';
@@ -10,11 +11,13 @@ import { StatusBar } from 'react-native';
 
 export default function ProfileScreen() {
   const colorScheme = useColorScheme();
-  const [activeButton, setActiveButton] = useState(2); // Changed state for active button
+  const [activeButton, setActiveButton] = useState(2); // Changed state for active button and works as DeviceId
   const [isSyncing, setIsSyncing] = useState(false);
+
  // Function to handle sync data button press
   const handleSyncDataPress = () => {
   // Start the sync process
+
   setIsSyncing(true);
   // Show an initial prompt to the user
   Alert.alert('Connecting to device', 'Please wait...');
@@ -35,6 +38,7 @@ export default function ProfileScreen() {
   // Handle button press
   const handlePress = (index) => {
       setActiveButton(index);
+      AsyncStorage.setItem('activeButton', index.toString());
   };
 
   return (
