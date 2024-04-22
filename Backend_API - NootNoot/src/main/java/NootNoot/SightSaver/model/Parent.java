@@ -25,18 +25,16 @@ public class Parent {
     }
 
 
+    public Long getId() {return this.id;}
     public String getName() {
         return this.name;
     }
-
     public float getUvGoal() {
         return this.uv_goal;
     }
-
     public int getNumber_of_children() {
         return this.number_of_children;
     }
-
     public int getFeedback_id() {
         return this.feedback_id;
     }

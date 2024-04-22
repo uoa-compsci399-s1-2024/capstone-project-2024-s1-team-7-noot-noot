@@ -26,6 +26,7 @@ public class Lux{
     }
 
 
+    public Long getId() {return this.id;}
     public float getLux_value(){return this.lux_value;}
     public LocalDateTime getDate_time(){return this.date_time;}
 

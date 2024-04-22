@@ -25,6 +25,7 @@ public class Sensor {
     }
 
 
+    public Long getId() {return this.id;}
     public Long getUserId() {return this.user_id;}
     public Long getLuxId() {return this.lux_id;}
     public Long getUvId() {return this.uv_id;}

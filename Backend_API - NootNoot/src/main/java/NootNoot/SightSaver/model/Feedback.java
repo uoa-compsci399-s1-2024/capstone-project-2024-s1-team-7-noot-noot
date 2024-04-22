@@ -18,7 +18,7 @@ public class Feedback {
         this.comment = comment;
     }
 
-
+    public Long getId() {return this.id;}
     public String getComment() {
         return this.comment;
     }

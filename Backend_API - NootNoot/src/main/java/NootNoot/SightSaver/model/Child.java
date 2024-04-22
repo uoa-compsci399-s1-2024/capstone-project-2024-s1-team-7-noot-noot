@@ -22,6 +22,7 @@ public class Child {
         this.sensor_id = sensor_id;
     }
 
+    public Long getId() {return this.id;}
 
     public String getName() {
         return this.name;
