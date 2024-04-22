@@ -5,7 +5,7 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 
 @Entity
-public class Uv{
+public class UV {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -14,12 +14,12 @@ public class Uv{
     private LocalDateTime date_time;
 
 
-    public Uv() {
+    public UV() {
     }
 
 
 
-    public Uv(float uv_value, String date_time) {
+    public UV(float uv_value, String date_time) {
         this.date_time = LocalDateTime.parse(date_time, DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
         this.uv_value = uv_value;
 
