@@ -1,9 +1,12 @@
 import React, { useState } from 'react';
 import { View, Text, TextInput, Button, StyleSheet } from 'react-native';
+import { useColorScheme } from '../../../components/useColorScheme';
+import Colors from '../../../constants/Colors';
 
 export default function EditProfile() {
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
+  const colorScheme = useColorScheme();
 
   const handleSave = () => {
     // Implement logic to save the edited profile data
@@ -11,21 +14,25 @@ export default function EditProfile() {
   };
 
   return (
-    <View style={styles.container}>
-      <Text style={styles.label}>Name:</Text>
+    <View style={[styles.container, {backgroundColor:Colors[colorScheme ?? 'light'].background}]}>
+      <Text style={[styles.label, {color:Colors[colorScheme ?? 'light'].text}]}>Name:</Text>
       <TextInput
         style={styles.input}
+        color={Colors[colorScheme ?? 'light'].text}
         value={name}
         onChangeText={setName}
         placeholder="Enter your name"
+        placeholderTextColor={Colors[colorScheme ?? 'light'].text}
       />
 
-      <Text style={styles.label}>Email:</Text>
+      <Text style={[styles.label, {color:Colors[colorScheme ?? 'light'].text}]}>Email:</Text>
       <TextInput
         style={styles.input}
+        color={Colors[colorScheme ?? 'light'].text}
         value={email}
         onChangeText={setEmail}
         placeholder="Enter your email"
+        placeholderTextColor={Colors[colorScheme ?? 'light'].text}
         keyboardType="email-address"
         autoCapitalize="none"
       />

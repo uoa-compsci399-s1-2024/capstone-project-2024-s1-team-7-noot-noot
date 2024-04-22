@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { StyleSheet, StatusBar, View, Text } from 'react-native';
-import { useColorScheme } from '@/components/useColorScheme';
-import Colors from '@/constants/Colors';
+import { useColorScheme } from '../../components/useColorScheme';
+import Colors from '../../constants/Colors';
 import { Dropdown } from 'react-native-element-dropdown';
 import DailyScreen from '../(stats)/DailyStats';
 import WeeklyScreen from '../(stats)/WeeklyStats';

@@ -1,8 +1,8 @@
 import React from 'react';
-import { View, Text } from '@/components/Themed';
+import { View, Text } from '../components/Themed';
 import { TextInput, StyleSheet } from 'react-native';
-import Colors from '@/constants/Colors';
-import { useColorScheme } from '@/components/useColorScheme';
+import Colors from '../constants/Colors';
+import { useColorScheme } from '../components/useColorScheme';
 
 export default function CustomInput({ value, setValue, placeholder, secureTextEntry }) {
     const colorScheme = useColorScheme();

@@ -1,34 +1,37 @@
 import React, { useState } from 'react';
 import { View, Text, StyleSheet, Switch } from 'react-native';
+import { useColorScheme } from '../../../components/useColorScheme';
+import Colors from '../../../constants/Colors';
 
 export default function PrivacySettings() {
     const [profileVisibility, setProfileVisibility] = useState(true);
     const [activityTracking, setActivityTracking] = useState(true);
     const [locationSharing, setLocationSharing] = useState(false);
     const [dataSharing, setDataSharing] = useState(false);
+    const colorScheme = useColorScheme();
 
     return (
-        <View style={styles.container}>
-            <Text style={styles.title}>Privacy Settings</Text>
-            <Text style={styles.text}>Customize your privacy preferences here.</Text>
+        <View style={[styles.container, {backgroundColor:Colors[colorScheme ?? 'light'].background}]}>
+            <Text style={[styles.title, {color:Colors[colorScheme ?? 'light'].text}]}>Privacy Settings</Text>
+            <Text style={[styles.text, {color:Colors[colorScheme ?? 'light'].text}]}>Customize your privacy preferences here.</Text>
 
             <View style={styles.setting}>
-                <Text style={styles.settingLabel}>Profile Visibility</Text>
+                <Text style={[styles.settingLabel, {color:Colors[colorScheme ?? 'light'].text}]}>Profile Visibility</Text>
                 <Switch value={profileVisibility} onValueChange={setProfileVisibility} />
             </View>
 
             <View style={styles.setting}>
-                <Text style={styles.settingLabel}>Activity Tracking</Text>
+                <Text style={[styles.settingLabel, {color:Colors[colorScheme ?? 'light'].text}]}>Activity Tracking</Text>
                 <Switch value={activityTracking} onValueChange={setActivityTracking} />
             </View>
 
             <View style={styles.setting}>
-                <Text style={styles.settingLabel}>Location Sharing</Text>
+                <Text style={[styles.settingLabel, {color:Colors[colorScheme ?? 'light'].text}]}>Location Sharing</Text>
                 <Switch value={locationSharing} onValueChange={setLocationSharing} />
             </View>
 
             <View style={styles.setting}>
-                <Text style={styles.settingLabel}>Data Sharing</Text>
+                <Text style={[styles.settingLabel, {color:Colors[colorScheme ?? 'light'].text}]}>Data Sharing</Text>
                 <Switch value={dataSharing} onValueChange={setDataSharing} />
             </View>
         </View>

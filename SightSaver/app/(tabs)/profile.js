@@ -1,6 +1,6 @@
-import { View, Text } from '@/components/Themed';
-import Colors from '@/constants/Colors';
-import { useColorScheme } from '@/components/useColorScheme';
+import { View, Text } from '../../components/Themed';
+import Colors from '../../constants/Colors';
+import { useColorScheme } from '../../components/useColorScheme';
 import React, { useState, useEffect, useContext } from 'react';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { StyleSheet, Switch, TouchableOpacity, ActivityIndicator,Alert } from 'react-native';
@@ -8,31 +8,38 @@ import { MaterialCommunityIcons } from '@expo/vector-icons';
 import { Link } from 'expo-router';
 import { Ionicons } from '@expo/vector-icons';
 import { StatusBar } from 'react-native';
+import DeviceModal from "../DeviceConnectionModal";
+import useBLE from "../useBLE";
 
 export default function ProfileScreen() {
   const colorScheme = useColorScheme();
-  const [activeButton, setActiveButton] = useState(2); // Changed state for active button and works as DeviceId
+  const [activeButton, setActiveButton] = useState(2); // Changed state for active button
   const [isSyncing, setIsSyncing] = useState(false);
+  const {
+    requestPermissions,
+    scanForPeripherals,
+    allDevices,
+    connectToDevice,
+    connectedDevice,
+    heartRate,
+    disconnectFromDevice,
+  } = useBLE();
+  const [isModalVisible, setIsModalVisible] = useState(false);
 
- // Function to handle sync data button press
-  const handleSyncDataPress = () => {
-  // Start the sync process
+  const scanForDevices = async () => {
+    const isPermissionsEnabled = await requestPermissions();
+    if (isPermissionsEnabled) {
+      scanForPeripherals();
+    }
+  };
 
-  setIsSyncing(true);
-  // Show an initial prompt to the user
-  Alert.alert('Connecting to device', 'Please wait...');
+  const hideModal = () => {
+    setIsModalVisible(false);
+  };
 
-  // Use setTimeout to provide status updates and stop loading after 5 seconds
-  setTimeout(() => {
-      // After 5 seconds, inform the user that syncing has started
-      Alert.alert('Syncing device', 'Please wait...');
-  }, 5000);
-
-  setTimeout(() => {
-      // After 5 seconds, stop syncing and inform the user that the device data has been synced
-      setIsSyncing(false);
-      Alert.alert('Success', 'Device data synced');
-  }, 10000);
+  const openModal = async () => {
+    scanForDevices();
+    setIsModalVisible(true);
   };
 
   // Handle button press
@@ -92,21 +99,33 @@ export default function ProfileScreen() {
               />
             </TouchableOpacity>
 
-          {/* Sync Data Button */}
-          <View style={{marginTop:30}}>
-          <TouchableOpacity
-              style={[styles.syncButton, {backgroundColor:Colors[colorScheme ?? 'light'].buttonColor}]}
-              onPress={handleSyncDataPress}
-              disabled={isSyncing} // Disable button while syncing
-          >
-              {/* Display loading indicator if syncing is in progress */}
-              {isSyncing ? (
-                  <ActivityIndicator color={color=Colors[colorScheme ?? 'light'].text} size="small" />
-              ) : (
-                  <Text style={styles.syncButtonText}>Sync Data</Text>
-              )}
-          </TouchableOpacity>
+        </View>
+        <View style={styles.container}>
+          <View style={styles.heartRateTitleWrapper}>
+            {connectedDevice ? (
+              <>
+                <Text>Working</Text>
+              </>
+            ) : (
+              <Text style={styles.heartRateTitleText}>
+                Connect to Sensor
+              </Text>
+            )}
           </View>
+          <TouchableOpacity
+            onPress={connectedDevice ? disconnectFromDevice : openModal}
+            style={styles.ctaButton}
+          >
+            <Text style={styles.ctaButtonText}>
+              {connectedDevice ? "Disconnect" : "Connect"}
+            </Text>
+          </TouchableOpacity>
+          <DeviceModal
+            closeModal={hideModal}
+            visible={isModalVisible}
+            connectToPeripheral={connectToDevice}
+            devices={allDevices}
+          />
         </View>
         <View style={[styles.separator, {backgroundColor: Colors[colorScheme ?? 'light'].seperator}]}/>
     </View>
@@ -194,5 +213,35 @@ const styles = StyleSheet.create({
   },
   settingsIcon: {
     paddingRight: 10,
+  },
+  heartRateTitleWrapper: {
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  heartRateTitleText: {
+    fontSize: 30,
+    fontWeight: "bold",
+    textAlign: "center",
+    marginHorizontal: 20,
+    color: "black",
+  },
+  heartRateText: {
+    fontSize: 25,
+    marginTop: 15,
+  },
+  ctaButton: {
+    backgroundColor: "#FF6060",
+    justifyContent: "center",
+    alignItems: "center",
+    height: 50,
+    marginHorizontal: 20,
+    marginBottom: 5,
+    borderRadius: 8,
+  },
+  ctaButtonText: {
+    fontSize: 18,
+    fontWeight: "bold",
+    color: "white",
   },
 });

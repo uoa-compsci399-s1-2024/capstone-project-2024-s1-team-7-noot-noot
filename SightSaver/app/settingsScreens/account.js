@@ -6,8 +6,11 @@ import EditProfile from './accountSettingsScreens/editProfile';
 import ChangePassword from './accountSettingsScreens/changePassword';
 import NotificationSettings from './accountSettingsScreens/notificationSettings';
 import PrivacySettings from './accountSettingsScreens/privacySettings';
+import { useColorScheme } from '../../components/useColorScheme';
+import Colors from '../../constants/Colors';
 
 function AccountSettings({ navigation }) {
+    const colorScheme = useColorScheme();
     const handleEditProfile = () => {
         // Navigate to the EditProfile page
         navigation.navigate('EditProfile');
@@ -29,20 +32,20 @@ function AccountSettings({ navigation }) {
     };
 
     return (
-        <View style={styles.container}>
-            <Text style={styles.title}>Account Settings</Text>
+        <View style={[styles.container, {backgroundColor:Colors[colorScheme ?? 'light'].background}]}>
+            <Text style={[styles.title, {color:Colors[colorScheme ?? 'light'].text}]}>Account Settings</Text>
             {/* Add your account settings options here */}
-            <TouchableOpacity style={styles.option} onPress={handleEditProfile}>
-                <Text style={styles.optionText}>Edit Profile</Text>
+            <TouchableOpacity style={[styles.option, {borderColor:Colors[colorScheme ?? 'light'].seperator}]} onPress={handleEditProfile}>
+                <Text style={[styles.optionText, {color:Colors[colorScheme ?? 'light'].text}]}>Edit Profile</Text>
             </TouchableOpacity>
-            <TouchableOpacity style={styles.option} onPress={handleChangePassword}>
-                <Text style={styles.optionText}>Change Password</Text>
+            <TouchableOpacity style={[styles.option, {borderColor:Colors[colorScheme ?? 'light'].seperator}]} onPress={handleChangePassword}>
+                <Text style={[styles.optionText, {color:Colors[colorScheme ?? 'light'].text}]}>Change Password</Text>
             </TouchableOpacity>
-            <TouchableOpacity style={styles.option} onPress={handleNotificationSettings}>
-                <Text style={styles.optionText}>Notification Settings</Text>
+            <TouchableOpacity style={[styles.option, {borderColor:Colors[colorScheme ?? 'light'].seperator}]} onPress={handleNotificationSettings}>
+                <Text style={[styles.optionText, {color:Colors[colorScheme ?? 'light'].text}]}>Notification Settings</Text>
             </TouchableOpacity>
-            <TouchableOpacity style={styles.option} onPress={handlePrivacySettings}>
-                <Text style={styles.optionText}>Privacy Settings</Text>
+            <TouchableOpacity style={[styles.option, {borderColor:Colors[colorScheme ?? 'light'].seperator}]} onPress={handlePrivacySettings}>
+                <Text style={[styles.optionText, {color:Colors[colorScheme ?? 'light'].text}]}>Privacy Settings</Text>
             </TouchableOpacity>
         </View>
     );
