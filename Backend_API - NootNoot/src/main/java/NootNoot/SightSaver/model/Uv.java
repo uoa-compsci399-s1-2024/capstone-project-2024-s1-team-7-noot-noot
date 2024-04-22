@@ -17,8 +17,6 @@ public class UV {
     public UV() {
     }
 
-
-
     public UV(float uv_value, String date_time) {
         this.date_time = LocalDateTime.parse(date_time, DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
         this.uv_value = uv_value;
