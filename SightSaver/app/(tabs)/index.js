@@ -1,74 +1,70 @@
-import { StyleSheet, Button, Pressable, onPress, Image } from 'react-native';
-import { Text, View } from '@/components/Themed';
-import { useNavigation } from '@react-navigation/native';
-import moment from "moment";
-import { AntDesign } from '@expo/vector-icons';
-import Colors from '@/constants/Colors';
+import React, { useState, useEffect } from 'react';
+import { StyleSheet, StatusBar, View, Text } from 'react-native';
 import { useColorScheme } from '@/components/useColorScheme';
-import { StatusBar } from 'react-native';
+import Colors from '@/constants/Colors';
+import { Dropdown } from 'react-native-element-dropdown';
+import DailyScreen from '../(stats)/DailyStats';
+import WeeklyScreen from '../(stats)/WeeklyStats';
+import MonthlyScreen from '../(stats)/MonthlyStats';
+import YearlyScreen from '../(stats)/YearlyStats';
 
-var date = moment()
-      .utcOffset('+12.00')
-      .format("dddd Do MMMM");   ;
-import { BarChart, LineChart, PieChart, PopulationPyramid } from 'react-native-gifted-charts';
-const pieData = [
-  {value: 70, color: '#FFBC1F'},
-  {value: 30, color: '#F6D78D'}
+var dropdownData = [
+  { label: 'Daily', value: 'Daily Sunlight' },
+  { label: 'Weekly', value: 'Weekly Sunlight' },
+  { label: 'Monthly', value: 'Monthly Sunlight' },
+  { label: 'Yearly', value: 'Yearly Sunlight' },
 ];
+
 export default function IndexScreen() {
   const colorScheme = useColorScheme();
-  const navigation = useNavigation()
+  const [selectedItem, setSelectedItem] = useState(dropdownData.find(item => item.label === 'Weekly'));
+  const [dropdownDataState, setDropdownDataState] = useState(dropdownData);
+
+  const renderContent = () => {
+    switch (selectedItem?.value) {
+      case 'Daily Sunlight':
+        return <DailyScreen/>;
+      case 'Weekly Sunlight':
+        return <WeeklyScreen/>;
+      case 'Monthly Sunlight':
+        return <MonthlyScreen/>;
+      case 'Yearly Sunlight':
+        return <YearlyScreen/>;
+      default:
+        return <WeeklyScreen/>;
+    }
+  };
+
+  useEffect(() => {
+    setDropdownDataState(dropdownData.filter(item => item.label !== selectedItem.label));
+  }, [selectedItem]);
+
+
   return (
     <View style={[styles.container, {backgroundColor:Colors[colorScheme ?? 'light'].background}]}>
       <StatusBar barStyle={barStyle=Colors[colorScheme ?? 'light'].barStyle}/>
       <View style={styles.titleSpace}>
-          <Text style={[styles.title, {color:Colors[colorScheme ?? 'light'].text},]}>Weekly Sunlight</Text>
-      </View>
-      <View style={styles.dateSpace}>
-          <Text style={{color:Colors[colorScheme ?? 'light'].text}}>{date}</Text>
+          <Text style={[styles.title, {color:Colors[colorScheme ?? 'light'].text},]}>{selectedItem?.value || "Select a page"}</Text>
       </View>
       <View style={styles.menuSpace}>
-          <Pressable style={[styles.buttonStyle, {backgroundColor:Colors[colorScheme ?? 'light'].buttonColor}, {borderWidth:0}]} onPress={() => navigation.navigate("learn")}>
-              <Text style={[styles.text,{color:Colors[colorScheme ?? 'light'].text}]}>{title="Weekly "}<AntDesign name="down" size={10} style={{color:Colors[colorScheme ?? 'light'].text}} /></Text>
-          </Pressable> 
+      <Dropdown
+        style={[Dropdownstyles.dropdown, {backgroundColor: Colors[colorScheme ?? 'light'].buttonColor}]}
+        iconColor={Colors[colorScheme ?? 'light'].text}
+        itemTextStyle={{color: Colors[colorScheme ?? 'light'].text}}
+        placeholderStyle={{color: Colors[colorScheme ?? 'light'].text}}
+        itemContainerStyle={{backgroundColor: Colors[colorScheme ?? 'light'].background}}
+        data={dropdownDataState}
+        //maxHeight={300}
+        labelField="label"
+        valueField="value"
+        placeholder={selectedItem?.label || "Select a page"}
+        onChange={item => setSelectedItem(item)}
+      />
       </View>
-      <View style={styles.pieSpace}>
-            <PieChart
-                donut
-                innerRadius={80}
-                borderRadius={15}
-                data={pieData}
-                centerLabelComponent={() => {
-                return <Text style={{fontSize: 30, color: 'black'}}>70%</Text>;
-                }}
-            />
-            </View>
-            <View style={styles.barSpace}>
-                < BarChart style={{textColor:Colors[colorScheme ?? 'light'].text}}
-                    barWidth={22}
-                    noOfSections={2}
-                    height={80}
-                    yAxisLabelTexts={['0', '2', '4']}
-                    barBorderRadius={8}
-                    frontColor="#E6AA1F"
-                    data={[{value: 1.0, label: 'M',},
-                          {value: 2.1, label: 'T', frontColor: '#B28009'},
-                          {value: 2.0, label: 'W', frontColor: '#B28009'},
-                          {value: 1.5, label: 'T'},
-                          {value: 2.8, label: 'F', frontColor: '#B28009'},
-                          {value: 0.8, label: 'S'},
-                          {value: 0.2, label: 'S'},
-                    ]}
-                    yAxisThickness={0}
-                    xAxisThickness={0}
-                    showReferenceLine1
-                    referenceLine1Position={4.9}
-                    referenceLine1Config={{
-                        color: '#B28009',
-                    }}
-                />
-            </View>
-            <View style={[styles.separator, {backgroundColor: Colors[colorScheme ?? 'light'].seperator}]}/>
+      <View stle={styles.newContent}>
+      {renderContent()}
+      </View>
+      <View style={[styles.separator, {backgroundColor: Colors[colorScheme ?? 'light'].seperator}]}/>
     </View>
   );
 }
@@ -83,20 +79,15 @@ const styles = StyleSheet.create({
     fontWeight: 'light',
   },
   titleSpace: {
-    height: '7%',
-  },
-  dateSpace:{
-    height: '3%',
+    flex: 1,
   },
   menuSpace: {
-    height: '8%',
-    justifyContent: 'center',
+    flex: 2,
+    width: '100%',
+    alignItems: 'center',
   },
   pieSpace: {
     height:'40%',
-    justifyContent: 'center',
-  },
-  barSpace: {
     justifyContent: 'center',
   },
   buttonStyle: {
@@ -106,16 +97,34 @@ const styles = StyleSheet.create({
     borderRadius: 5,
     borderWidth: 1,
   },
-  imageStyle: {
-    width:205,
-    height: 20,
-    paddingHorizontal: 5,
-    marginTop: 10,
-  },
   separator: {
     position: 'absolute',
     bottom: 0,
     height: 1,
     width: '100%',
+  },
+  newContent: {
+    flex:3,
+  },
+  
+});
+
+const Dropdownstyles = StyleSheet.create({
+  dropdown: {
+    margin: 16,
+    height: 50,
+    width: '30%',
+    borderRadius: 8,
+    padding: 12,
+    elevation: 1,
+  },
+  dropdownIcon: {
+    marginRight: 5,
+  },
+  dropdownItem: {
+    padding: 17,
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
   },
 });
