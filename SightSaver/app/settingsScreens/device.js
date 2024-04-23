@@ -1,6 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { View, Text, StyleSheet, Switch } from 'react-native';
+import { useColorScheme } from '../../components/useColorScheme';
+import Colors from '../../constants/Colors';
 
 export default function DeviceSettings({ route }) {
     const [deviceId, setDeviceId] = useState(0); // Default value if not found in AsyncStorage
@@ -10,6 +12,8 @@ export default function DeviceSettings({ route }) {
 
     const toggleSetting1 = () => setSetting1(previousState => !previousState);
     const toggleSetting2 = () => setSetting2(previousState => !previousState);
+
+    const colorScheme = useColorScheme();
 
     useEffect(() => {
         const fetchActiveButton = async () => {
@@ -27,16 +31,16 @@ export default function DeviceSettings({ route }) {
     }, []);
 
     return (
-        <View style={styles.container}>
-            <Text style={styles.title}>Device Settings for Sun Sensor {deviceId}:</Text>
+        <View style={[styles.container, {backgroundColor:Colors[colorScheme ?? 'light'].background}]}>
+            <Text style={[styles.title, {color:Colors[colorScheme ?? 'light'].text}]}>Device Settings for Sun Sensor {deviceId}:</Text>
 
             <View style={styles.setting}>
-                <Text style={styles.settingLabel}>Setting 1</Text>
+                <Text style={[styles.settingLabel, {color:Colors[colorScheme ?? 'light'].text}]}>Setting 1</Text>
                 <Switch value={setting1} onValueChange={toggleSetting1} />
             </View>
 
             <View style={styles.setting}>
-                <Text style={styles.settingLabel}>Setting 2</Text>
+                <Text style={[styles.settingLabel, {color:Colors[colorScheme ?? 'light'].text}]}>Setting 2</Text>
                 <Switch value={setting2} onValueChange={toggleSetting2} />
             </View>
         </View>

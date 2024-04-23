@@ -1,9 +1,12 @@
 import { View, Text, StyleSheet } from 'react-native';
+import { useColorScheme } from '../../components/useColorScheme';
+import Colors from '../../constants/Colors';
 
 export default function AccessibilityScreen() {
+    const colorScheme = useColorScheme();
     return (
-        <View style={styles.container}>
-            <Text>Accessibility Settings coming soon...</Text>
+        <View style={[styles.container, {backgroundColor:Colors[colorScheme ?? 'light'].background}]}>
+            <Text style={{color:Colors[colorScheme ?? 'light'].text}}>Accessibility Settings coming soon...</Text>
         </View>
     );
 }

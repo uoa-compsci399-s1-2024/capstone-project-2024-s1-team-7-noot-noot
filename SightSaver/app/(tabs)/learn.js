@@ -1,7 +1,7 @@
 import { StyleSheet } from 'react-native';
-import { Text, View } from '@/components/Themed';
-import Colors from '@/constants/Colors';
-import { useColorScheme } from '@/components/useColorScheme';
+import { Text, View } from '../../components/Themed';
+import Colors from '../../constants/Colors';
+import { useColorScheme } from '../../components/useColorScheme';
 import { StatusBar } from 'react-native';
 
 
@@ -23,8 +23,8 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
   title: {
-    fontSize: 40,
-    fontWeight: 'light',
+    fontSize: 20,
+    fontWeight: 'bold',
   },
   separator: {
     position: 'absolute',

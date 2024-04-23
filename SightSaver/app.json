@@ -1,9 +1,8 @@
 {
   "expo": {
-    "name": "sightsaver",
-    "slug": "sightsaver",
+    "name": "SightSaver",
+    "slug": "SightSaver",
     "version": "1.0.0",
-    "owner": "sightsaver",
     "orientation": "portrait",
     "icon": "./assets/images/icon.png",
     "scheme": "myapp",
@@ -26,22 +25,38 @@
           "backgroundColor": "#404040"
         }
       },
+      "permissions": [
+        "android.permission.BLUETOOTH",
+        "android.permission.BLUETOOTH_ADMIN",
+        "android.permission.BLUETOOTH_CONNECT"
+      ],
       "package": "com.nootnoot.sightsaver",
       "versionCode": 1
     },
     "plugins": [
       "expo-router",
-      "expo-font"
+      [
+        "@config-plugins/react-native-ble-plx",
+        {
+          "isBackgroundEnabled": true,
+          "modes": [
+            "peripheral",
+            "central"
+          ],
+          "bluetoothAlwaysPermission": "Allow $(PRODUCT_NAME) to connect to bluetooth devices"
+        }
+      ]
     ],
     "experiments": {
       "typedRoutes": true
     },
+    "owner": "sightsaver",
     "extra": {
       "router": {
         "origin": false
       },
       "eas": {
-        "projectId": "c283fa5f-f164-42d3-a896-f9feb25eae6c"
+        "projectId": "1396233c-5f40-4aae-ac6c-38c7235b81ec"
       }
     }
   }

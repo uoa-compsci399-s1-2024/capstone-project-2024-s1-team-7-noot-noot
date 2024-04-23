@@ -23,6 +23,10 @@ jobs:
 
       - name: Build with Maven
         run: mvn clean install --file Backend_API\ -\ NootNoot/pom.xml
+        env:
+          DATABASE_URL: ${{ secrets.DATABASE_URL }}
+          DATABASE_USERNAME: ${{ secrets.DATABASE_USERNAME }}
+          DATABASE_PASSWORD: ${{ secrets.DATABASE_PASSWORD }}
       - name: Upload artifact for deployment job
         uses: actions/upload-artifact@v3
         with:

@@ -4,9 +4,8 @@ import { useFonts } from 'expo-font';
 import { Stack } from 'expo-router';
 import * as SplashScreen from 'expo-splash-screen';
 import { useEffect, useState } from 'react';
-import { useColorScheme } from '@/components/useColorScheme';
+import { useColorScheme } from '../components/useColorScheme';
 import SignInScreen from './signin';
-import Accssibility from './settingsScreens/accessibility';
 
 export {
   // Catch any errors thrown by the Layout component.
