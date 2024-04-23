@@ -24,8 +24,10 @@ export default function WeeklyScreen() {
   const colorScheme = useColorScheme();
   return (
     <View styles={[styles.container, {backgroundColor:Colors[colorScheme ?? 'light'].background}]}>
-      <View style={styles.pieSpace}>
-          { 
+        <View style={styles.dateSpace}>
+          <Text style={{color:Colors[colorScheme ?? 'light'].text}}>{date}</Text>
+      </View>
+          <View style={styles.pieSpace}>
 
               <PieChart
                   donut
@@ -36,9 +38,7 @@ export default function WeeklyScreen() {
                   return <Text style={{fontSize: 30, color: 'black'}}>70%</Text>;
                   }}
               />
-          }
-        </View>
-      
+          </View>
               <View style={styles.barSpace}>
                   < BarChart style={{textColor:Colors[colorScheme ?? 'light'].text}}
                       barWidth={22}
@@ -47,12 +47,12 @@ export default function WeeklyScreen() {
                       yAxisLabelTexts={['0', '2', '4']}
                       barBorderRadius={8}
                       frontColor="#E6AA1F"
-                      data={[{value: 1.0, label: 'M',},
-                            {value: 2.1, label: 'T', frontColor: '#B28009'},
-                            {value: 2.0, label: 'W', frontColor: '#B28009'},
-                            {value: 1.5, label: 'T'},
-                            {value: 2.8, label: 'F', frontColor: '#B28009'},
-                            {value: 0.8, label: 'S'},
+                      data={[{value: 4.0, label: 'M',},
+                            {value: 7.1, label: 'T', frontColor: '#B28009'},
+                            {value: 8.0, label: 'W', frontColor: '#B28009'},
+                            {value: 4.5, label: 'T'},
+                            {value: 6.8, label: 'F', frontColor: '#B28009'},
+                            {value: 2.8, label: 'S'},
                             {value: 0.2, label: 'S'},
                       ]}
                       yAxisThickness={0}
@@ -64,7 +64,6 @@ export default function WeeklyScreen() {
                       }}
                   />
               </View>
-              <View style={[styles.separator, {backgroundColor: Colors[colorScheme ?? 'light'].seperator}]}/>
     </View>
   );
 }
@@ -75,26 +74,19 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
   },
-  title: {
-    fontSize: 40,
-    fontWeight: 'light',
-  },
-  titleSpace: {
-    height: '7%',
-  },
   dateSpace:{
-    height: '3%',
-  },
-  menuSpace: {
-    height: '8%',
-    justifyContent: 'center',
+    height: '10%',
+    textAlign: 'center',
+    marginLeft: '22%',
+    width: '100%',
   },
   pieSpace: {
-    height:'40%',
-    justifyContent: 'center',
+    height: '40%',
+    alignItems: 'center',
   },
   barSpace: {
     justifyContent: 'center',
+    height: '30%',
   },
   imageStyle: {
     width:205,

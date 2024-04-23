@@ -61,9 +61,7 @@ export default function IndexScreen() {
         onChange={item => setSelectedItem(item)}
       />
       </View>
-      <View stle={styles.newContent}>
-      {renderContent()}
-      </View>
+        {renderContent()}
       <View style={[styles.separator, {backgroundColor: Colors[colorScheme ?? 'light'].seperator}]}/>
     </View>
   );
@@ -79,16 +77,12 @@ const styles = StyleSheet.create({
     fontWeight: 'light',
   },
   titleSpace: {
-    flex: 1,
+    height: '10%',
   },
   menuSpace: {
-    flex: 2,
+    height: '10%',
     width: '100%',
     alignItems: 'center',
-  },
-  pieSpace: {
-    height:'40%',
-    justifyContent: 'center',
   },
   buttonStyle: {
     backgroundColor: 'white',
@@ -102,9 +96,6 @@ const styles = StyleSheet.create({
     bottom: 0,
     height: 1,
     width: '100%',
-  },
-  newContent: {
-    flex:3,
   },
   
 });
