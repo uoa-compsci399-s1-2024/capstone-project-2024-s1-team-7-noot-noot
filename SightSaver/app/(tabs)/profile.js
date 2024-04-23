@@ -3,46 +3,83 @@ import Colors from '../../constants/Colors';
 import { useColorScheme } from '../../components/useColorScheme';
 import React, { useState, useEffect, useContext } from 'react';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { StyleSheet, Switch, TouchableOpacity, ActivityIndicator,Alert } from 'react-native';
-import { MaterialCommunityIcons } from '@expo/vector-icons';
-import { Link } from 'expo-router';
 import { Ionicons } from '@expo/vector-icons';
-import { StatusBar } from 'react-native';
-import DeviceModal from "../DeviceConnectionModal";
 import useBLE from "../useBLE";
+import { 
+  StyleSheet, 
+  Switch, 
+  TouchableOpacity, 
+  ActivityIndicator, 
+  Alert, 
+  StatusBar, 
+  FlatList, 
+  Modal, 
+  ScrollView,
+  Button
+} from 'react-native';
 
 export default function ProfileScreen() {
   const colorScheme = useColorScheme();
   const [activeButton, setActiveButton] = useState(2); // Changed state for active button
-  const [isSyncing, setIsSyncing] = useState(false);
+  const [showDevices, setShowDevices] = useState(false); // Whether to show the list of devices
+  const [modalVisible, setModalVisible] = useState(false);
+  const [selectedDevice, setSelectedDevice] = useState(null);
+  const [alertVisible, setAlertVisible] = useState(false);
+  const [alertMessage, setAlertMessage] = useState('');
   const {
     requestPermissions,
     scanForPeripherals,
     allDevices,
     connectToDevice,
     connectedDevice,
-    heartRate,
+    SensorData,
     disconnectFromDevice,
+    setAllDevices
   } = useBLE();
-  const [isModalVisible, setIsModalVisible] = useState(false);
 
-  const scanForDevices = async () => {
-    const isPermissionsEnabled = await requestPermissions();
-    if (isPermissionsEnabled) {
-      scanForPeripherals();
+  const [triggerSync, setTriggerSync] = useState(false);
+
+  useEffect(() => {
+    if (selectedDevice && triggerSync) {
+      handleSync();
+      setTriggerSync(false);
+    }
+  }, [selectedDevice, triggerSync]);
+
+  useEffect(() => {
+    const requestAndScan = async () => {
+      const permissionsGranted = await requestPermissions();
+      if (permissionsGranted) {
+        scanForPeripherals();
+      }
+    };
+
+    requestAndScan();
+  }, []);
+
+  const handleSync = async () => {
+    if (selectedDevice) {
+      setAlertMessage('Connecting...');
+      setAlertVisible(true);
+      try {
+        await connectToDevice(selectedDevice);
+        setAlertMessage('Connected. Syncing...');
+        // Wait for data to sync. You might need to implement this part based on your requirements.
+        await new Promise((resolve) => setTimeout(resolve, 2000));
+        setAlertMessage('Data Synced');
+        disconnectFromDevice();
+      } catch (error) {
+        setAlertMessage('Device Connecting Failed');
+      } finally {
+        setShowDevices(false);
+        setModalVisible(false);
+      }
+    } else {
+      setAlertMessage('No device selected');
+      setAlertVisible(true);
     }
   };
 
-  const hideModal = () => {
-    setIsModalVisible(false);
-  };
-
-  const openModal = async () => {
-    scanForDevices();
-    setIsModalVisible(true);
-  };
-
-  // Handle button press
   const handlePress = (index) => {
       setActiveButton(index);
       AsyncStorage.setItem('activeButton', index.toString());
@@ -50,84 +87,128 @@ export default function ProfileScreen() {
 
   return (
     <View style={[styles.container]}>
-        <StatusBar barStyle={barStyle=Colors[colorScheme ?? 'light'].barStyle}/>
-        {/* Parent Profile */}
-            <View style={styles.headerContent}>
-                <Ionicons name="person-circle-outline" size={50} color={Colors[colorScheme ?? 'light'].text} />
-                <View style={styles.headerText}>
-                    <Text style={styles.name}>John Doe</Text>
-                    <Text style={styles.userInfo}>info@company.com</Text>
-                </View>
-            </View>
-      {/* Children buttons */}
-        <View style={{justifyContent:"center", alignItems:"center"}}>
-          <Text style={[styles.title,{fontWeight:"bold",fontSize:20}]}>Display Data for:</Text>
-          {/* Child 1 Button */}
-          <TouchableOpacity
-              style={[styles.button, {backgroundColor:Colors[colorScheme ?? 'light'].buttonColor}]}
-              onPress={() => handlePress(1)} // Pass index 1
-          >
-            <View style={{flexDirection: 'column', justifyContent: 'center', alignItems:'left'}}>
-              <Text style={[styles.buttonText, {backgroundColor:Colors[colorScheme ?? 'light'].buttonColor}]}>Child 1</Text>
-              <Text style={[styles.buttonText, {fontSize: 10, backgroundColor:Colors[colorScheme ?? 'light'].buttonColor}]}>Device: Sun Sensor 1</Text>
-            </View>      
-                        
-            <View
-                style={[
-                    styles.circle,
-                    {backgroundColor:Colors[colorScheme ?? 'light'].buttonColor},
-                    activeButton === 1 && styles.circlePressed, // Apply style when button 1 is active
-                ]}
-            />
-          </TouchableOpacity>
+      <StatusBar barStyle={barStyle=Colors[colorScheme ?? 'light'].barStyle}/>
 
-          {/* Child 2 Button */}
-            <TouchableOpacity
-              style={[styles.button, {backgroundColor:Colors[colorScheme ?? 'light'].buttonColor}]}
-              onPress={() => handlePress(2)} // Pass index 2
-            >
-            <View style={{flexDirection: 'column', justifyContent: 'center', alignItems:'left'}}>
-              <Text style={[styles.buttonText, {backgroundColor:Colors[colorScheme ?? 'light'].buttonColor}]}>Child 2</Text>
-              <Text style={[styles.buttonText, {fontSize: 10, backgroundColor:Colors[colorScheme ?? 'light'].buttonColor}]}>Device: Sun Sensor 2</Text>
-            </View>      
-              <View
-                style={[
+      {/* Parent Profile */}
+          <View style={styles.headerContent}>
+              <Ionicons name="person-circle-outline" size={50} color={Colors[colorScheme ?? 'light'].text} />
+              <View style={styles.headerText}>
+                  <Text style={styles.name}>John Doe</Text>
+                  <Text style={styles.userInfo}>info@company.com</Text>
+              </View>
+          </View>
+
+      {/* Children buttons */}
+      <View style={{justifyContent:"center", alignItems:"center", marginTop:20}}>
+        <Text style={[styles.title,{fontWeight:"bold",fontSize:20}]}>Display Data for:</Text>
+
+        {/* Child 1 Button */}
+        <TouchableOpacity
+            style={[styles.button, {backgroundColor:Colors[colorScheme ?? 'light'].buttonColor}]}
+            onPress={() => handlePress(1)} // Pass index 1
+        >
+          <View style={{flexDirection: 'column', justifyContent: 'center', alignItems:'left'}}>
+            <Text style={[styles.buttonText, {backgroundColor:Colors[colorScheme ?? 'light'].buttonColor}]}>Child 1</Text>
+            <Text style={[styles.buttonText, {fontSize: 10, backgroundColor:Colors[colorScheme ?? 'light'].buttonColor}]}>Device: Sun Sensor 1</Text>
+          </View>             
+          <View
+              style={[
                   styles.circle,
                   {backgroundColor:Colors[colorScheme ?? 'light'].buttonColor},
-                  activeButton === 2 && styles.circlePressed, // Apply style when button 1 is active
+                  activeButton === 1 && styles.circlePressed, // Apply style when button 1 is active
               ]}
-              />
-            </TouchableOpacity>
-
-        </View>
-        <View style={styles.container}>
-          <View style={styles.heartRateTitleWrapper}>
-            {connectedDevice ? (
-              <>
-                <Text>Working</Text>
-              </>
-            ) : (
-              <Text style={styles.heartRateTitleText}>
-                Connect to Sensor
-              </Text>
-            )}
-          </View>
-          <TouchableOpacity
-            onPress={connectedDevice ? disconnectFromDevice : openModal}
-            style={styles.ctaButton}
-          >
-            <Text style={styles.ctaButtonText}>
-              {connectedDevice ? "Disconnect" : "Connect"}
-            </Text>
-          </TouchableOpacity>
-          <DeviceModal
-            closeModal={hideModal}
-            visible={isModalVisible}
-            connectToPeripheral={connectToDevice}
-            devices={allDevices}
           />
+        </TouchableOpacity>
+
+        {/* Child 2 Button */}
+        <TouchableOpacity
+          style={[styles.button, {backgroundColor:Colors[colorScheme ?? 'light'].buttonColor}]}
+          onPress={() => handlePress(2)} // Pass index 2
+        >
+        <View style={{flexDirection: 'column', justifyContent: 'center', alignItems:'left'}}>
+          <Text style={[styles.buttonText, {backgroundColor:Colors[colorScheme ?? 'light'].buttonColor}]}>Child 2</Text>
+          <Text style={[styles.buttonText, {fontSize: 10, backgroundColor:Colors[colorScheme ?? 'light'].buttonColor}]}>Device: Sun Sensor 2</Text>
+        </View>      
+          <View
+            style={[
+              styles.circle,
+              {backgroundColor:Colors[colorScheme ?? 'light'].buttonColor},
+              activeButton === 2 && styles.circlePressed, // Apply style when button 1 is active
+          ]}
+          />
+        </TouchableOpacity>
+      </View>
+
+      {/* Sync Data Button */}
+      <View>
+        <TouchableOpacity
+          style={[styles.syncButton, {backgroundColor:Colors[colorScheme ?? 'light'].buttonColor}]}
+          onPress={() => setModalVisible(true)}>
+          <Text style={styles.syncButtonText}>Sync Data</Text>
+        </TouchableOpacity>
+      </View>
+
+      {/* Device Modal */}
+      <Modal
+          animationType="fade"
+          transparent={true}
+          visible={modalVisible}
+          onRequestClose={() => {
+            setModalVisible(!modalVisible);
+          }}
+        >
+        <View style={styles.overlay}>
+          <View style={styles.deviceModal}>
+            <TouchableOpacity style={styles.closeButton} onPress={() => {setAllDevices([]), setModalVisible(false)}}>
+              <Ionicons name="close" size={22} color={Colors[colorScheme ?? 'light'].text} />
+            </TouchableOpacity>
+            <Text style={[styles.title,{color:Colors[colorScheme ?? 'light'].text}, {alignSelf:'center', marginBottom:10}, {fontSize: 21, fontWeight: 'bold'}]}>Searching for devices...</Text>
+            <ScrollView>
+              {allDevices.map((device) => (
+                <TouchableOpacity
+                  key={device.id}
+                  onPress={() => {
+                    setSelectedDevice(device);
+                    setAllDevices([]);
+                    setModalVisible(false);
+                    setTriggerSync(true);
+                  }}
+                  style={[styles.deviceButton, {backgroundColor:Colors[colorScheme ?? 'light'].buttonColor}]}
+                >
+                  <Text style={styles.deviceButtonText}>{device.name}</Text>
+                </TouchableOpacity>
+              ))}
+            </ScrollView>
+          </View>
         </View>
-        <View style={[styles.separator, {backgroundColor: Colors[colorScheme ?? 'light'].seperator}]}/>
+      </Modal>
+
+      {/* Alert Modal */}
+      <Modal
+        animationType="fade"
+        transparent={true}
+        visible={alertVisible}
+        onRequestClose={() => {
+          setAlertVisible(!alertVisible);
+        }}
+      >
+        <View style={styles.overlay}>
+          <View style={styles.alertModal}>
+            <Text>{alertMessage}</Text>
+            {(alertMessage === 'Data Synced' || alertMessage === 'Device Connecting Failed' || alertMessage === 'No device selected') && (
+              <TouchableOpacity
+                onPress={() => {setAlertVisible(false)}}
+                style={[styles.deviceButton, {backgroundColor:Colors[colorScheme ?? 'light'].buttonColor}]}
+              >
+                <Text style={styles.deviceButtonText}>OK</Text>
+              </TouchableOpacity>
+            )}
+            </View>
+        </View>
+      </Modal>
+
+      {/* Seperator */}
+      <View style={[styles.separator, {backgroundColor: Colors[colorScheme ?? 'light'].seperator}]}/>
     </View>
 );
 }
@@ -168,9 +249,10 @@ const styles = StyleSheet.create({
     fontWeight: '600',
   },
   syncButton: {
-    width: 340,
-    height: 50,
+    width: '85%',
+    marginVertical: 20,
     justifyContent: 'center',
+    paddingVertical: 20,
     borderWidth: 0,
     alignItems: 'center',
     borderRadius: 5,
@@ -190,9 +272,9 @@ const styles = StyleSheet.create({
     flexDirection: 'row', // Set the button layout to row
     alignItems: 'center', // Center the text and circle within the button
     justifyContent: 'space-between', // Center the text and circle within the button
-    width: 340, // Set button width
-    height: 70, // Set button height
+    width: '85%',
     paddingHorizontal: 20, // Add padding on the left and right (20px from the edge)
+    paddingVertical: 20, // Add padding on the top and bottom (10px from the edge)
     borderWidth: 0,
     borderRadius: 5, // Rounded corners
     marginVertical: 5, // Add vertical margin for spacing between buttons
@@ -214,34 +296,43 @@ const styles = StyleSheet.create({
   settingsIcon: {
     paddingRight: 10,
   },
-  heartRateTitleWrapper: {
+  deviceModal: {
+    width: '80%',
+    height: '50%',
+    borderRadius: 10,
+    padding: 40,
+  },
+  alertModal: {
+    width: '80%',
+    height: '50%',
+    borderRadius: 10,
+    padding: 20,
+  },
+  overlay: {
     flex: 1,
-    justifyContent: "center",
-    alignItems: "center",
+    backgroundColor: 'rgba(0, 0, 0, 0.5)',
+    justifyContent: 'center',
+    alignItems: 'center',
+    width: '100%',
+    height: '100%',
   },
-  heartRateTitleText: {
-    fontSize: 30,
-    fontWeight: "bold",
-    textAlign: "center",
-    marginHorizontal: 20,
-    color: "black",
+  closeButton: {
+    flex: 1,
+    right: 0,
+    padding: 15,
+    position: 'absolute',
   },
-  heartRateText: {
-    fontSize: 25,
-    marginTop: 15,
+  deviceButton: {
+    width: '100%',
+    marginVertical: 5,
+    justifyContent: 'center',
+    paddingVertical: 15,
+    borderWidth: 0,
+    alignItems: 'center',
+    borderRadius: 5,
+    alignSelf: 'center',
   },
-  ctaButton: {
-    backgroundColor: "#FF6060",
-    justifyContent: "center",
-    alignItems: "center",
-    height: 50,
-    marginHorizontal: 20,
-    marginBottom: 5,
-    borderRadius: 8,
-  },
-  ctaButtonText: {
-    fontSize: 18,
-    fontWeight: "bold",
-    color: "white",
-  },
+  deviceButtonText: {
+    fontSize: 12,
+  }
 });
