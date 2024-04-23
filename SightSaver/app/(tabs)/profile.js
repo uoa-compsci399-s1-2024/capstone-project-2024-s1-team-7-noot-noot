@@ -173,7 +173,7 @@ export default function ProfileScreen() {
                     setModalVisible(false);
                     setTriggerSync(true);
                   }}
-                  style={[styles.deviceButton, {backgroundColor:Colors[colorScheme ?? 'light'].buttonColor}]}
+                  style={styles.deviceButton}
                 >
                   <Text style={styles.deviceButtonText}>{device.name}</Text>
                 </TouchableOpacity>
@@ -192,23 +192,25 @@ export default function ProfileScreen() {
           setAlertVisible(!alertVisible);
         }}
       >
-        <View style={styles.overlay}>
+        <TouchableOpacity 
+          style={styles.overlay} 
+          activeOpacity={1} 
+          onPressOut={() => {setAlertVisible(false)}}
+        >
           <View style={styles.alertModal}>
-            <Text>{alertMessage}</Text>
+            <Text style={styles.alertMessage}>{alertMessage}</Text>
             {(alertMessage === 'Data Synced' || alertMessage === 'Device Connecting Failed' || alertMessage === 'No device selected') && (
               <TouchableOpacity
-                onPress={() => {setAlertVisible(false)}}
-                style={[styles.deviceButton, {backgroundColor:Colors[colorScheme ?? 'light'].buttonColor}]}
+                onPress={() => {setAlertVisible(false), setAllDevices([])}}
               >
-                <Text style={styles.deviceButtonText}>OK</Text>
               </TouchableOpacity>
             )}
-            </View>
-        </View>
+          </View>
+        </TouchableOpacity>
       </Modal>
 
       {/* Seperator */}
-      <View style={[styles.separator, {backgroundColor: Colors[colorScheme ?? 'light'].seperator}]}/>
+      <View style={[styles.separator, {backgroundColor:Colors[colorScheme ?? 'light'].seperator}]}/>
     </View>
 );
 }
@@ -304,13 +306,21 @@ const styles = StyleSheet.create({
   },
   alertModal: {
     width: '80%',
-    height: '50%',
+    height: '20%',
     borderRadius: 10,
     padding: 20,
+    alignContent: 'center',
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: 'rgba(0, 0, 0, 0)',
+  },
+  alertMessage: {
+    fontSize: 18,
+    fontWeight: 'bold',
   },
   overlay: {
     flex: 1,
-    backgroundColor: 'rgba(0, 0, 0, 0.5)',
+    backgroundColor: 'rgba(0, 0, 0, 0.7)',
     justifyContent: 'center',
     alignItems: 'center',
     width: '100%',
@@ -324,15 +334,16 @@ const styles = StyleSheet.create({
   },
   deviceButton: {
     width: '100%',
-    marginVertical: 5,
+    height: '100%',
+    marginVertical: 0,
     justifyContent: 'center',
-    paddingVertical: 15,
+    paddingVertical: 10,
     borderWidth: 0,
     alignItems: 'center',
     borderRadius: 5,
     alignSelf: 'center',
   },
   deviceButtonText: {
-    fontSize: 12,
+    fontSize: 18,
   }
 });
