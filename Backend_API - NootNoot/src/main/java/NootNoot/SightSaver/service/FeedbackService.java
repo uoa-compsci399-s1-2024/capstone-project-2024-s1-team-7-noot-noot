@@ -17,4 +17,17 @@ public class FeedbackService {
     public List<Feedback> getAllFeedback() {
         return feedbackRepository.findAll(); 
     }
+
+    public Feedback getFeedbackById(Long id) {
+        return feedbackRepository.findById(id).orElse(null);
+    }
+
+    public Feedback saveFeedback(Feedback feedback) {
+        return feedbackRepository.save(feedback);
+    }
+
+    public void deleteFeedbackbyID(Long id) {
+        feedbackRepository.deleteById(id);
+    }
+
 }

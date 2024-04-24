@@ -1,62 +1,84 @@
-import json
-import time
-from pybleno import *
+"""
+Example for a BLE 4.0 Server
+"""
+import sys
+import logging
+import asyncio
+import threading
 
-class EchoCharacteristic(Characteristic):
-    def __init__(self):
-        Characteristic.__init__(self, {
-            'uuid': 'ec0e',
-            'properties': ['read', 'write'],
-            'value': None
-        })
-        self._value = 0
-        self._updateValueCallback = None
+from typing import Any, Union
 
-    def onReadRequest(self, offset, callback):
-        with open('data.json', 'r') as f:
-            data = json.load(f)
-        callback(Characteristic.RESULT_SUCCESS, bytes(json.dumps(data), 'utf-8'))
+from bless import (  # type: ignore
+    BlessServer,
+    BlessGATTCharacteristic,
+    GATTCharacteristicProperties,
+    GATTAttributePermissions,
+)
 
-    def onWriteRequest(self, data, offset, withoutResponse, callback):
-        self._value = data
-        print('EchoCharacteristic - onWriteRequest: value = ' + self._value)
-        if self._updateValueCallback:
-            print('EchoCharacteristic - onWriteRequest: notifying')
-            self._updateValueCallback(self._value)
-        callback(Characteristic.RESULT_SUCCESS)
+logging.basicConfig(level=logging.DEBUG)
+logger = logging.getLogger(name=__name__)
 
-    def onSubscribe(self, maxValueSize, updateValueCallback):
-        print('EchoCharacteristic - onSubscribe')
-        self._updateValueCallback = updateValueCallback
+# NOTE: Some systems require different synchronization methods.
+trigger: Union[asyncio.Event, threading.Event]
+if sys.platform in ["darwin", "win32"]:
+    trigger = threading.Event()
+else:
+    trigger = asyncio.Event()
 
-    def onUnsubscribe(self):
-        print('EchoCharacteristic - onUnsubscribe')
-        self._updateValueCallback = None
 
-def onStateChange(state):
-    print('on -> stateChange: ' + state)
-    if (state == 'poweredOn'):
-        bleno.startAdvertising('echo', ['ec00'])
+def read_request(characteristic: BlessGATTCharacteristic, **kwargs) -> bytearray:
+    logger.debug(f"Reading {characteristic.value}")
+    return characteristic.value
+
+
+def write_request(characteristic: BlessGATTCharacteristic, value: Any, **kwargs):
+    characteristic.value = value
+    logger.debug(f"Char value set to {characteristic.value}")
+    if characteristic.value == b"\x0f":
+        logger.debug("NICE")
+        trigger.set()
+
+
+async def run(loop):
+    trigger.clear()
+    # Instantiate the server
+    my_service_name = "SightSaver"
+    server = BlessServer(name=my_service_name, loop=loop)
+    server.read_request_func = read_request
+    server.write_request_func = write_request
+
+    # Add Service
+    my_service_uuid = "A07498CA-AD5B-474E-940D-16F1FBE7E8CD"
+    await server.add_new_service(my_service_uuid)
+
+    # Add a Characteristic to the service
+    my_char_uuid = "51FF12BB-3ED8-46E5-B4F9-D64E2FEC021B"
+    char_flags = (
+        GATTCharacteristicProperties.read
+        | GATTCharacteristicProperties.write
+        | GATTCharacteristicProperties.indicate
+    )
+    permissions = GATTAttributePermissions.readable | GATTAttributePermissions.writeable
+    await server.add_new_characteristic(
+        my_service_uuid, my_char_uuid, char_flags, None, permissions
+    )
+
+    logger.debug(server.get_characteristic(my_char_uuid))
+    await server.start()
+    logger.debug("Advertising")
+    logger.info(f"Write '0xF' to the advertised characteristic: {my_char_uuid}")
+    if trigger.__module__ == "threading":
+        trigger.wait()
     else:
-        bleno.stopAdvertising()
+        await trigger.wait()
 
-def onAdvertisingStart(error):
-    print('on -> advertisingStart: ' + ('error ' + error if error else 'success'))
-    if not error:
-        bleno.setServices([
-            BlenoPrimaryService({
-                'uuid': 'ec00',
-                'characteristics': [
-                    EchoCharacteristic()
-                ]
-            })
-        ])
+    await asyncio.sleep(2)
+    logger.debug("Updating")
+    server.get_characteristic(my_char_uuid)
+    server.update_value(my_service_uuid, "51FF12BB-3ED8-46E5-B4F9-D64E2FEC021B")
+    await asyncio.sleep(5)
+    await server.stop()
 
-bleno = Bleno()
-bleno.on('stateChange', onStateChange)
-bleno.on('advertisingStart', onAdvertisingStart)
 
-bleno.start()
-
-while True:
-    time.sleep(1)
+loop = asyncio.get_event_loop()
+loop.run_until_complete(run(loop))
