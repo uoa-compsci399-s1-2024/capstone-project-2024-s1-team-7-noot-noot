@@ -22,6 +22,11 @@ public class ChildController {
         return childService.getAllChildren();
     }
 
+    @GetMapping("/numberOfChildren")
+    public Long getNumberOfChildren() {
+        return childService.getChildCount();
+    }
+
     @GetMapping("/{id}")
     public Child getChildById(@PathVariable Long id) {
         return childService.getChildById(id);
