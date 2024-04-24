@@ -22,8 +22,8 @@ public class ChildService {
         return childRepository.findById(id).orElse(null);
     }
 
-    public void saveChild(Child child) {
-        childRepository.save(child);
+    public Child saveChild(Child child) {
+        return childRepository.save(child);
     }
 
     public void deleteChildById(Long id) {

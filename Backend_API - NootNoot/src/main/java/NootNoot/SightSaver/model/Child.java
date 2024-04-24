@@ -15,20 +15,13 @@ public class Child {
     public Child() {
     }
 
-
-    public Child(String name, int parent_id, int sensor_id) {
-        this.name = name;
-        this.parent_id = parent_id;
-        this.sensor_id = sensor_id;
-    }
-
     public Long getId() {return this.id;}
 
     public String getName() {
         return this.name;
     }
 
-    public float getParent() {
+    public long getParent() {
         return this.parent_id;
     }
 

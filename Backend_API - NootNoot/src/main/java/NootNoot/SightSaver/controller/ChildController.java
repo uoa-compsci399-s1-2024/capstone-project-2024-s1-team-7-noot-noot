@@ -11,26 +11,28 @@ import java.util.List;
 
 
 @RestController
+@RequestMapping("/child")
 public class ChildController {
+
     @Autowired
     private ChildService childService;
 
-    @GetMapping("/child")
+    @GetMapping
     public List<Child> getAll() {
         return childService.getAllChildren();
     }
 
-    @GetMapping("/child/{id}")
-    public Child getChildById(@RequestParam("id") Long id) {
+    @GetMapping("/{id}")
+    public Child getChildById(@PathVariable Long id) {
         return childService.getChildById(id);
     }
 
     @PostMapping
-    public void addChild(@RequestBody Child child) {
-        childService.saveChild(child);
+    public Child addChild(@RequestBody Child child) {
+        return childService.saveChild(child);
     }
 
-    @DeleteMapping("/child/{id}/delete")
+    @DeleteMapping("/{id}")
     public void deleteChild(@PathVariable("id") Long id) {
         childService.deleteChildById(id);
     }
