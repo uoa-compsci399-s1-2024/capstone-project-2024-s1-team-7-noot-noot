@@ -17,4 +17,21 @@ public class ChildService {
     public List<Child> getAllChildren() {
         return childRepository.findAll();
     }
+
+    public Child getChildById(Long id) {
+        return childRepository.findById(id).orElse(null);
+    }
+
+    public void saveChild(Child child) {
+        childRepository.save(child);
+    }
+
+    public void deleteChildById(Long id) {
+        childRepository.deleteById(id);
+    }
+
+
+
+
+
 }
