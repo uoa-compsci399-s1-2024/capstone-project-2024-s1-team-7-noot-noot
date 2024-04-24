@@ -22,6 +22,10 @@ public class ChildService {
         return childRepository.findById(id).orElse(null);
     }
 
+    public Long getChildCount() {
+        return childRepository.count();
+    }
+
     public Child saveChild(Child child) {
         return childRepository.save(child);
     }
