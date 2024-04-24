@@ -12,7 +12,7 @@ import NootNoot.SightSaver.model.Lux;
 import NootNoot.SightSaver.model.Parent;
 import NootNoot.SightSaver.model.Researcher;
 import NootNoot.SightSaver.model.Sensor;
-import NootNoot.SightSaver.model.UV;
+import NootNoot.SightSaver.model.Uv;
 import NootNoot.SightSaver.model.User;
 import NootNoot.SightSaver.service.ResearcherService;
 import NootNoot.SightSaver.service.SensorService;
@@ -81,7 +81,7 @@ public class TestController {
     }
 
     @GetMapping("/UV")
-    public List<UV> getAllUVValues() {
+    public List<Uv> getAllUVValues() {
         return uvService.getAllUVValues();
     }
 
