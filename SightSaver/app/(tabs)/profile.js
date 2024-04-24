@@ -183,7 +183,7 @@ export default function ProfileScreen() {
         </View>
       </Modal>
 
-      {/* Alert Modal */}
+      {/* Alert Modal */ }
       <Modal
         animationType="fade"
         transparent={true}
