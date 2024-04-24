@@ -17,4 +17,20 @@ public class LuxService {
     public List<Lux> getAllLuxValues() {
         return luxRepository.findAll();
     }
+
+    public Lux getLuxValueById(Long id) {
+        return luxRepository.findById(id).orElse(null);
+    }
+
+    public Long getNumberOfLuxValues() {
+        return luxRepository.count();
+    }
+
+    public Lux saveLux(Lux lux) {
+        return luxRepository.save(lux);
+    }
+
+    public void deleteLux(Long id) {
+        luxRepository.deleteById(id);
+    }
 }
