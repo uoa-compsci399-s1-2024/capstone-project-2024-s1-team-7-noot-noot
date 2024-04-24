@@ -5,6 +5,8 @@ import sys
 import logging
 import asyncio
 import threading
+import json
+from base64 import b64encode
 
 from typing import Any, Union
 
@@ -30,14 +32,23 @@ def read_request(characteristic: BlessGATTCharacteristic, **kwargs) -> bytearray
     logger.debug(f"Reading {characteristic.value}")
     return characteristic.value
 
-
 def write_request(characteristic: BlessGATTCharacteristic, value: Any, **kwargs):
-    characteristic.value = value
-    logger.debug(f"Char value set to {characteristic.value}")
-    if characteristic.value == b"\x0f":
-        logger.debug("NICE")
-        trigger.set()
+    # Read the JSON data from a file and encode it in base64
+    with open('data.json', 'r') as f:
+        json_data = json.load(f)
+    encoded_data = b64encode(json.dumps(json_data).encode()).decode()
 
+    # Split the encoded data into chunks of 20 bytes
+    chunks = [encoded_data[i:i+20] for i in range(0, len(encoded_data), 20)]
+
+    # Write each chunk to the characteristic
+    for chunk in chunks:
+        characteristic.value = chunk
+        logger.debug(f"Char value set to {chunk}")
+
+    if characteristic.value == chunks[-1]:
+        logger.debug("All chunks sent")
+        trigger.set()
 
 async def run(loop):
     trigger.clear()
