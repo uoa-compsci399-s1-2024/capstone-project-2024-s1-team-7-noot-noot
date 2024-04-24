@@ -22,21 +22,32 @@ jobs:
           java-version: '17'
 
       - name: Build with Maven
-        run: mvn clean install --file Backend_API\ -\ NootNoot/pom.xml
-        env:
-          DATABASE_URL: ${{ secrets.DATABASE_URL }}
-          DATABASE_USERNAME: ${{ secrets.DATABASE_USERNAME }}
-          DATABASE_PASSWORD: ${{ secrets.DATABASE_PASSWORD }}
+        run: mvn clean install
+
       - name: Upload artifact for deployment job
         uses: actions/upload-artifact@v3
         with:
           name: java-app
-          path: '${{ github.workspace }}/target/*.jar'
+          path: '${{ github.workspace }}/Backend_API - NootNoot/target/*.jar'
 
+  deploy:
+    runs-on: ubuntu-latest
+    needs: build
+    environment:
+      name: 'production'
+      url: ${{ steps.deploy-to-webapp.outputs.webapp-url }}
+      
+    steps:
+      - name: Download artifact from build job
+        uses: actions/download-artifact@v3
+        with:
+          name: java-app
+      
       - name: Deploy to Azure Web App
         id: deploy-to-webapp
         uses: azure/webapps-deploy@v2
         with:
           app-name: 'SightSaver-API'
           slot-name: 'production'
-          publish-profile: ${{ secrets.AzureAppService_PublishProfile_a18b0364d99f4ce8b7831708d4d99964 }}
+          package: '*.jar'
+          publish-profile: ${{ secrets.AzureAppService_PublishProfile_afff86e98d0d41c88d30cdab5f7e3cc7 }}
