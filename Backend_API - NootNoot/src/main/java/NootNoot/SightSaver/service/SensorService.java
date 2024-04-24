@@ -17,4 +17,21 @@ public class SensorService {
     public List<Sensor> getAllSensors() {
         return sensorRepository.findAll();
     }
+
+    public Sensor getSensorById(Long id) {
+        return sensorRepository.findById(id).orElse(null);
+    }
+
+    public Long getSensorCount(){
+        return sensorRepository.count();
+    }
+
+    public Sensor saveSensor(Sensor sensor) {
+        return sensorRepository.save(sensor);
+    }
+
+    public void deleteSensorById(Long id) {
+        sensorRepository.deleteById(id);
+    }
+
 }
