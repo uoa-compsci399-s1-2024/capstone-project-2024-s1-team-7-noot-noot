@@ -39,5 +39,4 @@ jobs:
         with:
           app-name: 'SightSaver-API'
           slot-name: 'production'
-          package: '*.jar'
           publish-profile: ${{ secrets.AzureAppService_PublishProfile_a18b0364d99f4ce8b7831708d4d99964 }}
