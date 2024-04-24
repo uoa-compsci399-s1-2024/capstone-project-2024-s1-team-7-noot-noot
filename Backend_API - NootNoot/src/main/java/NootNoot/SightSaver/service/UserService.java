@@ -22,4 +22,17 @@ public class UserService {
     public Optional<User> getUserById(Long userId) {
         return userRepository.findById(userId);
     }
+
+    public void deleteUserById(Long userId) {
+        userRepository.deleteById(userId);
+    }
+
+    public Long getNumberOfUsers() {
+        return userRepository.count();
+    }
+
+    public User createNewUser(User newUser) {
+        System.out.println(newUser);
+        return userRepository.save(newUser);
+    }
 }
