@@ -17,34 +17,18 @@ export const unstable_settings = {
   initialRouteName: '(tabs)',
 };
 
-// Prevent the splash screen from auto-hiding before asset loading is complete.
-SplashScreen.preventAutoHideAsync();
 
 export default function RootLayout({isActive}) {
-  const [loaded, error] = useFonts({
-    SpaceMono: require('../../assets/fonts/SpaceMono-Regular.ttf'),
-    ...FontAwesome.font,
-  });
+  
   const colorScheme = useColorScheme();
-  const [isSignedIn, setIsSignedIn] = useState(false);
 
-  // Expo Router uses Error Boundaries to catch errors in the navigation tree.
-  useEffect(() => {
-    if (error) throw error;
-  }, [error]);
+ 
 
-  useEffect(() => {
-    if (loaded) {
-      SplashScreen.hideAsync();
-    }
-  }, [loaded]);
-
-  if (!loaded) {
-    return null;
-  }
-
+  const { session, isLoading } = useSession();
+  
   if(!session){
-    return <Redirect href='/login' />
+    console.debug('No session found, redirecting to signin');
+    return <Redirect href='/signin' />
   }
   
   return (
@@ -52,7 +36,6 @@ export default function RootLayout({isActive}) {
       <Stack>
         <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
         <Stack.Screen name="settings" options={{ headerShown: false }}/>
-        {/* <Stack.Screen name="settings" component={SettingsStack} />       */}
       </Stack>
     </ThemeProvider>
   );

@@ -8,6 +8,7 @@ import AccessibilityScreen from './settingsScreens/accessibility';
 import DataSafetyScreen from './settingsScreens/dataSafety';
 import DeviceScreen from './settingsScreens/device';
 import AccountScreen from './settingsScreens/account';
+import { useSession } from '../../ctx';
 
 function Settings({navigation}) {
     // const navigation = useNavigation();
