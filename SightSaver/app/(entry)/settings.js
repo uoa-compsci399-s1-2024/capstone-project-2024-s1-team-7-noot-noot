@@ -2,8 +2,8 @@ import React from 'react';
 import { View, Text, TouchableOpacity, StyleSheet } from 'react-native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { StatusBar } from 'react-native';
-import Colors from '../constants/Colors';
-import { useColorScheme } from '../components/useColorScheme';
+import Colors from '../../constants/Colors';
+import { useColorScheme } from '../../components/useColorScheme';
 import AccessibilityScreen from './settingsScreens/accessibility';
 import DataSafetyScreen from './settingsScreens/dataSafety';
 import DeviceScreen from './settingsScreens/device';
@@ -12,7 +12,8 @@ import AccountScreen from './settingsScreens/account';
 function Settings({navigation}) {
     // const navigation = useNavigation();
     const colorScheme = useColorScheme();
-
+    const { signOut } = useSession();
+    
     return (
         <View style={styles.container}>
             <StatusBar barStyle={barStyle=Colors[colorScheme ?? 'light'].barStyle}/>
@@ -37,6 +38,15 @@ function Settings({navigation}) {
                     <Text style={[styles.optionText, {color:Colors[colorScheme ?? 'light'].text}]}>Account</Text>
                 </TouchableOpacity>
             </View>
+            <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
+            <Text
+                onPress={() => {
+                signOut();
+                }}>
+                Sign Out
+            </Text>
+            </View>
+
         </View>
     );
 }

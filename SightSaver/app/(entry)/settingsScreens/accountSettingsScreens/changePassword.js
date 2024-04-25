@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { View, Text, TextInput, StyleSheet, Button } from 'react-native';
-import { useColorScheme } from '../../../components/useColorScheme';
-import Colors from '../../../constants/Colors';
+import { useColorScheme } from '../../../../components/useColorScheme';
+import Colors from '../../../../constants/Colors';
 
 export default function ChangePassword() {
     const [currentPassword, setCurrentPassword] = useState('');

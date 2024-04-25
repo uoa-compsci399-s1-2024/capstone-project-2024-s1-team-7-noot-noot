@@ -6,8 +6,8 @@ import EditProfile from './accountSettingsScreens/editProfile';
 import ChangePassword from './accountSettingsScreens/changePassword';
 import NotificationSettings from './accountSettingsScreens/notificationSettings';
 import PrivacySettings from './accountSettingsScreens/privacySettings';
-import { useColorScheme } from '../../components/useColorScheme';
-import Colors from '../../constants/Colors';
+import { useColorScheme } from '../../../components/useColorScheme';
+import Colors from '../../../constants/Colors';
 
 function AccountSettings({ navigation }) {
     const colorScheme = useColorScheme();

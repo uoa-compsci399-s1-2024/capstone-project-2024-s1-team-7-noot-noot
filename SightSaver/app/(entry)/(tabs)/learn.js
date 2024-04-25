@@ -1,7 +1,7 @@
 import { StyleSheet } from 'react-native';
-import { Text, View } from '../../components/Themed';
-import Colors from '../../constants/Colors';
-import { useColorScheme } from '../../components/useColorScheme';
+import { Text, View } from '../../../components/Themed';
+import Colors from '../../../constants/Colors';
+import { useColorScheme } from '../../../components/useColorScheme';
 import { StatusBar } from 'react-native';
 
 
