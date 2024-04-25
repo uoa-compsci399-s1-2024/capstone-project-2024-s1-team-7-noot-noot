@@ -4,7 +4,7 @@ import { Text, View } from '../../components/Themed';
 import { useNavigation } from '@react-navigation/native';
 import moment from "moment";
 import { AntDesign } from '@expo/vector-icons';
-import Colors from '../..//constants/Colors';
+import Colors from '../../constants/Colors';
 import { useColorScheme } from '../../components/useColorScheme';
 import { StatusBar } from 'react-native';
 import { Dropdown } from 'react-native-element-dropdown';

@@ -1,4 +1,3 @@
-/* eslint-disable no-bitwise */
 import { useMemo, useState } from "react";
 import { PermissionsAndroid, Platform } from "react-native";
 import {
@@ -7,29 +6,32 @@ import {
   Characteristic,
   Device,
 } from "react-native-ble-plx";
-
+import { Buffer } from 'buffer';
 import * as ExpoDevice from "expo-device";
 
 import base64 from "react-native-base64";
 
-const HEART_RATE_UUID = "0000180d-0000-1000-8000-00805f9b34fb";
-const HEART_RATE_CHARACTERISTIC = "00002a37-0000-1000-8000-00805f9b34fb";
+const Sensor_RATE_UUID = "A07498CA-AD5B-474E-940D-16F1FBE7E8CD";
+const Sensor_RATE_CHARACTERISTIC = "51FF12BB-3ED8-46E5-B4F9-D64E2FEC021B";
 
 interface BluetoothLowEnergyApi {
   requestPermissions(): Promise<boolean>;
   scanForPeripherals(): void;
   connectToDevice: (deviceId: Device) => Promise<void>;
+  setAllDevices: React.Dispatch<React.SetStateAction<Device[]>>;
   disconnectFromDevice: () => void;
   connectedDevice: Device | null;
   allDevices: Device[];
-  heartRate: number;
+  SensorData: number;
 }
+
+let dataChunks: string[] = [];
 
 function useBLE(): BluetoothLowEnergyApi {
   const bleManager = useMemo(() => new BleManager(), []);
   const [allDevices, setAllDevices] = useState<Device[]>([]);
   const [connectedDevice, setConnectedDevice] = useState<Device | null>(null);
-  const [heartRate, setHeartRate] = useState<number>(0);
+  const [SensorData, setSensorData] = useState<number>(0);
 
   const requestAndroid31Permissions = async () => {
     const bluetoothScanPermission = await PermissionsAndroid.request(
@@ -87,7 +89,7 @@ function useBLE(): BluetoothLowEnergyApi {
     }
   };
 
-  const isDuplicteDevice = (devices: Device[], nextDevice: Device) =>
+  const isDuplicateDevice = (devices: Device[], nextDevice: Device) =>
     devices.findIndex((device) => nextDevice.id === device.id) > -1;
 
   const scanForPeripherals = () =>
@@ -95,9 +97,9 @@ function useBLE(): BluetoothLowEnergyApi {
       if (error) {
         console.log(error);
       }
-      if (device && device.name?.includes("CorSense")) {
+      if (device?.name == 'SightSaver') {
         setAllDevices((prevState: Device[]) => {
-          if (!isDuplicteDevice(prevState, device)) {
+          if (!isDuplicateDevice(prevState, device)) {
             return [...prevState, device];
           }
           return prevState;
@@ -111,6 +113,7 @@ function useBLE(): BluetoothLowEnergyApi {
       setConnectedDevice(deviceConnection);
       await deviceConnection.discoverAllServicesAndCharacteristics();
       bleManager.stopDeviceScan();
+      console.log("Connected to Device", deviceConnection.id);
       startStreamingData(deviceConnection);
     } catch (e) {
       console.log("FAILED TO CONNECT", e);
@@ -121,58 +124,60 @@ function useBLE(): BluetoothLowEnergyApi {
     if (connectedDevice) {
       bleManager.cancelDeviceConnection(connectedDevice.id);
       setConnectedDevice(null);
-      setHeartRate(0);
+      setSensorData(0);
     }
   };
-
-  const onHeartRateUpdate = (
-    error: BleError | null,
-    characteristic: Characteristic | null
-  ) => {
-    if (error) {
-      console.log(error);
-      return -1;
-    } else if (!characteristic?.value) {
-      console.log("No Data was recieved");
-      return -1;
-    }
-
-    const rawData = base64.decode(characteristic.value);
-    let innerHeartRate: number = -1;
-
-    const firstBitValue: number = Number(rawData) & 0x01;
-
-    if (firstBitValue === 0) {
-      innerHeartRate = rawData[1].charCodeAt(0);
-    } else {
-      innerHeartRate =
-        Number(rawData[1].charCodeAt(0) << 8) +
-        Number(rawData[2].charCodeAt(2));
-    }
-
-    setHeartRate(innerHeartRate);
-  };
-
+  
   const startStreamingData = async (device: Device) => {
     if (device) {
-      device.monitorCharacteristicForService(
-        HEART_RATE_UUID,
-        HEART_RATE_CHARACTERISTIC,
-        onHeartRateUpdate
-      );
+      console.log("Device is connected, starting to read characteristic");
+      try {
+        // Request the next chunk of data
+        await device.writeCharacteristicWithResponseForService(
+          Sensor_RATE_UUID,
+          Sensor_RATE_CHARACTERISTIC,
+          Buffer.from("NEXT").toString('base64')
+        );
+  
+        const characteristic = await device.readCharacteristicForService(
+          Sensor_RATE_UUID,
+          Sensor_RATE_CHARACTERISTIC
+        );
+  
+        if (characteristic.value) {
+          const chunk = base64.decode(characteristic.value);
+          console.log("Read characteristic value", chunk);
+          dataChunks.push(chunk);
+  
+          // If the characteristic value is less than 20 bytes, we've received all the data
+          if (chunk.length < 20 || chunk == null) {
+            const data = dataChunks.join('');
+            const jsonData = JSON.parse(data);
+            console.log("Received JSON data", jsonData);
+            dataChunks = [];
+            setSensorData(jsonData);
+            console.log("Sensor Data", SensorData);
+          }
+        } else {
+          console.log("Characteristic value is null");
+        }
+      } catch (e) {
+        console.log("Failed to read characteristic", e);
+      }
     } else {
       console.log("No Device Connected");
     }
   };
-
+  
   return {
     scanForPeripherals,
+    setAllDevices,
     requestPermissions,
     connectToDevice,
     allDevices,
     connectedDevice,
     disconnectFromDevice,
-    heartRate,
+    SensorData,
   };
 }
 
