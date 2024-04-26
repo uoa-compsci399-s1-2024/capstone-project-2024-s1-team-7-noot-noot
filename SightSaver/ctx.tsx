@@ -1,81 +1,43 @@
-import React, { createContext, useContext, useState, useEffect } from 'react';
-import AsyncStorage from '@react-native-async-storage/async-storage';
+import React from 'react';
+import { useStorageState } from './useStorageState';
 
-const AuthContext = createContext<{
-  signIn: (username: string, password: string) => Promise<void>;
+const AuthContext = React.createContext<{
+  signIn: () => void;
   signOut: () => void;
   session?: string | null;
   isLoading: boolean;
 }>({
-  signIn: () => Promise.resolve(),
+  signIn: () => null,
   signOut: () => null,
   session: null,
   isLoading: false,
 });
 
+// This hook can be used to access the user info.
 export function useSession() {
-  const value = useContext(AuthContext);
+  const value = React.useContext(AuthContext);
   if (process.env.NODE_ENV !== 'production') {
     if (!value) {
       throw new Error('useSession must be wrapped in a <SessionProvider />');
     }
   }
+
   return value;
 }
 
-export function SessionProvider(props: React.PropsWithChildren<{}>) {
-  const [session, setSession] = useState<string | null>(null);
-  const [isLoading, setIsLoading] = useState<boolean>(true);
-
-  useEffect(() => {
-    const loadSession = async () => {
-      try {
-        const savedSession = await AsyncStorage.getItem('session');
-        setSession(savedSession);
-      } catch (error) {
-        console.error('Error loading session:', error);
-      } finally {
-        setIsLoading(false);
-      }
-    };
-
-    loadSession();
-  }, []);
-
-  const signIn = async (username: string, password: string) => {
-    // Perform sign-in logic here, for example, validate username and password
-    // Simulating sign-in with a delay of 1 second
-    await new Promise(resolve => setTimeout(resolve, 1000));
-
-    // If sign-in is successful, set the session
-    setSession('dummy_session_token');
-  };
-
-  const signOut = () => {
-    setSession(null);
-  };
-
-  useEffect(() => {
-    const saveSession = async () => {
-      try {
-        if (session === null) {
-          await AsyncStorage.removeItem('session');
-        } else {
-          await AsyncStorage.setItem('session', session);
-        }
-      } catch (error) {
-        console.error('Error saving session:', error);
-      }
-    };
-
-    saveSession();
-  }, [session]);
+export function SessionProvider(props: React.PropsWithChildren) {
+  const [[isLoading, session], setSession] = useStorageState('session');
 
   return (
     <AuthContext.Provider
       value={{
-        signIn,
-        signOut,
+        signIn: () => {
+          // Perform sign-in logic here
+          setSession('xxx');
+        },
+        signOut: () => {
+          setSession(null);
+        },
         session,
         isLoading,
       }}>

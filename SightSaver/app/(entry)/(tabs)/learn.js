@@ -8,6 +8,7 @@ import { StatusBar } from 'react-native';
 export default function LearnScreen() {
   const colorScheme = useColorScheme();
   return (
+    console.debug('learn'),
     <View style={styles.container}>
       <StatusBar barStyle={barStyle=Colors[colorScheme ?? 'light'].barStyle}/>
       <Text style={[styles.title, {color: Colors[colorScheme ?? 'light'].text}]}>Learn</Text>
