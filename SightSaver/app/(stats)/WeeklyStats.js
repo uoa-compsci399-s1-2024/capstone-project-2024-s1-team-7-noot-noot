@@ -22,7 +22,14 @@ const pieData = [
 
 export default function WeeklyScreen() {
   const colorScheme = useColorScheme();
-  
+
+  function getColor(value) {
+    if (value >= 6) {
+      return '#B28009';
+    } else {
+      return '#E6AA1F';
+    }
+  }
   if (colorScheme == 'light') {
       return (
         <View styles={[styles.container, {backgroundColor:Colors[colorScheme ?? 'light'].background}]}>
@@ -44,23 +51,25 @@ export default function WeeklyScreen() {
           <View style={styles.barSpace}>
             <BarChart 
               barWidth={22}
-              noOfSections={2}
+              noOfSections={3}
               height={80}
-              yAxisLabelTexts={['0', '2', '4']}
               barBorderRadius={8}
-              frontColor="#E6AA1F"
-              data={[{value: 4.0, label: 'M'},
-                {value: 7.1, label: 'T', frontColor: '#B28009'},
-                {value: 8.0, label: 'W', frontColor: '#B28009'},
-                {value: 4.5, label: 'T'},
-                {value: 6.8, label: 'F', frontColor: '#B28009'},
-                {value: 2.8, label: 'S'},
-                {value: 0.2, label: 'S'},
+              yAxisTextStyle={{color:'black'}}
+              xAxisLabelTextStyle={{color:'black'}}
+              stepValue={1}
+              hideRules={true}
+              data={[{value: 4.0, label: 'M', frontColor: getColor(4.0), onPress: () => alert('Monday')},
+              {value: 7.5, label: 'T', frontColor: getColor(7.5), onPress: () => alert('Tuesday')},
+                {value: 8.0, label: 'W', frontColor: getColor(8.0), onPress: () => alert('Wednesday')},
+                {value: 4.5, label: 'T', frontColor: getColor(4.5), onPress: () => alert('Thursday')},
+                {value: 6.8, label: 'F', frontColor: getColor(6.8), onPress: () => alert('Friday')},
+                {value: 2.8, label: 'S', frontColor: getColor(2.8), onPress: () => alert('Saturday')},
+                {value: 0.2, label: 'S', frontColor: getColor(0.2), onPress: () => alert('Sunday')},
               ]}
               yAxisThickness={0}
               xAxisThickness={0}
-              showReferenceLine1
-              referenceLine1Position={4.9}
+              showReferenceLine1={true}
+              referenceLine1Position={2}
               referenceLine1Config={{
                 color: '#B28009',
               }}
@@ -89,29 +98,29 @@ export default function WeeklyScreen() {
             />
           </View>
           <View style={styles.barSpace}>
+
             <BarChart 
               barWidth={22}
-              noOfSections={2}
+              noOfSections={3}
               height={80}
-              yAxisLabelTexts={['0', '2', '4']}
               barBorderRadius={8}
               yAxisTextStyle={{color:'white'}}
               xAxisLabelTextStyle={{color:'white'}}
-              frontColor="#E6AA1F"
-              data={[{value: 4.0, label: 'M'},
-                {value: 7.1, label: 'T', frontColor: '#B28009'},
-                {value: 8.0, label: 'W', frontColor: '#B28009'},
-                {value: 4.5, label: 'T'},
-                {value: 6.8, label: 'F', frontColor: '#B28009'},
-                {value: 2.8, label: 'S'},
-                {value: 0.2, label: 'S'},
+              stepValue={1}
+              hideRules={true}
+              data={[{value: 1.7, label: 'M', frontColor: getColor(1.7), onPress: () => alert('Monday')},
+                {value: 2.0, label: 'W', frontColor: getColor(2.0), onPress: () => alert('Wednesday')},
+                {value: 1.3, label: 'T', frontColor: getColor(1.3), onPress: () => alert('Thursday')},
+                {value: 2.8, label: 'F', frontColor: getColor(2.8), onPress: () => alert('Friday')},
+                {value: 1.1, label: 'S', frontColor: getColor(1.1), onPress: () => alert('Saturday')},
+                {value: 0.2, label: 'S', frontColor: getColor(0.2), onPress: () => alert('Sunday')},
               ]}
               yAxisThickness={0}
               xAxisThickness={0}
-              showReferenceLine1
-              referenceLine1Position={4.9}
+              showReferenceLine1={true}
+              referenceLine1Position={2}
               referenceLine1Config={{
-                color: '#B28009',
+                color: '#F6D78D',
               }}
             />
           </View>
