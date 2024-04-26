@@ -8,12 +8,10 @@ import AccessibilityScreen from './settingsScreens/accessibility';
 import DataSafetyScreen from './settingsScreens/dataSafety';
 import DeviceScreen from './settingsScreens/device';
 import AccountScreen from './settingsScreens/account';
-import { useSession } from '../../ctx';
 
 function Settings({navigation}) {
     // const navigation = useNavigation();
     const colorScheme = useColorScheme();
-    const { signOut } = useSession();
     
     return (
         <View style={styles.container}>
@@ -39,15 +37,6 @@ function Settings({navigation}) {
                     <Text style={[styles.optionText, {color:Colors[colorScheme ?? 'light'].text}]}>Account</Text>
                 </TouchableOpacity>
             </View>
-            <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
-            <Text
-                onPress={() => {
-                signOut();
-                }}>
-                Sign Out
-            </Text>
-            </View>
-
         </View>
     );
 }
