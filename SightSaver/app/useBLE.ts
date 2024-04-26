@@ -150,7 +150,7 @@ function useBLE(): BluetoothLowEnergyApi {
           dataChunks.push(chunk);
   
           // If the characteristic value is less than 20 bytes, we've received all the data
-          if (chunk.length < 20) {
+          if (chunk.length < 20 || chunk == null) {
             const data = dataChunks.join('');
             const jsonData = JSON.parse(data);
             console.log("Received JSON data", jsonData);
