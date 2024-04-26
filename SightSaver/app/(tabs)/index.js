@@ -104,7 +104,7 @@ const Dropdownstyles = StyleSheet.create({
   dropdown: {
     margin: 16,
     height: 50,
-    width: '30%',
+    width: '25%',
     borderRadius: 8,
     padding: 12,
     elevation: 1,

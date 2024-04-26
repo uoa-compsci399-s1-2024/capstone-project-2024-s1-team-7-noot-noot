@@ -22,52 +22,103 @@ const pieData = [
 
 export default function WeeklyScreen() {
   const colorScheme = useColorScheme();
-  return (
-    <View styles={[styles.container, {backgroundColor:Colors[colorScheme ?? 'light'].background}]}>
-        <View style={styles.dateSpace}>
-          <Text style={{color:Colors[colorScheme ?? 'light'].text}}>{date}</Text>
-      </View>
-          <View style={styles.pieSpace}>
-
-              <PieChart
-                  donut
-                  innerRadius={80}
-                  borderRadius={15}
-                  data={pieData}
-                  centerLabelComponent={() => {
-                  return <Text style={{fontSize: 30, color: 'black'}}>70%</Text>;
-                  }}
-              />
+  
+  if (colorScheme == 'light') {
+      return (
+        <View styles={[styles.container, {backgroundColor:Colors[colorScheme ?? 'light'].background}]}>
+          <View style={styles.dateSpace}>
+            <Text style={{color:Colors[colorScheme ?? 'light'].text}}>{date}</Text>
           </View>
-              <View style={styles.barSpace}>
-                  < BarChart style={{textColor:Colors[colorScheme ?? 'light'].text}}
-                      barWidth={22}
-                      noOfSections={2}
-                      height={80}
-                      yAxisLabelTexts={['0', '2', '4']}
-                      barBorderRadius={8}
-                      frontColor="#E6AA1F"
-                      data={[{value: 4.0, label: 'M',},
-                            {value: 7.1, label: 'T', frontColor: '#B28009'},
-                            {value: 8.0, label: 'W', frontColor: '#B28009'},
-                            {value: 4.5, label: 'T'},
-                            {value: 6.8, label: 'F', frontColor: '#B28009'},
-                            {value: 2.8, label: 'S'},
-                            {value: 0.2, label: 'S'},
-                      ]}
-                      yAxisThickness={0}
-                      xAxisThickness={0}
-                      showReferenceLine1
-                      referenceLine1Position={4.9}
-                      referenceLine1Config={{
-                          color: '#B28009',
-                      }}
-                  />
-              </View>
-    </View>
-  );
+          <View style={styles.pieSpace}>
+            <PieChart style= {styles.PieChart}
+              donut
+              innerRadius={80}
+              borderRadius={15}
+              data={pieData}
+              innerCircleColor={'#f2f2f2'}
+              centerLabelComponent={() => {
+                return <Text style={{fontSize: 30, color: 'black'}}>70%</Text>;
+              }}
+            />
+          </View>
+          <View style={styles.barSpace}>
+            <BarChart 
+              barWidth={22}
+              noOfSections={2}
+              height={80}
+              yAxisLabelTexts={['0', '2', '4']}
+              barBorderRadius={8}
+              frontColor="#E6AA1F"
+              data={[{value: 4.0, label: 'M'},
+                {value: 7.1, label: 'T', frontColor: '#B28009'},
+                {value: 8.0, label: 'W', frontColor: '#B28009'},
+                {value: 4.5, label: 'T'},
+                {value: 6.8, label: 'F', frontColor: '#B28009'},
+                {value: 2.8, label: 'S'},
+                {value: 0.2, label: 'S'},
+              ]}
+              yAxisThickness={0}
+              xAxisThickness={0}
+              showReferenceLine1
+              referenceLine1Position={4.9}
+              referenceLine1Config={{
+                color: '#B28009',
+              }}
+            />
+          </View>
+        </View>
+      );
+  }
+  
+  else {
+   return (
+        <View styles={[styles.container, {backgroundColor:Colors[colorScheme ?? 'light'].background}]}>
+          <View style={styles.dateSpace}>
+            <Text style={{color:Colors[colorScheme ?? 'light'].text}}>{date}</Text>
+          </View>
+          <View style={styles.pieSpace}>
+            <PieChart style= {styles.PieChart}
+              donut
+              innerRadius={80}
+              borderRadius={15}
+              data={pieData}
+              innerCircleColor={'#404040'}
+              centerLabelComponent={() => {
+                return <Text style={{fontSize: 30, color: 'white'}}>70%</Text>;
+              }}
+            />
+          </View>
+          <View style={styles.barSpace}>
+            <BarChart 
+              barWidth={22}
+              noOfSections={2}
+              height={80}
+              yAxisLabelTexts={['0', '2', '4']}
+              barBorderRadius={8}
+              yAxisTextStyle={{color:'white'}}
+              xAxisLabelTextStyle={{color:'white'}}
+              frontColor="#E6AA1F"
+              data={[{value: 4.0, label: 'M'},
+                {value: 7.1, label: 'T', frontColor: '#B28009'},
+                {value: 8.0, label: 'W', frontColor: '#B28009'},
+                {value: 4.5, label: 'T'},
+                {value: 6.8, label: 'F', frontColor: '#B28009'},
+                {value: 2.8, label: 'S'},
+                {value: 0.2, label: 'S'},
+              ]}
+              yAxisThickness={0}
+              xAxisThickness={0}
+              showReferenceLine1
+              referenceLine1Position={4.9}
+              referenceLine1Config={{
+                color: '#B28009',
+              }}
+            />
+          </View>
+        </View>
+      );
+  }
 }
-
 const styles = StyleSheet.create({
   container: {
     height: '100%',
@@ -84,6 +135,7 @@ const styles = StyleSheet.create({
     height: '40%',
     alignItems: 'center',
   },
+
   barSpace: {
     justifyContent: 'center',
     height: '30%',
