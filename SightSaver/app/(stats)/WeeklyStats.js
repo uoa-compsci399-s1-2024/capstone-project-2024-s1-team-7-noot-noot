@@ -22,79 +22,132 @@ const pieData = [
 
 export default function WeeklyScreen() {
   const colorScheme = useColorScheme();
-  return (
-    <View styles={[styles.container, {backgroundColor:Colors[colorScheme ?? 'light'].background}]}>
-      <View style={styles.pieSpace}>
-          { 
 
-              <PieChart
-                  donut
-                  innerRadius={80}
-                  borderRadius={15}
-                  data={pieData}
-                  centerLabelComponent={() => {
-                  return <Text style={{fontSize: 30, color: 'black'}}>70%</Text>;
-                  }}
-              />
-          }
+  function getColor(value) {
+    if (value >= 2) {
+      return '#B28009';
+    } else {
+      return '#E6AA1F';
+    }
+  }
+  if (colorScheme == 'light') {
+      return (
+        <View styles={[styles.container, {backgroundColor:Colors[colorScheme ?? 'light'].background}]}>
+          <View style={styles.dateSpace}>
+            <Text style={{color:Colors[colorScheme ?? 'light'].text}}>{date}</Text>
+          </View>
+          <View style={styles.pieSpace}>
+            <PieChart style= {styles.PieChart}
+              donut
+              innerRadius={80}
+              borderRadius={15}
+              data={pieData}
+              innerCircleColor={'#f2f2f2'}
+              centerLabelComponent={() => {
+                return <Text style={{fontSize: 30, color: 'black'}}>70%</Text>;
+              }}
+            />
+          </View>
+          <View style={styles.barSpace}>
+            <BarChart 
+              barWidth={22}
+              noOfSections={3}
+              height={80}
+              barBorderRadius={8}
+              yAxisTextStyle={{color:'black'}}
+              xAxisLabelTextStyle={{color:'black'}}
+              stepValue={1}
+              hideRules={true}
+              data={[{value: 4.0, label: 'M', frontColor: getColor(4.0), onPress: () => alert('Monday')},
+              {value: 7.5, label: 'T', frontColor: getColor(7.5), onPress: () => alert('Tuesday')},
+                {value: 8.0, label: 'W', frontColor: getColor(8.0), onPress: () => alert('Wednesday')},
+                {value: 4.5, label: 'T', frontColor: getColor(4.5), onPress: () => alert('Thursday')},
+                {value: 6.8, label: 'F', frontColor: getColor(6.8), onPress: () => alert('Friday')},
+                {value: 2.8, label: 'S', frontColor: getColor(2.8), onPress: () => alert('Saturday')},
+                {value: 0.2, label: 'S', frontColor: getColor(0.2), onPress: () => alert('Sunday')},
+              ]}
+              yAxisThickness={0}
+              xAxisThickness={0}
+              showReferenceLine1={true}
+              referenceLine1Position={2}
+              referenceLine1Config={{
+                color: '#B28009',
+              }}
+            />
+          </View>
         </View>
-      
-              <View style={styles.barSpace}>
-                  < BarChart style={{textColor:Colors[colorScheme ?? 'light'].text}}
-                      barWidth={22}
-                      noOfSections={2}
-                      height={80}
-                      yAxisLabelTexts={['0', '2', '4']}
-                      barBorderRadius={8}
-                      frontColor="#E6AA1F"
-                      data={[{value: 1.0, label: 'M',},
-                            {value: 2.1, label: 'T', frontColor: '#B28009'},
-                            {value: 2.0, label: 'W', frontColor: '#B28009'},
-                            {value: 1.5, label: 'T'},
-                            {value: 2.8, label: 'F', frontColor: '#B28009'},
-                            {value: 0.8, label: 'S'},
-                            {value: 0.2, label: 'S'},
-                      ]}
-                      yAxisThickness={0}
-                      xAxisThickness={0}
-                      showReferenceLine1
-                      referenceLine1Position={4.9}
-                      referenceLine1Config={{
-                          color: '#B28009',
-                      }}
-                  />
-              </View>
-              <View style={[styles.separator, {backgroundColor: Colors[colorScheme ?? 'light'].seperator}]}/>
-    </View>
-  );
-}
+      );
+  }
+  
+  else {
+   return (
+        <View styles={[styles.container, {backgroundColor:Colors[colorScheme ?? 'light'].background}]}>
+          <View style={styles.dateSpace}>
+            <Text style={{color:Colors[colorScheme ?? 'light'].text}}>{date}</Text>
+          </View>
+          <View style={styles.pieSpace}>
+            <PieChart style= {styles.PieChart}
+              donut
+              innerRadius={80}
+              borderRadius={15}
+              data={pieData}
+              innerCircleColor={'#404040'}
+              centerLabelComponent={() => {
+                return <Text style={{fontSize: 30, color: 'white'}}>70%</Text>;
+              }}
+            />
+          </View>
+          <View style={styles.barSpace}>
 
+            <BarChart 
+              barWidth={22}
+              noOfSections={3}
+              height={80}
+              barBorderRadius={8}
+              yAxisTextStyle={{color:'white'}}
+              xAxisLabelTextStyle={{color:'white'}}
+              stepValue={1}
+              hideRules={true}
+              data={[{value: 1.7, label: 'M', frontColor: getColor(1.7), onPress: () => alert('Monday')},
+                {value: 2.0, label: 'W', frontColor: getColor(2.0), onPress: () => alert('Wednesday')},
+                {value: 1.3, label: 'T', frontColor: getColor(1.3), onPress: () => alert('Thursday')},
+                {value: 2.8, label: 'F', frontColor: getColor(2.8), onPress: () => alert('Friday')},
+                {value: 1.1, label: 'S', frontColor: getColor(1.1), onPress: () => alert('Saturday')},
+                {value: 0.2, label: 'S', frontColor: getColor(0.2), onPress: () => alert('Sunday')},
+              ]}
+              yAxisThickness={0}
+              xAxisThickness={0}
+              showReferenceLine1={true}
+              referenceLine1Position={2}
+              referenceLine1Config={{
+                color: '#F6D78D',
+              }}
+            />
+          </View>
+        </View>
+      );
+  }
+}
 const styles = StyleSheet.create({
   container: {
     height: '100%',
     alignItems: 'center',
     justifyContent: 'center',
   },
-  title: {
-    fontSize: 40,
-    fontWeight: 'light',
-  },
-  titleSpace: {
-    height: '7%',
-  },
   dateSpace:{
-    height: '3%',
-  },
-  menuSpace: {
-    height: '8%',
-    justifyContent: 'center',
+    height: '10%',
+    textAlign: 'center',
+    marginLeft: '22%',
+    width: '100%',
   },
   pieSpace: {
-    height:'40%',
-    justifyContent: 'center',
+    height: '40%',
+    alignItems: 'center',
   },
+
   barSpace: {
     justifyContent: 'center',
+    height: '30%',
   },
   imageStyle: {
     width:205,
