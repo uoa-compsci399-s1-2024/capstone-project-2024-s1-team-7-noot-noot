@@ -13,6 +13,8 @@ import { TextInput, Button, StyleSheet, useWindowDimensions, Image, TouchableOpa
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 // import { GoogleSigninButton } from '@react-native-google-signin/google-signin';
 import SignInWithGoogleButton from '../components/SignInGoogle';
+import useKeyboardVisibility from '../components/KeyboardVisibility';
+
 
 function WelcomeScreen({ navigation }) {
     const colorScheme = useColorScheme();
@@ -107,9 +109,9 @@ function SignIn({ navigation }) {
             </View>
 
             {/* Google button */}
-            <View style={{flex:1, justifyContent:'flex-end'}}>
+            {!useKeyboardVisibility() && (<View style={{flex:1, justifyContent:'flex-end'}}>
                 <SignInWithGoogleButton />
-            </View>
+            </View>)}
         </View>
         );
     };
@@ -222,9 +224,9 @@ function SignupScreen({ navigation }) {
             </View>
 
             {/* Google button */}
-            <View style={{flex:1, justifyContent:'flex-end'}}>
+            {!useKeyboardVisibility() && (<View style={{flex:1, justifyContent:'flex-end'}}>
                 <SignInWithGoogleButton />
-            </View>
+            </View>)}
         </View>
         );
     };
@@ -271,7 +273,8 @@ const styles = StyleSheet.create({
     root: {
         flex: 1,
         flexDirection: 'column',
-        height: '100%',
+        minHeight: "600",
+        // minHeight: '100%',
         // alignItems: 'center',
         // justifyContent: 'space-between',
         paddingHorizontal: '10%',
