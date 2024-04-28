@@ -12,7 +12,7 @@ import React, { useState } from 'react';
 import { TextInput, Button, StyleSheet, useWindowDimensions, Image, TouchableOpacity} from 'react-native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 // import { GoogleSigninButton } from '@react-native-google-signin/google-signin';
-
+import SignInWithGoogleButton from '../components/SignInGoogle';
 
 function WelcomeScreen({ navigation }) {
     const colorScheme = useColorScheme();
@@ -43,57 +43,79 @@ function WelcomeScreen({ navigation }) {
 }
 
 function SignIn({ navigation }) {
-    const { signIn } = useSession();
+    const [email, setEmail] = useState('');
+    const [name, setName] = useState('');
+    const [password, setPassword] = useState('');
     const colorScheme = useColorScheme();
     const { height } = useWindowDimensions();
-    const [email, setEmail] = useState('');
-    const [password, setPassword] = useState('');
+    const { signIn } = useSession();
+
+    const handleLogin = () => {
+        if (!email || !name || !password) {
+            alert("Please fill in all fields. If you don't have an account, please sign up.");
+            return;}
+
+        // Login logic
+        console.log('Signing in with:', { email, name, password });
+        // Navigate to another screen upon successful signup
+        signIn();
+        router.replace('/');
+        };
 
     return (
         <View style={[styles.root, {backgroundColor:Colors[colorScheme ?? 'light'].background}]}>
-            <Image 
-                source={Colors[colorScheme ?? 'light'].image} 
-                style={[styles.logo, {height: height * 0.04}]} 
-                rezizeMode='contain'
-            />
-            <View style={styles.inputContainer}>
-                <CustomInput 
-                    placeholder="Email"
-                    value={email}
-                    setValue={setEmail}
-                />
-                <CustomInput 
-                    placeholder="Password"
-                    value={password}
-                    setValue={setPassword}
-                    secureTextEntry={true}
-                />
-                <CustomButton onPress={() => {
-                    signIn();
-                    // Navigate after signing in. You may want to tweak this to ensure sign-in is
-                    // successful before navigating.
-                    router.replace('/');
-                  }}
-                    text={"Login"}
+            {/* Sightsaver Logo */}
+            <View style={[styles.imageContainer, {flex:0, marginTop:"15%", marginBottom:"15%"}]}>
+                <Image 
+                    source={Colors[colorScheme ?? 'light'].image}
+                    style={[styles.logo, {height: height * 0.04}]}
+                    resizeMode='contain'
                 />
             </View>
-            <View style={styles.googleLogin}>
-                <CustomButton onPress={() => {
-                    signIn();
-                    // Navigate after signing in. You may want to tweak this to ensure sign-in is
-                    // successful before navigating.
-                    router.replace('/');
-                  }}
-                    text={"Login with Google"}
-                />
+            {/* Login Form */}
+            <TextInput
+                style={styles.input}
+                placeholder="Email"
+                value={email}
+                onChangeText={setEmail}
+                autoCapitalize="none"
+            />
+            <TextInput
+                style={styles.input}
+                placeholder="Name"
+                value={name}
+                onChangeText={setName}
+            />
+            <TextInput
+                style={styles.input}
+                placeholder="Password"
+                value={password}
+                onChangeText={setPassword}
+                secureTextEntry
+            />
+
+            <View style={styles.container}>    
+                {/* Login button */}
+                <CustomButton style={[styles.signUpButton]} onPress={handleLogin} text={"Login"} />
+                {/* Signup text */}
+                <View style={styles.signInContainer}>
+                    <Text style={{fontSize:15}}>Don't have an account yet?</Text>
+                    <TouchableOpacity onPress={() => navigation.navigate('Signup')}>
+                        <Text style={styles.signInText}>Sign Up</Text>
+                    </TouchableOpacity>
+                </View>
+            </View>
+
+            {/* Google button */}
+            <View style={{flex:1, justifyContent:'flex-end'}}>
+                <SignInWithGoogleButton />
             </View>
         </View>
-    );
-}
-
-
+        );
+    };
+    
+    
 function SignupScreen({ navigation }) {
-
     const [email, setEmail] = useState('');
     const [name, setName] = useState('');
     const [password, setPassword] = useState('');
@@ -106,13 +128,16 @@ function SignupScreen({ navigation }) {
 
     const handleSignup = () => {
         if (!email || !name || !password || !confirmPassword || !termsAccepted || !privacyAccepted) {
-            if ((!email || !name || !password || !confirmPassword) && (!termsAccepted || !privacyAccepted))
+            if ((!email || !name || !password || !confirmPassword) && (!termsAccepted || !privacyAccepted)){
                 alert('Please fill in all fields and accept the terms and conditions.');
-            if (!email || !name || !password || !confirmPassword)
+                return;}
+            if (!email || !name || !password || !confirmPassword){
                 alert('Please fill in all fields.');
-            if (!termsAccepted || !privacyAccepted)
+                return;}
+            if (!termsAccepted || !privacyAccepted){
                 alert('Please accept the terms and conditions.');
-            return
+                return;}
+            return;
         }
         if (password !== confirmPassword) {
             alert('Password and confirm password do not match.');
@@ -196,64 +221,13 @@ function SignupScreen({ navigation }) {
                 </View>
             </View>
 
-            <GoogleSigninButton
-            size={GoogleSigninButton.Size.Wide}
-            color={GoogleSigninButton.Color.Dark}
-            onPress={() => {
-                // initiate sign in
-            }}
-            disabled={isInProgress}
-            />;
-        {/*<CustomButton onPress={handleSignup} text="Sign up" />
-
-            <View style={styles.signInContainer}>
-                <Text style={styles.text}>Already have an account?</Text>
-                <TouchableOpacity onPress={() => navigation.navigate('Signin')}>
-                    <Text style={styles.signInText}>Login</Text>
-                </TouchableOpacity>
-            </View> */}
-
-            {/* Sign up with Google button (can be implemented as CustomButton) */}
-            {/* <CustomButton onPress={handleGoogleSignup} text="Sign up with Google" /> */}
+            {/* Google button */}
+            <View style={{flex:1, justifyContent:'flex-end'}}>
+                <SignInWithGoogleButton />
+            </View>
         </View>
         );
     };
-//     const [email, setEmail] = useState('');
-//     const [password, setPassword] = useState('');
-//     const { signIn } = useSession();
-
-//     const handleSignin = () => {
-//         navigation.navigate('Signin');
-//     };
-
-//     const handleSignup = () => {
-//         signIn();
-//         console.log('Signing up with:', { email, password });
-//         router.replace('/')
-//     };
-
-//     return (
-//         <View style={styles.container}>
-//             <Text style={styles.title}>Signup</Text>
-//             <TextInput
-//                 style={styles.input}
-//                 placeholder="Email"
-//                 value={email}
-//                 onChangeText={setEmail}
-//             />
-//             <TextInput
-//                 style={styles.input}
-//                 placeholder="Password"
-//                 secureTextEntry
-//                 value={password}
-//                 onChangeText={setPassword}
-//             />
-//             <Button title="Sign up" onPress={handleSignup} />
-//             <Text style={styles.text}>Already have an account?</Text>
-//             <Button title="Sign in" onPress={handleSignin} />
-//         </View>
-//     );
-// }
 
 
 const Stack = createNativeStackNavigator();
@@ -301,7 +275,7 @@ const styles = StyleSheet.create({
         // alignItems: 'center',
         // justifyContent: 'space-between',
         paddingHorizontal: '10%',
-        paddingBottom: '25%',
+        paddingBottom: '10%',
     },
     imageContainer: {
         flex: 1,
@@ -332,7 +306,7 @@ const styles = StyleSheet.create({
         width: '100%',
         paddingTop: '15%',
     },
-    //Signup Screen
+    //Signup Screen and Login Screen
     checkboxContainer: {
         flexDirection: 'row',
         alignItems: 'center',
