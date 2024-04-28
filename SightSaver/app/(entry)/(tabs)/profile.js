@@ -228,9 +228,6 @@ export default function ProfileScreen() {
           </View>
         </TouchableOpacity>
       </Modal>
-
-      {/* Seperator */}
-      <View style={[styles.separator, {backgroundColor:Colors[colorScheme ?? 'light'].seperator}]}/>
     </View>
 );
 }
@@ -244,12 +241,6 @@ const styles = StyleSheet.create({
   title: {
     fontSize: 20,
     fontWeight: 'bold',
-  },
-  separator: {
-    position: 'absolute',
-    bottom: 0,
-    height: 1,
-    width: '100%',
   },
   container: {
     flex: 1,

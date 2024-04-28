@@ -20,7 +20,7 @@ export default function TabLayout() {
       screenOptions={{
         headerTitle: '',
         headerStyle: { backgroundColor: Colors[colorScheme ?? 'light'].background, borderTopWidth: 0, elevation: 0 },
-        tabBarStyle: { backgroundColor: Colors[colorScheme ?? 'light'].background, borderColor: Colors[colorScheme ?? 'light'].background, borderTopWidth: 1, elevation: 0, height: 60, paddingBottom: 5 },
+        tabBarStyle: { backgroundColor: Colors[colorScheme ?? 'light'].background, borderColor: Colors[colorScheme ?? 'light'].seperator, borderTopWidth: 1, elevation: 0, height: 60, paddingBottom: 5 },
         tabBarLabelStyle: { fontSize: 12 },
       }}>
       <Tabs.Screen

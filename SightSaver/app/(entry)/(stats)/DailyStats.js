@@ -170,17 +170,18 @@ dayData = [
               data={dayData}
               hideRules={true}
               />
-            </View>
-          </View>
+        </View>
+      </View>
     );
   }
 const styles = StyleSheet.create({
   container: {
-    height: '100%',
     width: '100%',
+    justifyContent: 'center',
+    alignContent: 'center',
+    flex: 1,
   },
   barSpace: {
-    marginLeft: '5%',
-    height: '100%',
+    justifyContent: 'center',
   },
 });

@@ -102,7 +102,7 @@ export default function WeeklyScreen() {
             <BarChart 
               barWidth={22}
               noOfSections={3}
-              height={80}
+              height={100}
               barBorderRadius={8}
               yAxisTextStyle={{color:'white'}}
               xAxisLabelTextStyle={{color:'white'}}
@@ -131,35 +131,26 @@ export default function WeeklyScreen() {
 const styles = StyleSheet.create({
   container: {
     height: '100%',
+    width: '100%',
     alignItems: 'center',
-    justifyContent: 'center',
+    flex: 1,
   },
   dateSpace:{
     height: '10%',
-    textAlign: 'center',
-    marginLeft: '22%',
     width: '100%',
+    marginTop: '5%',
+    alignSelf: 'center',
   },
   pieSpace: {
-    height: '40%',
-    alignItems: 'center',
+    height: '48%',
+    width: '100%',
+    alignSelf: 'center',
   },
 
   barSpace: {
-    justifyContent: 'center',
     height: '30%',
-  },
-  imageStyle: {
-    width:205,
-    height: 20,
-    paddingHorizontal: 5,
-    marginTop: 10,
-  },
-  separator: {
-    position: 'absolute',
-    bottom: 0,
-    height: 1,
     width: '100%',
+    right: '3%',
   },
   
 });
