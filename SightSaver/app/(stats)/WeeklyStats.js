@@ -24,7 +24,7 @@ export default function WeeklyScreen() {
   const colorScheme = useColorScheme();
 
   function getColor(value) {
-    if (value >= 6) {
+    if (value >= 2) {
       return '#B28009';
     } else {
       return '#E6AA1F';
