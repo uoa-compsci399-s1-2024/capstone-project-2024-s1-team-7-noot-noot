@@ -58,12 +58,11 @@ export default function WeeklyScreen() {
               xAxisLabelTextStyle={{color:'black'}}
               stepValue={1}
               hideRules={true}
-              data={[{value: 4.0, label: 'M', frontColor: getColor(4.0), onPress: () => alert('Monday')},
-              {value: 7.5, label: 'T', frontColor: getColor(7.5), onPress: () => alert('Tuesday')},
-                {value: 8.0, label: 'W', frontColor: getColor(8.0), onPress: () => alert('Wednesday')},
-                {value: 4.5, label: 'T', frontColor: getColor(4.5), onPress: () => alert('Thursday')},
-                {value: 6.8, label: 'F', frontColor: getColor(6.8), onPress: () => alert('Friday')},
-                {value: 2.8, label: 'S', frontColor: getColor(2.8), onPress: () => alert('Saturday')},
+              data={[{value: 1.7, label: 'M', frontColor: getColor(1.7), onPress: () => alert('Monday')},
+                {value: 2.0, label: 'W', frontColor: getColor(2.0), onPress: () => alert('Wednesday')},
+                {value: 1.3, label: 'T', frontColor: getColor(1.3), onPress: () => alert('Thursday')},
+                {value: 2.8, label: 'F', frontColor: getColor(2.8), onPress: () => alert('Friday')},
+                {value: 1.1, label: 'S', frontColor: getColor(1.1), onPress: () => alert('Saturday')},
                 {value: 0.2, label: 'S', frontColor: getColor(0.2), onPress: () => alert('Sunday')},
               ]}
               yAxisThickness={0}
