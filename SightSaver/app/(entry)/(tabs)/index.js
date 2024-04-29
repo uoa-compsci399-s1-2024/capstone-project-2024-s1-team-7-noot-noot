@@ -14,7 +14,7 @@ var dropdownData = [
   { label: 'Weekly', value: 'Weekly Sunlight' },
   { label: 'Monthly', value: 'Monthly Sunlight' },
   { label: 'Yearly', value: 'Yearly Sunlight' },
-  { label: 'Data', value: 'Data' },
+  { label: 'Data', value: 'Raw Data' },
 ];
 
 export default function IndexScreen() {
@@ -32,7 +32,7 @@ export default function IndexScreen() {
         return <MonthlyScreen/>;
       case 'Yearly Sunlight':
         return <YearlyScreen/>;
-      case 'Data':
+      case 'Raw Data':
         return <DataScreen/>;
       default:
         return <WeeklyScreen/>;
