@@ -11,7 +11,6 @@ import { useSession } from '../ctx';
 import React, { useState } from 'react';
 import { TextInput, Button, StyleSheet, useWindowDimensions, Image, TouchableOpacity} from 'react-native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
-// import { GoogleSigninButton } from '@react-native-google-signin/google-signin';
 import SignInWithGoogleButton from '../components/SignInGoogle';
 import useKeyboardVisibility from '../components/KeyboardVisibility';
 
@@ -36,7 +35,7 @@ function WelcomeScreen({ navigation }) {
                 <View style={styles.signInContainer}>
                     <Text style={{fontSize:15}}>Already have an account?</Text>
                     <TouchableOpacity onPress={() => navigation.navigate('Signin')}>
-                        <Text style={styles.signInText}>Login</Text>
+                        <Text style={[styles.signInText, {color:Colors[colorScheme ?? 'light'].clickableText}]}>Login</Text>
                     </TouchableOpacity>
                 </View>
             </View>
@@ -75,20 +74,20 @@ function SignIn({ navigation }) {
                 />
             </View>
             {/* Login Form */}
-            <TextInput
+            <CustomInput
                 style={styles.input}
                 placeholder="Email"
                 value={email}
                 onChangeText={setEmail}
                 autoCapitalize="none"
             />
-            <TextInput
+            <CustomInput
                 style={styles.input}
                 placeholder="Name"
                 value={name}
                 onChangeText={setName}
             />
-            <TextInput
+            <CustomInput
                 style={styles.input}
                 placeholder="Password"
                 value={password}
@@ -103,7 +102,7 @@ function SignIn({ navigation }) {
                 <View style={styles.signInContainer}>
                     <Text style={{fontSize:15}}>Don't have an account yet?</Text>
                     <TouchableOpacity onPress={() => navigation.navigate('Signup')}>
-                        <Text style={styles.signInText}>Sign Up</Text>
+                    <Text style={[styles.signInText, {color:Colors[colorScheme ?? 'light'].clickableText}]}>Sign Up</Text>
                     </TouchableOpacity>
                 </View>
             </View>
@@ -164,27 +163,27 @@ function SignupScreen({ navigation }) {
                 />
             </View>
             {/* Signup Form */}
-            <TextInput
+            <CustomInput
                 style={styles.input}
                 placeholder="Email"
                 value={email}
                 onChangeText={setEmail}
                 autoCapitalize="none"
             />
-            <TextInput
+            <CustomInput
                 style={styles.input}
                 placeholder="Name"
                 value={name}
                 onChangeText={setName}
             />
-            <TextInput
+            <CustomInput
                 style={styles.input}
                 placeholder="Password"
                 value={password}
                 onChangeText={setPassword}
                 secureTextEntry
             />
-            <TextInput
+            <CustomInput
                 style={styles.input}
                 placeholder="Confirm Password"
                 value={confirmPassword}
@@ -195,20 +194,20 @@ function SignupScreen({ navigation }) {
             {/* Terms of serivce*/}
             <View style={styles.checkboxContainer}>
                 <TouchableOpacity
-                    style={styles.checkbox}
+                    style={[styles.checkbox,{color:Colors[colorScheme ?? 'light'].text, borderColor:Colors[colorScheme ?? 'light'].borderColor}]}
                     onPress={() => setTermsAccepted(!termsAccepted)}>
                     {termsAccepted && <Text>✓</Text>}
                 </TouchableOpacity>
-                <Text style={styles.checkboxLabel}>I have read and accept the Terms of Service</Text>
+                <Text style={[styles.checkboxLabel,{color:Colors[colorScheme ?? 'light'].text}]}>I have read and accept the Terms of Service</Text>
             </View>
             {/* Privacy Policy */}
             <View style={styles.checkboxContainer}>
                 <TouchableOpacity
-                    style={styles.checkbox}
+                    style={[styles.checkbox,{color:Colors[colorScheme ?? 'light'].text, borderColor:Colors[colorScheme ?? 'light'].borderColor}]}
                     onPress={() => setPrivacyAccepted(!privacyAccepted)}>
                     {privacyAccepted && <Text>✓</Text>}
                 </TouchableOpacity>
-                <Text style={styles.checkboxLabel}>I have read and accept the Privacy policy</Text>
+                <Text style={[styles.checkboxLabel,{color:Colors[colorScheme ?? 'light'].text}]}>I have read and accept the Privacy policy</Text>
             </View>
 
             <View style={styles.container}>    
@@ -218,7 +217,7 @@ function SignupScreen({ navigation }) {
                 <View style={styles.signInContainer}>
                     <Text style={{fontSize:15}}>Already have an account?</Text>
                     <TouchableOpacity onPress={() => navigation.navigate('Signin')}>
-                        <Text style={styles.signInText}>Login</Text>
+                    <Text style={[styles.signInText, {color:Colors[colorScheme ?? 'light'].clickableText}]}>Login</Text>
                     </TouchableOpacity>
                 </View>
             </View>
@@ -300,7 +299,6 @@ const styles = StyleSheet.create({
     signInText: {
         fontSize: 15,
         marginLeft: 7,
-        color: 'blue',
         fontWeight: 'bold',
     },
     inputContainer: {
