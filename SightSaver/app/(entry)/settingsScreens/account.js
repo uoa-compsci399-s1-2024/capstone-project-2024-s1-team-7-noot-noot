@@ -37,8 +37,7 @@ function AccountSettings({ navigation }) {
 
     return (
         <View style={[styles.container, {backgroundColor:Colors[colorScheme ?? 'light'].background}]}>
-            <Text style={[styles.title, {color:Colors[colorScheme ?? 'light'].text}]}>Account Settings</Text>
-            {/* Add your account settings options here */}
+            {/* Add account settings options here */}
             <TouchableOpacity style={[styles.option, {borderColor:Colors[colorScheme ?? 'light'].seperator}]} onPress={handleEditProfile}>
                 <Text style={[styles.optionText, {color:Colors[colorScheme ?? 'light'].text}]}>Edit Profile</Text>
             </TouchableOpacity>
@@ -69,11 +68,11 @@ const Stack = createNativeStackNavigator();
 export default function App() {
     return (
         <Stack.Navigator>
-            <Stack.Screen name="AccountSettings" component={AccountSettings} />
-            <Stack.Screen name="EditProfile" component={EditProfile} />
-            <Stack.Screen name="ChangePassword" component={ChangePassword} />
-            <Stack.Screen name="NotificationSettings" component={NotificationSettings} />
-            <Stack.Screen name="PrivacySettings" component={PrivacySettings} />
+            <Stack.Screen name="AccountSettings" component={AccountSettings} options={{ headerTitle:"Account Settings" }} />
+            <Stack.Screen name="EditProfile" component={EditProfile} options={{ headerTitle:"Profile Settings" }} />
+            <Stack.Screen name="ChangePassword" component={ChangePassword} options={{ headerTitle:"Password Settings" }} />
+            <Stack.Screen name="NotificationSettings" component={NotificationSettings} options={{ headerTitle:"Notification Settings" }}/>
+            <Stack.Screen name="PrivacySettings" component={PrivacySettings} options={{ headerTitle:"Privacy Settings" }} />
         </Stack.Navigator>
     );
 }
@@ -83,11 +82,6 @@ const styles = StyleSheet.create({
     container: {
         flex: 1,
         padding: 20,
-    },
-    title: {
-        fontSize: 24,
-        fontWeight: 'bold',
-        marginBottom: 20,
     },
     option: {
         paddingVertical: 12,

@@ -35,12 +35,12 @@ export default function DeviceSettings({ route }) {
             <Text style={[styles.title, {color:Colors[colorScheme ?? 'light'].text}]}>Device Settings for Sun Sensor {deviceId}:</Text>
 
             <View style={styles.setting}>
-                <Text style={[styles.settingLabel, {color:Colors[colorScheme ?? 'light'].text}]}>Setting 1</Text>
+                <Text style={[styles.settingLabel, {color:Colors[colorScheme ?? 'light'].text}]}>Placeholder Setting</Text>
                 <Switch value={setting1} onValueChange={toggleSetting1} />
             </View>
 
             <View style={styles.setting}>
-                <Text style={[styles.settingLabel, {color:Colors[colorScheme ?? 'light'].text}]}>Setting 2</Text>
+                <Text style={[styles.settingLabel, {color:Colors[colorScheme ?? 'light'].text}]}>Placeholder Setting</Text>
                 <Switch value={setting2} onValueChange={toggleSetting2} />
             </View>
         </View>

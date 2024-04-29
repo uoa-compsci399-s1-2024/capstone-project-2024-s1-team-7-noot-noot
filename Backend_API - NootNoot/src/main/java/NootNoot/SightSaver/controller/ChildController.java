@@ -3,6 +3,8 @@ package NootNoot.SightSaver.controller;
 import NootNoot.SightSaver.model.Child;
 import NootNoot.SightSaver.service.ChildService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.bind.annotation.*;
@@ -11,35 +13,36 @@ import java.util.List;
 
 
 @RestController
-@RequestMapping("/child")
+@RequestMapping("api/child")
 public class ChildController {
 
     @Autowired
     private ChildService childService;
 
     @GetMapping
-    public List<Child> getAll() {
-        return childService.getAllChildren();
+    public ResponseEntity<List<Child>> getAll() {
+        return new ResponseEntity<>(childService.getAllChildren(), HttpStatus.OK);
     }
 
     @GetMapping("/numberOfChildren")
-    public Long getNumberOfChildren() {
-        return childService.getChildCount();
+    public ResponseEntity<Long> getNumberOfChildren() {
+        return new ResponseEntity<>(childService.getChildCount(), HttpStatus.OK);
     }
 
     @GetMapping("/{id}")
-    public Child getChildById(@PathVariable Long id) {
-        return childService.getChildById(id);
+    public ResponseEntity<Child> getChildById(@PathVariable Long id) {
+        return new ResponseEntity<>(childService.getChildById(id), HttpStatus.OK);
     }
 
     @PostMapping
-    public Child addChild(@RequestBody Child child) {
-        return childService.saveChild(child);
+    public ResponseEntity<Child> addChild(@RequestBody Child child) {
+        return new ResponseEntity<>(childService.saveChild(child), HttpStatus.CREATED);
     }
 
     @DeleteMapping("/{id}")
-    public void deleteChild(@PathVariable("id") Long id) {
+    public HttpStatus deleteChild(@PathVariable("id") Long id) {
         childService.deleteChildById(id);
+        return HttpStatus.valueOf(200);
     }
 
 

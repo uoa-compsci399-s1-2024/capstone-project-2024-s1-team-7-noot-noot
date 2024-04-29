@@ -15,7 +15,7 @@ export default function ChangePassword() {
 
     return (
         <View style={[styles.container, {backgroundColor:Colors[colorScheme ?? 'light'].background}]}>
-            <Text style={[styles.title, {color:Colors[colorScheme ?? 'light'].text}]}>Change Password</Text>
+            {/* <Text style={[styles.title, {color:Colors[colorScheme ?? 'light'].text}]}>Change Password</Text> */}
             <Text style={[styles.text, {color:Colors[colorScheme ?? 'light'].text}]}>
                 To change your password, please enter your current password and then enter your new password twice to confirm.
             </Text>

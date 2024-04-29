@@ -7,12 +7,14 @@ import DailyScreen from '../(stats)/DailyStats';
 import WeeklyScreen from '../(stats)/WeeklyStats';
 import MonthlyScreen from '../(stats)/MonthlyStats';
 import YearlyScreen from '../(stats)/YearlyStats';
+import DataScreen from '../(stats)/Data';
 
 var dropdownData = [
   { label: 'Daily', value: 'Daily Sunlight' },
   { label: 'Weekly', value: 'Weekly Sunlight' },
   { label: 'Monthly', value: 'Monthly Sunlight' },
   { label: 'Yearly', value: 'Yearly Sunlight' },
+  { label: 'Data', value: 'Data' },
 ];
 
 export default function IndexScreen() {
@@ -30,6 +32,8 @@ export default function IndexScreen() {
         return <MonthlyScreen/>;
       case 'Yearly Sunlight':
         return <YearlyScreen/>;
+      case 'Data':
+        return <DataScreen/>;
       default:
         return <WeeklyScreen/>;
     }

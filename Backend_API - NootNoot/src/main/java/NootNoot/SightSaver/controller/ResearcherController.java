@@ -3,34 +3,39 @@ package NootNoot.SightSaver.controller;
 import NootNoot.SightSaver.model.Researcher;
 import NootNoot.SightSaver.service.ResearcherService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
 @RestController
-@RequestMapping("/researcher")
+@RequestMapping("api/researcher")
 public class ResearcherController {
     @Autowired
     private ResearcherService researcherService;
 
     @GetMapping
-    public List<Researcher> getAll() {
-        return researcherService.getAllResearchers();
+    public ResponseEntity<List<Researcher>> getAll() {
+
+        return new ResponseEntity<>(researcherService.getAllResearchers(), HttpStatus.OK);
     }
 
     @GetMapping("/{id}")
-    public Researcher getResearcherById(@PathVariable Long id) {
-        return researcherService.getResearcherById(id);
+    public ResponseEntity<Researcher> getResearcherById(@PathVariable Long id) {
+        return new ResponseEntity<>(researcherService.getResearcherById(id), HttpStatus.OK);
     }
 
     @PostMapping
-    public Researcher addResearcher(@RequestBody Researcher researcher) {
-        return researcherService.addResearcher(researcher);
+    public ResponseEntity<Researcher> addResearcher(@RequestBody Researcher researcher) {
+        return new ResponseEntity<>(researcherService.addResearcher(researcher), HttpStatus.CREATED);
     }
 
     @DeleteMapping("/{id}")
-    public void deleteResearcher(@PathVariable Long id) {
+    public HttpStatus deleteResearcher(@PathVariable Long id) {
+
         researcherService.deleteResearcher(id);
+        return HttpStatus.NO_CONTENT;
     }
 
 }

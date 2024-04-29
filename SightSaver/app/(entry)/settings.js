@@ -14,29 +14,21 @@ function Settings({navigation}) {
     const colorScheme = useColorScheme();
     
     return (
-        <View style={styles.container}>
+        <View style={[styles.container, {backgroundColor:Colors[colorScheme ?? 'light'].background}]}>
             <StatusBar barStyle={barStyle=Colors[colorScheme ?? 'light'].barStyle}/>
-            {/* Back button */}
-            {/* <TouchableOpacity style={styles.backButton} onPress={() => navigation.goBack()}>
-                <Ionicons name="arrow-back" size={24} color="black" />
-                <Text style={styles.backButtonText}>Back</Text>
-            </TouchableOpacity> */}
-
             {/* Settings options */}
-            <View style={[styles.optionsContainer, {backgroundColor:Colors[colorScheme ?? 'light'].background}]}>
-                <TouchableOpacity style={[styles.option, {borderBottomColor:Colors[colorScheme ?? 'light'].seperator}]} onPress={() => navigation.navigate('Accessibility')}>
-                    <Text style={[styles.optionText, {color:Colors[colorScheme ?? 'light'].text}]}>Accessibility</Text>
-                </TouchableOpacity>
-                <TouchableOpacity style={[styles.option, {borderBottomColor:Colors[colorScheme ?? 'light'].seperator}]} onPress={() => navigation.navigate('Data Safety')}>
-                    <Text style={[styles.optionText, {color:Colors[colorScheme ?? 'light'].text}]}>Data Safety</Text>
-                </TouchableOpacity>
-                <TouchableOpacity style={[styles.option, {borderBottomColor:Colors[colorScheme ?? 'light'].seperator}]} onPress={() => navigation.navigate('Device')}>
-                    <Text style={[styles.optionText, {color:Colors[colorScheme ?? 'light'].text}]}>Device</Text>
-                </TouchableOpacity>
-                <TouchableOpacity style={[styles.option, {borderBottomColor:Colors[colorScheme ?? 'light'].seperator}]} onPress={() => navigation.navigate('Account')}>
-                    <Text style={[styles.optionText, {color:Colors[colorScheme ?? 'light'].text}]}>Account</Text>
-                </TouchableOpacity>
-            </View>
+            <TouchableOpacity style={[styles.option, {borderBottomColor:Colors[colorScheme ?? 'light'].seperator}]} onPress={() => navigation.navigate('Accessibility')}>
+                <Text style={[styles.optionText, {color:Colors[colorScheme ?? 'light'].text}]}>Accessibility</Text>
+            </TouchableOpacity>
+            <TouchableOpacity style={[styles.option, {borderBottomColor:Colors[colorScheme ?? 'light'].seperator}]} onPress={() => navigation.navigate('Data Safety')}>
+                <Text style={[styles.optionText, {color:Colors[colorScheme ?? 'light'].text}]}>Data Safety</Text>
+            </TouchableOpacity>
+            <TouchableOpacity style={[styles.option, {borderBottomColor:Colors[colorScheme ?? 'light'].seperator}]} onPress={() => navigation.navigate('Device')}>
+                <Text style={[styles.optionText, {color:Colors[colorScheme ?? 'light'].text}]}>Device</Text>
+            </TouchableOpacity>
+            <TouchableOpacity style={[styles.option, {borderBottomColor:Colors[colorScheme ?? 'light'].seperator}]} onPress={() => navigation.navigate('Account')}>
+                <Text style={[styles.optionText, {color:Colors[colorScheme ?? 'light'].text}]}>Account</Text>
+            </TouchableOpacity>
         </View>
     );
 }
@@ -60,18 +52,7 @@ export default function SettingsScreens() {
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-    },
-    backButton: {
-        flexDirection: 'row',
-        alignItems: 'center',
-        marginBottom: 16,
-    },
-    backButtonText: {
-        marginLeft: 8,
-        fontSize: 16,
-    },
-    optionsContainer: {
-        flex: 1,
+        padding: 20, 
     },
     option: {
         paddingVertical: 12,
