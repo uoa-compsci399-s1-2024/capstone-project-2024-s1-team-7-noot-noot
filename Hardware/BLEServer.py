@@ -1,95 +1,96 @@
-"""
-Example for a BLE 4.0 Server
-"""
-import sys
-import logging
-import asyncio
-import threading
+import time
 import json
-from base64 import b64encode
+import sys
+from pybleno import *
 
-from typing import Any, Union
+Sensor_RATE_UUID = 'A07498CA-AD5B-474E-940D-16F1FBE7E8CD'
+Sensor_RATE_CHARACTERISTIC = '51FF12BB-3ED8-46E5-B4F9-D64E2FEC021B'
 
-from bless import (  # type: ignore
-    BlessServer,
-    BlessGATTCharacteristic,
-    GATTCharacteristicProperties,
-    GATTAttributePermissions,
-)
+class SensorCharacteristic(Characteristic):
+    def __init__(self):
+        Characteristic.__init__(self, {
+            'uuid': Sensor_RATE_CHARACTERISTIC,
+            'properties': ['read', 'notify'],  
+            'value': None
+        })
+        self._value = bytearray()
+        self._updateValueCallback = None
+        self._connected = False
 
-logging.basicConfig(level=logging.DEBUG)
-logger = logging.getLogger(name=__name__)
+    def onReadRequest(self, offset, callback):
+        print('SensorCharacteristic - onReadRequest: value = ' + str(self._value))
+        callback(Characteristic.RESULT_SUCCESS, self._value)
 
-# NOTE: Some systems require different synchronization methods.
-trigger: Union[asyncio.Event, threading.Event]
-if sys.platform in ["darwin", "win32"]:
-    trigger = threading.Event()
-else:
-    trigger = asyncio.Event()
+    def onSubscribe(self, maxValueSize, updateValueCallback):
+        self._connected = True
+        print('SensorCharacteristic - onSubscribe')
+        print('MTU: ', maxValueSize)
+        self._updateValueCallback = updateValueCallback
 
+    def onUnsubscribe(self):
+        print('SensorCharacteristic - onUnsubscribe')
+        self._updateValueCallback = None
 
-def read_request(characteristic: BlessGATTCharacteristic, **kwargs) -> bytearray:
-    logger.debug(f"Reading {characteristic.value}")
-    return characteristic.value
+    def notifySensorValue(self):
+        if not self._updateValueCallback:
+            return
+        print('SensorCharacteristic - notifySensorValue: value = ' + str(self._value))
+        self._updateValueCallback(self._value)
+    
+    def isConnected(self):
+        if self._connected:
+            return self._connected
+        
 
-def write_request(characteristic: BlessGATTCharacteristic, value: Any, **kwargs):
-    # Read the JSON data from a file and encode it in base64
-    with open('data.json', 'r') as f:
-        json_data = json.load(f)
-    encoded_data = b64encode(json.dumps(json_data).encode()).decode()
-
-    # Split the encoded data into chunks of 20 bytes
-    chunks = [encoded_data[i:i+20] for i in range(0, len(encoded_data), 20)]
-
-    # Write each chunk to the characteristic
-    for chunk in chunks:
-        characteristic.value = chunk
-        logger.debug(f"Char value set to {chunk}")
-
-    if characteristic.value == chunks[-1]:
-        logger.debug("All chunks sent")
-        trigger.set()
-
-async def run(loop):
-    trigger.clear()
-    # Instantiate the server
-    my_service_name = "SightSaver"
-    server = BlessServer(name=my_service_name, loop=loop)
-    server.read_request_func = read_request
-    server.write_request_func = write_request
-
-    # Add Service
-    my_service_uuid = "A07498CA-AD5B-474E-940D-16F1FBE7E8CD"
-    await server.add_new_service(my_service_uuid)
-
-    # Add a Characteristic to the service
-    my_char_uuid = "51FF12BB-3ED8-46E5-B4F9-D64E2FEC021B"
-    char_flags = (
-        GATTCharacteristicProperties.read
-        | GATTCharacteristicProperties.write
-        | GATTCharacteristicProperties.indicate
-    )
-    permissions = GATTAttributePermissions.readable | GATTAttributePermissions.writeable
-    await server.add_new_characteristic(
-        my_service_uuid, my_char_uuid, char_flags, None, permissions
-    )
-
-    logger.debug(server.get_characteristic(my_char_uuid))
-    await server.start()
-    logger.debug("Advertising")
-    logger.info(f"Write '0xF' to the advertised characteristic: {my_char_uuid}")
-    if trigger.__module__ == "threading":
-        trigger.wait()
+def onStateChange(state):
+    print('on -> stateChange: ' + state)
+    if (state == 'poweredOn'):
+        bleno.startAdvertising('SightSaver', [Sensor_RATE_UUID])
     else:
-        await trigger.wait()
+        bleno.stopAdvertising()
 
-    await asyncio.sleep(2)
-    logger.debug("Updating")
-    server.get_characteristic(my_char_uuid)
-    server.update_value(my_service_uuid, "51FF12BB-3ED8-46E5-B4F9-D64E2FEC021B")
-    await asyncio.sleep(5)
-    await server.stop()
+def onAdvertisingStart(error):
+    print('on -> advertisingStart: ' + ('error ' + str(error) if error else 'success'))
+    if not error:
+        bleno.setServices([
+            BlenoPrimaryService({
+                'uuid': Sensor_RATE_UUID,
+                'characteristics': [
+                    sensor_characteristic  
+                ]
+            })
+        ])
+        
+def onAccept(clientAddress):
+    print('Client Address: ', clientAddress)
+    
+def onDisconnect(clientAddress):
+    print('Client Disconnected: ', clientAddress)
 
 
-loop = asyncio.get_event_loop()
-loop.run_until_complete(run(loop))
+bleno = Bleno()
+sensor_characteristic = SensorCharacteristic()  
+bleno.on('stateChange', onStateChange)
+bleno.on('advertisingStart', onAdvertisingStart)
+bleno.on('accept', onAccept)
+bleno.on('disconnect', onDisconnect)
+
+bleno.start()
+
+while not sensor_characteristic.isConnected():
+    time.sleep(5)
+    print('Waiting for Connection')
+    
+with open('data.txt', 'rb') as file:
+    while True:
+        chunk = file.read(20)
+        if not chunk:
+            break
+        sensor_characteristic._value = chunk
+        sensor_characteristic.notifySensorValue()
+
+    # Handle the last chunk if it's less than 20 bytes
+    last_chunk = file.read()
+    if last_chunk:
+        sensor_characteristic._value = last_chunk
+        sensor_characteristic.notifySensorValue()
