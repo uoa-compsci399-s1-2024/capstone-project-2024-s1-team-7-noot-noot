@@ -1,7 +1,6 @@
 package NootNoot.SightSaver.controller;
 
 import NootNoot.SightSaver.model.Sensor;
-import NootNoot.SightSaver.repository.SensorRepository;
 import NootNoot.SightSaver.service.SensorService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;

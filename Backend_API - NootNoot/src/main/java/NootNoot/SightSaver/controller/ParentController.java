@@ -1,8 +1,7 @@
 package NootNoot.SightSaver.controller;
 
-import NootNoot.SightSaver.model.Feedback;
+
 import NootNoot.SightSaver.model.Parent;
-import NootNoot.SightSaver.service.FeedbackService;
 import NootNoot.SightSaver.service.ParentService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
