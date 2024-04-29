@@ -165,8 +165,8 @@ function useBLE(): BluetoothLowEnergyApi {
       const jsonString = JSON.stringify(data);
 
       // Write the JSON string to a file, followed by a newline character
-      // const fileUri = FileSystem.documentDirectory + 'data.json';
-      // FileSystem.writeAsStringAsync(fileUri, jsonString + '\n');
+      const fileUri = FileSystem.documentDirectory + 'data.json';
+      FileSystem.writeAsStringAsync(fileUri, jsonString + '\n');
     }
 
     console.log('JSON data written to file');
