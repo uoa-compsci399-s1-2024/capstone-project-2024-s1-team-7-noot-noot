@@ -52,6 +52,11 @@ function SignIn({ navigation }) {
     const { signIn } = useSession();
 
     const handleLogin = () => {
+        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        if (!emailRegex.test(email)) {
+            alert('Please enter a valid email address.');
+            return;
+        }
         if (!email || !name || !password) {
             alert("Please fill in all fields. If you don't have an account, please sign up.");
             return;}
@@ -78,20 +83,20 @@ function SignIn({ navigation }) {
                 style={styles.input}
                 placeholder="Email"
                 value={email}
-                onChangeText={setEmail}
+                setValue={setEmail}
                 autoCapitalize="none"
             />
             <CustomInput
                 style={styles.input}
                 placeholder="Name"
                 value={name}
-                onChangeText={setName}
+                setValue={setName}
             />
             <CustomInput
                 style={styles.input}
                 placeholder="Password"
                 value={password}
-                onChangeText={setPassword}
+                setValue={setPassword}
                 secureTextEntry
             />
 
@@ -128,6 +133,11 @@ function SignupScreen({ navigation }) {
     const { signIn } = useSession();
 
     const handleSignup = () => {
+        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        if (!emailRegex.test(email)) {
+            alert('Please enter a valid email address.');
+            return;
+        }
         if (!email || !name || !password || !confirmPassword || !termsAccepted || !privacyAccepted) {
             if ((!email || !name || !password || !confirmPassword) && (!termsAccepted || !privacyAccepted)){
                 alert('Please fill in all fields and accept the terms and conditions.');
@@ -167,27 +177,27 @@ function SignupScreen({ navigation }) {
                 style={styles.input}
                 placeholder="Email"
                 value={email}
-                onChangeText={setEmail}
+                setValue={setEmail}
                 autoCapitalize="none"
             />
             <CustomInput
                 style={styles.input}
                 placeholder="Name"
                 value={name}
-                onChangeText={setName}
+                setValue={setName}
             />
             <CustomInput
                 style={styles.input}
                 placeholder="Password"
                 value={password}
-                onChangeText={setPassword}
+                setValue={setPassword}
                 secureTextEntry
             />
             <CustomInput
                 style={styles.input}
                 placeholder="Confirm Password"
                 value={confirmPassword}
-                onChangeText={setConfirmPassword}
+                setValue={setConfirmPassword}
                 secureTextEntry
             />
 
