@@ -1,11 +1,11 @@
 import { StyleSheet, Button, Pressable, onPress, SafeAreaView, Image } from 'react-native';
 import React, {useState} from 'react';
-import { Text, View } from '../../components/Themed';
+import { Text, View } from '../../../components/Themed';
 import { useNavigation } from '@react-navigation/native';
 import moment from "moment";
 import { AntDesign } from '@expo/vector-icons';
-import Colors from '../../constants/Colors';
-import { useColorScheme } from '../../components/useColorScheme';
+import Colors from '../../../constants/Colors';
+import { useColorScheme } from '../../../components/useColorScheme';
 import { StatusBar } from 'react-native';
 import { Dropdown } from 'react-native-element-dropdown';
 import {NavigationContainer} from '@react-navigation/native';
@@ -58,11 +58,12 @@ export default function WeeklyScreen() {
               xAxisLabelTextStyle={{color:'black'}}
               stepValue={1}
               hideRules={true}
-              data={[{value: 1.7, label: 'M', frontColor: getColor(1.7), onPress: () => alert('Monday')},
-                {value: 2.0, label: 'W', frontColor: getColor(2.0), onPress: () => alert('Wednesday')},
-                {value: 1.3, label: 'T', frontColor: getColor(1.3), onPress: () => alert('Thursday')},
-                {value: 2.8, label: 'F', frontColor: getColor(2.8), onPress: () => alert('Friday')},
-                {value: 1.1, label: 'S', frontColor: getColor(1.1), onPress: () => alert('Saturday')},
+              data={[{value: 4.0, label: 'M', frontColor: getColor(4.0), onPress: () => alert('Monday')},
+              {value: 7.5, label: 'T', frontColor: getColor(7.5), onPress: () => alert('Tuesday')},
+                {value: 8.0, label: 'W', frontColor: getColor(8.0), onPress: () => alert('Wednesday')},
+                {value: 4.5, label: 'T', frontColor: getColor(4.5), onPress: () => alert('Thursday')},
+                {value: 6.8, label: 'F', frontColor: getColor(6.8), onPress: () => alert('Friday')},
+                {value: 2.8, label: 'S', frontColor: getColor(2.8), onPress: () => alert('Saturday')},
                 {value: 0.2, label: 'S', frontColor: getColor(0.2), onPress: () => alert('Sunday')},
               ]}
               yAxisThickness={0}
@@ -101,7 +102,7 @@ export default function WeeklyScreen() {
             <BarChart 
               barWidth={22}
               noOfSections={3}
-              height={80}
+              height={100}
               barBorderRadius={8}
               yAxisTextStyle={{color:'white'}}
               xAxisLabelTextStyle={{color:'white'}}
@@ -130,35 +131,26 @@ export default function WeeklyScreen() {
 const styles = StyleSheet.create({
   container: {
     height: '100%',
+    width: '100%',
     alignItems: 'center',
-    justifyContent: 'center',
+    flex: 1,
   },
   dateSpace:{
     height: '10%',
-    textAlign: 'center',
-    marginLeft: '22%',
     width: '100%',
+    marginTop: '5%',
+    alignSelf: 'center',
   },
   pieSpace: {
-    height: '40%',
-    alignItems: 'center',
+    height: '48%',
+    width: '100%',
+    alignSelf: 'center',
   },
 
   barSpace: {
-    justifyContent: 'center',
     height: '30%',
-  },
-  imageStyle: {
-    width:205,
-    height: 20,
-    paddingHorizontal: 5,
-    marginTop: 10,
-  },
-  separator: {
-    position: 'absolute',
-    bottom: 0,
-    height: 1,
     width: '100%',
+    right: '3%',
   },
   
 });

@@ -1,6 +1,6 @@
-import { View, Text } from '../../components/Themed';
-import Colors from '../../constants/Colors';
-import { useColorScheme } from '../../components/useColorScheme';
+import { View, Text } from '../../../components/Themed';
+import Colors from '../../../constants/Colors';
+import { useColorScheme } from '../../../components/useColorScheme';
 import React, { useState, useEffect, useContext } from 'react';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { Ionicons } from '@expo/vector-icons';
@@ -34,7 +34,8 @@ export default function ProfileScreen() {
     connectedDevice,
     SensorData,
     disconnectFromDevice,
-    setAllDevices
+    setAllDevices,
+    dataSyncCompleted,
   } = useBLE();
 
   const [triggerSync, setTriggerSync] = useState(false);
@@ -57,6 +58,12 @@ export default function ProfileScreen() {
     requestAndScan();
   }, []);
 
+  useEffect(() => {
+    if (dataSyncCompleted) {
+      setAlertMessage('Data Synced');
+    }
+  }, [dataSyncCompleted]);
+
   const handleSync = async () => {
     if (selectedDevice) {
       setAlertMessage('Connecting...');
@@ -64,10 +71,7 @@ export default function ProfileScreen() {
       try {
         await connectToDevice(selectedDevice);
         setAlertMessage('Connected. Syncing...');
-        // Wait for data to sync. You might need to implement this part based on your requirements.
         await new Promise((resolve) => setTimeout(resolve, 2000));
-        setAlertMessage('Data Synced');
-        disconnectFromDevice();
       } catch (error) {
         setAlertMessage('Device Connecting Failed');
       } finally {
@@ -159,7 +163,7 @@ export default function ProfileScreen() {
         >
         <View style={styles.overlay}>
           <View style={styles.deviceModal}>
-            <TouchableOpacity style={styles.closeButton} onPress={() => {setAllDevices([]), setModalVisible(false)}}>
+            <TouchableOpacity style={styles.closeButton} onPress={() => {setAllDevices([]), setModalVisible(false), scanForPeripherals();}}>
               <Ionicons name="close" size={22} color={Colors[colorScheme ?? 'light'].text} />
             </TouchableOpacity>
             <Text style={[styles.title,{color:Colors[colorScheme ?? 'light'].text}, {alignSelf:'center', marginBottom:10}, {fontSize: 21, fontWeight: 'bold'}]}>Searching for devices...</Text>
@@ -189,28 +193,41 @@ export default function ProfileScreen() {
         transparent={true}
         visible={alertVisible}
         onRequestClose={() => {
-          setAlertVisible(!alertVisible);
+          if (
+            alertMessage === 'Data Synced' ||
+            alertMessage === 'Device Connecting Failed' ||
+            alertMessage === 'No device selected'
+          ) {
+            setAlertVisible(!alertVisible);
+            scanForPeripherals();
+          }
         }}
       >
         <TouchableOpacity 
           style={styles.overlay} 
           activeOpacity={1} 
-          onPressOut={() => {setAlertVisible(false)}}
+          onPressOut={() => {
+            if (
+              alertMessage === 'Data Synced' ||
+              alertMessage === 'Device Connecting Failed' ||
+              alertMessage === 'No device selected'
+            ) {
+              setAlertVisible(!alertVisible);
+              scanForPeripherals();
+            }
+          }}
         >
           <View style={styles.alertModal}>
-            <Text style={styles.alertMessage}>{alertMessage}</Text>
+            <Text style={[styles.alertMessage, {color:'white'}]}>{alertMessage}</Text>
             {(alertMessage === 'Data Synced' || alertMessage === 'Device Connecting Failed' || alertMessage === 'No device selected') && (
               <TouchableOpacity
-                onPress={() => {setAlertVisible(false), setAllDevices([])}}
+                onPress={() => {setAlertVisible(false), setAllDevices([]), scanForPeripherals()}}
               >
               </TouchableOpacity>
             )}
           </View>
         </TouchableOpacity>
       </Modal>
-
-      {/* Seperator */}
-      <View style={[styles.separator, {backgroundColor:Colors[colorScheme ?? 'light'].seperator}]}/>
     </View>
 );
 }
@@ -224,12 +241,6 @@ const styles = StyleSheet.create({
   title: {
     fontSize: 20,
     fontWeight: 'bold',
-  },
-  separator: {
-    position: 'absolute',
-    bottom: 0,
-    height: 1,
-    width: '100%',
   },
   container: {
     flex: 1,
@@ -320,7 +331,7 @@ const styles = StyleSheet.create({
   },
   overlay: {
     flex: 1,
-    backgroundColor: 'rgba(0, 0, 0, 0.7)',
+    backgroundColor: 'rgba(0, 0, 0, 0.8)',
     justifyContent: 'center',
     alignItems: 'center',
     width: '100%',

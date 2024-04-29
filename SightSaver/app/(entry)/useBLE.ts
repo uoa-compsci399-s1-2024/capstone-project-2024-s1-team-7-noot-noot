@@ -6,8 +6,8 @@ import {
   Characteristic,
   Device,
 } from "react-native-ble-plx";
-import { Buffer } from 'buffer';
 import * as ExpoDevice from "expo-device";
+import * as FileSystem from 'expo-file-system';
 
 import base64 from "react-native-base64";
 
@@ -22,16 +22,16 @@ interface BluetoothLowEnergyApi {
   disconnectFromDevice: () => void;
   connectedDevice: Device | null;
   allDevices: Device[];
-  SensorData: number;
+  SensorData: JSON | null;
+  dataSyncCompleted: boolean;
 }
-
-let dataChunks: string[] = [];
 
 function useBLE(): BluetoothLowEnergyApi {
   const bleManager = useMemo(() => new BleManager(), []);
   const [allDevices, setAllDevices] = useState<Device[]>([]);
   const [connectedDevice, setConnectedDevice] = useState<Device | null>(null);
-  const [SensorData, setSensorData] = useState<number>(0);
+  const [SensorData, setSensorData] = useState<JSON | null>(null);
+  const [dataSyncCompleted, setDataSyncCompleted] = useState(false);
 
   const requestAndroid31Permissions = async () => {
     const bluetoothScanPermission = await PermissionsAndroid.request(
@@ -108,64 +108,79 @@ function useBLE(): BluetoothLowEnergyApi {
     });
 
   const connectToDevice = async (device: Device) => {
-    try {
-      const deviceConnection = await bleManager.connectToDevice(device.id);
-      setConnectedDevice(deviceConnection);
-      await deviceConnection.discoverAllServicesAndCharacteristics();
-      bleManager.stopDeviceScan();
-      console.log("Connected to Device", deviceConnection.id);
-      startStreamingData(deviceConnection);
-    } catch (e) {
-      console.log("FAILED TO CONNECT", e);
-    }
+    const deviceConnection = await bleManager.connectToDevice(device.id);
+    setConnectedDevice(deviceConnection);
+    await deviceConnection.discoverAllServicesAndCharacteristics();
+    bleManager.stopDeviceScan();
+    console.log("Connected to Device", deviceConnection.id);
+    startStreamingData(deviceConnection);
   };
 
   const disconnectFromDevice = () => {
     if (connectedDevice) {
       bleManager.cancelDeviceConnection(connectedDevice.id);
       setConnectedDevice(null);
-      setSensorData(0);
+      setSensorData(null);
     }
   };
+
+  let rawData = "";
+  const onValueUpdate = (
+    error: BleError | null,
+    characteristic: Characteristic | null
+  ) => {
+    if (error) {
+      console.log("Deviced Disconnected");
+      onDeviceDisconnect();
+      return -1;
+    } else if (!characteristic?.value) {
+      console.log("No Data was recieved");
+      return -1;
+    }
+
+    rawData += characteristic.value;
+  };
+
+  const onDeviceDisconnect = () => {
+    const decodedData = base64.decode(rawData);
   
+    // Process the data in chunks of 20 characters
+    for (let i = 0; i < decodedData.length; i += 20) {
+      const chunk = decodedData.slice(i, i + 20);
+
+      // Extract the time and light values from the chunk
+      let time = chunk.slice(0, 12);
+      let light = chunk.slice(12, 20);
+
+      // Remove trailing zeros from the light value
+      light = light.replace(/0+$/, '');
+
+      // Create a JSON object
+      const data = {
+        time: time,
+        light: light
+      };
+
+      // Convert the JSON object to a string
+      const jsonString = JSON.stringify(data);
+
+      // Write the JSON string to a file, followed by a newline character
+      // const fileUri = FileSystem.documentDirectory + 'data.json';
+      // FileSystem.writeAsStringAsync(fileUri, jsonString + '\n');
+    }
+
+    console.log('JSON data written to file');
+    setDataSyncCompleted(true);
+  };
+
   const startStreamingData = async (device: Device) => {
     if (device) {
-      console.log("Device is connected, starting to read characteristic");
-      try {
-        // Request the next chunk of data
-        await device.writeCharacteristicWithResponseForService(
-          Sensor_RATE_UUID,
-          Sensor_RATE_CHARACTERISTIC,
-          Buffer.from("NEXT").toString('base64')
-        );
-  
-        const characteristic = await device.readCharacteristicForService(
-          Sensor_RATE_UUID,
-          Sensor_RATE_CHARACTERISTIC
-        );
-  
-        if (characteristic.value) {
-          const chunk = base64.decode(characteristic.value);
-          console.log("Read characteristic value", chunk);
-          dataChunks.push(chunk);
-  
-          // If the characteristic value is less than 20 bytes, we've received all the data
-          if (chunk.length < 20 || chunk == null) {
-            const data = dataChunks.join('');
-            const jsonData = JSON.parse(data);
-            console.log("Received JSON data", jsonData);
-            dataChunks = [];
-            setSensorData(jsonData);
-            console.log("Sensor Data", SensorData);
-          }
-        } else {
-          console.log("Characteristic value is null");
-        }
-      } catch (e) {
-        console.log("Failed to read characteristic", e);
-      }
-    } else {
-      console.log("No Device Connected");
+      console.log("Starting to Stream Data");
+      device.monitorCharacteristicForService(
+        Sensor_RATE_UUID,
+        Sensor_RATE_CHARACTERISTIC,
+        onValueUpdate
+      );
     }
   };
   
@@ -178,6 +193,7 @@ function useBLE(): BluetoothLowEnergyApi {
     connectedDevice,
     disconnectFromDevice,
     SensorData,
+    dataSyncCompleted,
   };
 }
 

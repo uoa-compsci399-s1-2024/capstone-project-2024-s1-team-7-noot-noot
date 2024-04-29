@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { StyleSheet, StatusBar, View, Text } from 'react-native';
-import { useColorScheme } from '../../components/useColorScheme';
-import Colors from '../../constants/Colors';
+import { useColorScheme } from '../../../components/useColorScheme';
+import Colors from '../../../constants/Colors';
 import { Dropdown } from 'react-native-element-dropdown';
 import DailyScreen from '../(stats)/DailyStats';
 import WeeklyScreen from '../(stats)/WeeklyStats';
@@ -46,25 +46,25 @@ export default function IndexScreen() {
       <View style={styles.titleSpace}>
           <Text style={[styles.title, {color:Colors[colorScheme ?? 'light'].text},]}>{selectedItem?.value || "Select a page"}</Text>
       </View>
-      <View style={styles.menuSpace}>
       <Dropdown
         style={[Dropdownstyles.dropdown, {backgroundColor: Colors[colorScheme ?? 'light'].buttonColor}]}
         iconColor={Colors[colorScheme ?? 'light'].text}
+        containerStyle={[
+          {backgroundColor: Colors[colorScheme ?? 'light'].buttonColor}, 
+          {borderRadius: 8}, 
+          {borderColor: Colors[colorScheme ?? 'light'].buttonColor},
+          {marginTop: 5},
+        ]}
         itemTextStyle={{color: Colors[colorScheme ?? 'light'].text}}
         placeholderStyle={{color: Colors[colorScheme ?? 'light'].text}}
-        itemContainerStyle={{backgroundColor: Colors[colorScheme ?? 'light'].background}}
         data={dropdownDataState}
-        //maxHeight={300}
+        iconStyle={Dropdownstyles.dropdownIcon}
         labelField="label"
         valueField="value"
         placeholder={selectedItem?.label || "Select a page"}
         onChange={item => setSelectedItem(item)}
       />
-      </View>
-      <View stle={styles.newContent}>
-      {renderContent()}
-      </View>
-      <View style={[styles.separator, {backgroundColor: Colors[colorScheme ?? 'light'].seperator}]}/>
+        {renderContent()}
     </View>
   );
 }
@@ -72,59 +72,31 @@ const styles = StyleSheet.create({
   container: {
     height: '100%',
     alignItems: 'center',
-    justifyContent: 'center',
   },
   title: {
     fontSize: 40,
     fontWeight: 'light',
   },
   titleSpace: {
-    flex: 1,
+    height: '10%',
   },
-  menuSpace: {
-    flex: 2,
-    width: '100%',
-    alignItems: 'center',
-  },
-  pieSpace: {
-    height:'40%',
-    justifyContent: 'center',
-  },
-  buttonStyle: {
-    backgroundColor: 'white',
-    padding: 10,
-    paddingHorizontal: 40,
-    borderRadius: 5,
-    borderWidth: 1,
-  },
-  separator: {
-    position: 'absolute',
-    bottom: 0,
-    height: 1,
-    width: '100%',
-  },
-  newContent: {
-    flex:3,
-  },
-  
 });
 
 const Dropdownstyles = StyleSheet.create({
   dropdown: {
-    margin: 16,
     height: 50,
     width: '30%',
     borderRadius: 8,
-    padding: 12,
     elevation: 1,
+    paddingLeft: '5%'
   },
   dropdownIcon: {
-    marginRight: 5,
+    marginRight: '15%',
   },
   dropdownItem: {
     padding: 17,
     flexDirection: 'row',
-    justifyContent: 'space-between',
     alignItems: 'center',
+    borderRadius: 8,
   },
 });

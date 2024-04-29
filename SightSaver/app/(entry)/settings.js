@@ -2,8 +2,8 @@ import React from 'react';
 import { View, Text, TouchableOpacity, StyleSheet } from 'react-native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { StatusBar } from 'react-native';
-import Colors from '../constants/Colors';
-import { useColorScheme } from '../components/useColorScheme';
+import Colors from '../../constants/Colors';
+import { useColorScheme } from '../../components/useColorScheme';
 import AccessibilityScreen from './settingsScreens/accessibility';
 import DataSafetyScreen from './settingsScreens/dataSafety';
 import DeviceScreen from './settingsScreens/device';
@@ -12,7 +12,7 @@ import AccountScreen from './settingsScreens/account';
 function Settings({navigation}) {
     // const navigation = useNavigation();
     const colorScheme = useColorScheme();
-
+    
     return (
         <View style={styles.container}>
             <StatusBar barStyle={barStyle=Colors[colorScheme ?? 'light'].barStyle}/>
@@ -45,6 +45,7 @@ function Settings({navigation}) {
 const Stack = createNativeStackNavigator();
 export default function SettingsScreens() {
     return (
+        console.debug('settings'),
         <Stack.Navigator>
             <Stack.Screen name="Settings" component={Settings} />
             <Stack.Screen name="Accessibility" component={AccessibilityScreen} />

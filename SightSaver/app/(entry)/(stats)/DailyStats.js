@@ -1,42 +1,14 @@
 import { Text, View, StyleSheet, ScrollView} from 'react-native';
 import { BarChart, LineChart, PieChart, PopulationPyramid } from 'react-native-gifted-charts';
-// import {
-//   LineChart,
-//   BarChart,
-//   PieChart,
-//   ProgressChart,
-//   ContributionGraph,
-//   StackedBarChart
-// } from "react-native-chart-kit";
 import moment from "moment";
+
 
 var date = moment()
       .utcOffset('+12.00')
       .format("dddd Do MMMM");   
 
-// const data = {
-//   labels: ["Swim", "Bike", "Run"], // optional
-//   data: [0.4, 0.6, 0.8]
-// };
-// export default function DailyScreen() {
-//     return (
-//           <View style={[styles.container]}>
-//             <ProgressChart
-//                 data={data}
-//                 width={screenWidth}
-//                 height={220}
-//                 strokeWidth={16}
-//                 radius={32}
-//                 chartConfig={chartConfig}
-//                 hideLegend={false}
-//               />
-//               </View>
-//         );
-//       }
-
-
 //VERSION A
-
+/*
 dayData = [
   {value: 0, barWidth :5, label:'8am'}, //8.00
   {value: 0, barWidth :5}, //8.05
@@ -145,8 +117,8 @@ dayData = [
   {value: 0, barWidth :5}, //4.50
   {value: 0, barWidth :5}, //4.55
   {value: 0, barWidth :5, label:'5pm'},
-  ];
-export default function DailyScreen() {
+  ];*/
+/*export default function DailyScreen() {
   return (
     <View style={[styles.container]}>
       <View style={styles.barSpace}>
@@ -167,20 +139,18 @@ export default function DailyScreen() {
         </View>
   );
 }
-
-//VERSION B
-/*
+*/
 dayData = [
-  {value: 0, spacing:30, barWidth:10, }, 
-  {value: 1, spacing:25, barWidth:10, },
-  {value: 0, spacing:30, barWidth:10, },
-  {value: 0, spacing:15, barWidth:10, },
-  {value: 1, spacing:30, barWidth:30, },
-  {value: 0, spacing:15, barWidth:10, },
-  {value: 1, spacing:23, barWidth:10, },
-  {value: 0, spacing:30, barWidth:10, },
-  {value: 0, spacing:30, barWidth:10, },
-  {value: 0, spacing:30, barWidth:10, },
+  {value: 0, spacing:30, barWidth:0, }, 
+  {value: 1, spacing:25, barWidth:5, },
+  {value: 0, spacing:30, barWidth:0, },
+  {value: 0, spacing:30, barWidth:0, },
+  {value: 1, spacing:0, barWidth:30, },
+  {value: 0, spacing:30, barWidth:0, },
+  {value: 1, spacing:23, barWidth:7, },
+  {value: 0, spacing:30, barWidth:0, },
+  {value: 0, spacing:30, barWidth:0, },
+  {value: 0, spacing:30, barWidth:0, },
   ];
 
   export default function DailyScreen() {
@@ -195,51 +165,23 @@ dayData = [
               stepHeight={300}
               spacing={0}
               frontColor={'#F6D78D'}
-              xAxisLabelTextStyle={{color:'black', height:40, width: 40}}
+              xAxisLabelTextStyle={{color:'white', height:40, width: 40}}
               xAxisLabelTexts={['8am', '9am', '10am', '11am', '12pm', '1pm', '2pm', '3pm', '4pm', '5pm']}
               data={dayData}
               hideRules={true}
               />
-            </View>
-          </View>
+        </View>
+      </View>
     );
   }
-  
-  
-    export default function DailyScreen() {
-      return (
-        <View style={[styles.container]}>
-          <View>
-                <LineChart  
-                yAxisThickness={0}
-                noOfSections={1}
-                stepValue={1}
-                stepHeight={100}
-                color={"#F6D78D"}
-                spacing={5}
-                hideDataPoints
-                xAxisLabelTextStyle={{color:'white', width: 40}}
-                //xAxisLabelTexts={['8am', '9am', '10am', '11am', '12pm', '1pm', '2pm', '3pm', '4pm', '5pm']}
-                yAxisLabelTexts={['Indoors', 'Outdoors']}
-                yAxisLabelTextStyles={{color:'white'}}
-                data={dayData}
-                hideRules={true}
-                areaChart={true}
-                />
-              </View>
-            </View>
-      );
-    }
-*/
 const styles = StyleSheet.create({
   container: {
-    height: '100%',
     width: '100%',
+    justifyContent: 'center',
+    alignContent: 'center',
+    flex: 1,
   },
   barSpace: {
-    marginLeft: '5%',
-    height: '100%',
+    justifyContent: 'center',
   },
 });
-
-

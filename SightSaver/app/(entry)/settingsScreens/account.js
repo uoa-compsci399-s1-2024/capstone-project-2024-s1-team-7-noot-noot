@@ -6,11 +6,15 @@ import EditProfile from './accountSettingsScreens/editProfile';
 import ChangePassword from './accountSettingsScreens/changePassword';
 import NotificationSettings from './accountSettingsScreens/notificationSettings';
 import PrivacySettings from './accountSettingsScreens/privacySettings';
-import { useColorScheme } from '../../components/useColorScheme';
-import Colors from '../../constants/Colors';
+import { useColorScheme } from '../../../components/useColorScheme';
+import Colors from '../../../constants/Colors';
+import CustomButton from '../../../components/CustomButton';
+import { useSession } from '../../../ctx';
 
 function AccountSettings({ navigation }) {
     const colorScheme = useColorScheme();
+    const { signOut } = useSession();
+
     const handleEditProfile = () => {
         // Navigate to the EditProfile page
         navigation.navigate('EditProfile');
@@ -47,6 +51,14 @@ function AccountSettings({ navigation }) {
             <TouchableOpacity style={[styles.option, {borderColor:Colors[colorScheme ?? 'light'].seperator}]} onPress={handlePrivacySettings}>
                 <Text style={[styles.optionText, {color:Colors[colorScheme ?? 'light'].text}]}>Privacy Settings</Text>
             </TouchableOpacity>
+            <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
+            <CustomButton
+                onPress={() => {
+                signOut();
+                }}
+                    text={"Sign Out"}
+            />
+            </View>
         </View>
     );
 }

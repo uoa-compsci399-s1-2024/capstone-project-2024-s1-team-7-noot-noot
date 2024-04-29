@@ -2,9 +2,8 @@ import React from 'react';
 import Ionicons from '@expo/vector-icons/Ionicons';
 import { Link, Tabs } from 'expo-router';
 import { Pressable } from 'react-native';
-
-import Colors from '../../constants/Colors';
-import { useColorScheme } from '../../components/useColorScheme';
+import Colors from '../../../constants/Colors';
+import { useColorScheme } from '../../../components/useColorScheme';
 
 // You can explore the built-in icon families and icons on the web at https://icons.expo.fyi/
 function TabBarIcon(props) {
@@ -16,11 +15,12 @@ export default function TabLayout() {
   const colorScheme = useColorScheme();
 
   return (
+    console.debug('tabs'),
     <Tabs
       screenOptions={{
         headerTitle: '',
         headerStyle: { backgroundColor: Colors[colorScheme ?? 'light'].background, borderTopWidth: 0, elevation: 0 },
-        tabBarStyle: { backgroundColor: Colors[colorScheme ?? 'light'].background, borderColor: Colors[colorScheme ?? 'light'].background, borderTopWidth: 1, elevation: 0, height: 60, paddingBottom: 5 },
+        tabBarStyle: { backgroundColor: Colors[colorScheme ?? 'light'].background, borderColor: Colors[colorScheme ?? 'light'].seperator, borderTopWidth: 1, elevation: 0, height: 60, paddingBottom: 5 },
         tabBarLabelStyle: { fontSize: 12 },
       }}>
       <Tabs.Screen
