@@ -36,13 +36,13 @@ public class ChildController {
 
     @PostMapping
     public ResponseEntity<Child> addChild(@RequestBody Child child) {
-        return new ResponseEntity<>(childService.saveChild(child), HttpStatus.OK);
+        return new ResponseEntity<>(childService.saveChild(child), HttpStatus.CREATED);
     }
 
     @DeleteMapping("/{id}")
     public HttpStatus deleteChild(@PathVariable("id") Long id) {
         childService.deleteChildById(id);
-        return HttpStatus.OK;
+        return HttpStatus.valueOf(204);
     }
 
 
