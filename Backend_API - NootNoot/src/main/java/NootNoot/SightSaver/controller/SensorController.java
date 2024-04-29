@@ -1,44 +1,47 @@
 package NootNoot.SightSaver.controller;
 
 import NootNoot.SightSaver.model.Sensor;
-import NootNoot.SightSaver.repository.SensorRepository;
 import NootNoot.SightSaver.service.SensorService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
 @RestController
-@RequestMapping("/sensor")
+@RequestMapping("api/sensor")
 public class SensorController {
     @Autowired
     private SensorService sensorService;
-    @Autowired
-    private SensorRepository sensorRepository;
 
     @GetMapping
-    public List<Sensor> getAll() {
-        return sensorService.getAllSensors();
+    public ResponseEntity<List<Sensor>> getAll() {
+
+        return new ResponseEntity<>(sensorService.getAllSensors(), HttpStatus.OK);
     }
 
     @GetMapping("/{id}")
-    public Sensor getSensorByID(@PathVariable Long id) {
-        return sensorService.getSensorById(id);
+    public ResponseEntity<Sensor> getSensorByID(@PathVariable Long id) {
+        return new ResponseEntity<>(sensorService.getSensorById(id), HttpStatus.OK);
     }
 
     @GetMapping("/numberOfSensors")
-    public Long getNumberOfSensors() {
-        return sensorService.getSensorCount();
+    public ResponseEntity<Long> getNumberOfSensors() {
+        return new ResponseEntity<>(sensorService.getSensorCount(), HttpStatus.OK);
     }
 
     @PostMapping
-    public Sensor addSensor(@RequestBody Sensor sensor) {
-        return sensorService.saveSensor(sensor);
+    public ResponseEntity<Sensor> addSensor(@RequestBody Sensor sensor) {
+
+        return new ResponseEntity<>(sensorService.saveSensor(sensor), HttpStatus.CREATED);
     }
 
 
     @DeleteMapping("/{id}")
-    public void deleteSensor(@PathVariable Long id) {
+    public HttpStatus deleteSensor(@PathVariable Long id) {
+
         sensorService.deleteSensorById(id);
+        return HttpStatus.NO_CONTENT;
     }
 }

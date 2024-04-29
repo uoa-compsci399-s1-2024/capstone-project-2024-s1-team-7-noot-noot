@@ -9,6 +9,8 @@ export default {
     buttonColor: "#FFFFFF",
     subTitle: "#1970B4",
     barStyle: 'dark-content',
+    clickableText: "darkblue",
+    borderColor: "black",
   },
   dark: {
     text: '#fff',
@@ -20,5 +22,7 @@ export default {
     buttonColor: "#5E5E5E",
     subTitle: "#1970B4",
     barStyle: 'light-content',
+    clickableText: "lightblue",
+    borderColor: "lightgrey",
   },
 };

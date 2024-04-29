@@ -11,12 +11,28 @@ import { useSession } from '../ctx';
 import React, { useState } from 'react';
 import { TextInput, Button, StyleSheet, useWindowDimensions, Image, TouchableOpacity} from 'react-native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
-// import { GoogleSigninButton } from '@react-native-google-signin/google-signin';
 import SignInWithGoogleButton from '../components/SignInGoogle';
+import useKeyboardVisibility from '../components/KeyboardVisibility';
+import axios from 'axios';
 
 function WelcomeScreen({ navigation }) {
     const colorScheme = useColorScheme();
     const { height } = useWindowDimensions();
+    // const {axios} = require('axios');
+    const fetchData = () => {
+        axios.post('https://sightsaver-api.azurewebsites.net/child', {
+            id: '2',
+            sensor_id: '0',
+            name: 'test',
+            parent:'0'
+          })
+          .then((response) => {
+            console.log(response);
+          }, (error) => {
+            console.log(error);
+          });
+        }
+
     return (
         <View style={[styles.root, {backgroundColor:Colors[colorScheme ?? 'light'].background}]}>
             {/* Sightsaver Logo */}
@@ -27,6 +43,7 @@ function WelcomeScreen({ navigation }) {
                     resizeMode='contain'
                 />
             </View>
+            <Button title="Test" onPress={(fetchData)}></Button>
             <View style={styles.container}>    
                 {/* Signup button */}
                 <CustomButton style={[styles.signUpButton]}onPress={() => navigation.navigate('Signup')} text={"Sign up"} />
@@ -34,7 +51,7 @@ function WelcomeScreen({ navigation }) {
                 <View style={styles.signInContainer}>
                     <Text style={{fontSize:15}}>Already have an account?</Text>
                     <TouchableOpacity onPress={() => navigation.navigate('Signin')}>
-                        <Text style={styles.signInText}>Login</Text>
+                        <Text style={[styles.signInText, {color:Colors[colorScheme ?? 'light'].clickableText}]}>Login</Text>
                     </TouchableOpacity>
                 </View>
             </View>
@@ -50,13 +67,19 @@ function SignIn({ navigation }) {
     const { height } = useWindowDimensions();
     const { signIn } = useSession();
 
-    const handleLogin = () => {
-        //  if (!email || !name || !password) {
-            // alert("Please fill in all fields. If you don't have an account, please sign up.");
-            // return;}
 
+    const handleLogin = () => {
+        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        if (!emailRegex.test(email)) {
+            alert('Please enter a valid email address.');
+            return;
+        }
+        if (!email || !name || !password) {
+            alert("Please fill in all fields. If you don't have an account, please sign up.");
+            return;}
         // Login logic
-        console.log('Signing in with:', { email, name, password });
+        console.log('Signing in with:', { email, name, password });const axios = require('axios');
+
         // Navigate to another screen upon successful signup
         signIn();
         router.replace('/');
@@ -73,24 +96,24 @@ function SignIn({ navigation }) {
                 />
             </View>
             {/* Login Form */}
-            <TextInput
+            <CustomInput
                 style={styles.input}
                 placeholder="Email"
                 value={email}
-                onChangeText={setEmail}
+                setValue={setEmail}
                 autoCapitalize="none"
             />
-            <TextInput
+            <CustomInput
                 style={styles.input}
                 placeholder="Name"
                 value={name}
-                onChangeText={setName}
+                setValue={setName}
             />
-            <TextInput
+            <CustomInput
                 style={styles.input}
                 placeholder="Password"
                 value={password}
-                onChangeText={setPassword}
+                setValue={setPassword}
                 secureTextEntry
             />
 
@@ -101,15 +124,15 @@ function SignIn({ navigation }) {
                 <View style={styles.signInContainer}>
                     <Text style={{fontSize:15}}>Don't have an account yet?</Text>
                     <TouchableOpacity onPress={() => navigation.navigate('Signup')}>
-                        <Text style={styles.signInText}>Sign Up</Text>
+                    <Text style={[styles.signInText, {color:Colors[colorScheme ?? 'light'].clickableText}]}>Sign Up</Text>
                     </TouchableOpacity>
                 </View>
             </View>
 
             {/* Google button */}
-            <View style={{flex:1, justifyContent:'flex-end'}}>
+            {!useKeyboardVisibility() && (<View style={{flex:1, justifyContent:'flex-end'}}>
                 <SignInWithGoogleButton />
-            </View>
+            </View>)}
         </View>
         );
     };
@@ -127,6 +150,11 @@ function SignupScreen({ navigation }) {
     const { signIn } = useSession();
 
     const handleSignup = () => {
+        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        if (!emailRegex.test(email)) {
+            alert('Please enter a valid email address.');
+            return;
+        }
         if (!email || !name || !password || !confirmPassword || !termsAccepted || !privacyAccepted) {
             if ((!email || !name || !password || !confirmPassword) && (!termsAccepted || !privacyAccepted)){
                 alert('Please fill in all fields and accept the terms and conditions.');
@@ -162,51 +190,51 @@ function SignupScreen({ navigation }) {
                 />
             </View>
             {/* Signup Form */}
-            <TextInput
+            <CustomInput
                 style={styles.input}
                 placeholder="Email"
                 value={email}
-                onChangeText={setEmail}
+                setValue={setEmail}
                 autoCapitalize="none"
             />
-            <TextInput
+            <CustomInput
                 style={styles.input}
                 placeholder="Name"
                 value={name}
-                onChangeText={setName}
+                setValue={setName}
             />
-            <TextInput
+            <CustomInput
                 style={styles.input}
                 placeholder="Password"
                 value={password}
-                onChangeText={setPassword}
+                setValue={setPassword}
                 secureTextEntry
             />
-            <TextInput
+            <CustomInput
                 style={styles.input}
                 placeholder="Confirm Password"
                 value={confirmPassword}
-                onChangeText={setConfirmPassword}
+                setValue={setConfirmPassword}
                 secureTextEntry
             />
 
             {/* Terms of serivce*/}
             <View style={styles.checkboxContainer}>
                 <TouchableOpacity
-                    style={styles.checkbox}
+                    style={[styles.checkbox,{color:Colors[colorScheme ?? 'light'].text, borderColor:Colors[colorScheme ?? 'light'].borderColor}]}
                     onPress={() => setTermsAccepted(!termsAccepted)}>
                     {termsAccepted && <Text>✓</Text>}
                 </TouchableOpacity>
-                <Text style={styles.checkboxLabel}>I have read and accept the Terms of Service</Text>
+                <Text style={[styles.checkboxLabel,{color:Colors[colorScheme ?? 'light'].text}]}>I have read and accept the Terms of Service</Text>
             </View>
             {/* Privacy Policy */}
             <View style={styles.checkboxContainer}>
                 <TouchableOpacity
-                    style={styles.checkbox}
+                    style={[styles.checkbox,{color:Colors[colorScheme ?? 'light'].text, borderColor:Colors[colorScheme ?? 'light'].borderColor}]}
                     onPress={() => setPrivacyAccepted(!privacyAccepted)}>
                     {privacyAccepted && <Text>✓</Text>}
                 </TouchableOpacity>
-                <Text style={styles.checkboxLabel}>I have read and accept the Privacy policy</Text>
+                <Text style={[styles.checkboxLabel,{color:Colors[colorScheme ?? 'light'].text}]}>I have read and accept the Privacy policy</Text>
             </View>
 
             <View style={styles.container}>    
@@ -216,15 +244,15 @@ function SignupScreen({ navigation }) {
                 <View style={styles.signInContainer}>
                     <Text style={{fontSize:15}}>Already have an account?</Text>
                     <TouchableOpacity onPress={() => navigation.navigate('Signin')}>
-                        <Text style={styles.signInText}>Login</Text>
+                    <Text style={[styles.signInText, {color:Colors[colorScheme ?? 'light'].clickableText}]}>Login</Text>
                     </TouchableOpacity>
                 </View>
             </View>
 
             {/* Google button */}
-            <View style={{flex:1, justifyContent:'flex-end'}}>
+            {!useKeyboardVisibility() && (<View style={{flex:1, justifyContent:'flex-end'}}>
                 <SignInWithGoogleButton />
-            </View>
+            </View>)}
         </View>
         );
     };
@@ -271,7 +299,8 @@ const styles = StyleSheet.create({
     root: {
         flex: 1,
         flexDirection: 'column',
-        height: '100%',
+        minHeight: "600",
+        // minHeight: '100%',
         // alignItems: 'center',
         // justifyContent: 'space-between',
         paddingHorizontal: '10%',
@@ -297,7 +326,6 @@ const styles = StyleSheet.create({
     signInText: {
         fontSize: 15,
         marginLeft: 7,
-        color: 'blue',
         fontWeight: 'bold',
     },
     inputContainer: {

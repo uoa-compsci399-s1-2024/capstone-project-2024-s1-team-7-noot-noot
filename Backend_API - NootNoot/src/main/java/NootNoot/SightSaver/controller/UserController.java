@@ -4,6 +4,8 @@ import java.util.List;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -16,34 +18,39 @@ import NootNoot.SightSaver.model.User;
 import NootNoot.SightSaver.service.UserService;
 
 @RestController
-@RequestMapping("/user")
+@RequestMapping("api/user")
 public class UserController {
     
     @Autowired
     private UserService userService;
 
     @GetMapping
-    public List<User> getAllUsers() {
-        return userService.getAllUsers();
+    public ResponseEntity<List<User>> getAllUsers() {
+
+        return new ResponseEntity<>(userService.getAllUsers(), HttpStatus.OK);
     }
 
     @GetMapping("/{userId}") 
-    public Optional<User> getUserById(@PathVariable Long userId) {
-        return userService.getUserById(userId);
+    public ResponseEntity<Optional<User>> getUserById(@PathVariable Long userId) {
+        return new ResponseEntity<>(userService.getUserById(userId), HttpStatus.OK);
     }
     
     @GetMapping("/numberOfUsers")
-    public Long getNumberOfUsers() {
-        return userService.getNumberOfUsers(); 
-    }
-
-    @DeleteMapping("/{userId}") 
-    public void deleteUserById(@PathVariable Long userId) {
-        userService.deleteUserById(userId);
+    public ResponseEntity<Long> getNumberOfUsers() {
+        return new ResponseEntity<>(userService.getNumberOfUsers(), HttpStatus.OK);
     }
 
     @PostMapping
-    public User createNewUser(@RequestBody User newUser) {
-       return userService.createNewUser(newUser);
+    public ResponseEntity<User> createNewUser(@RequestBody User newUser) {
+        return new ResponseEntity<>(userService.createNewUser(newUser), HttpStatus.CREATED);
     }
+
+
+@DeleteMapping("/{userId}")
+    public HttpStatus deleteUserById(@PathVariable Long userId) {
+
+        userService.deleteUserById(userId);
+        return HttpStatus.NO_CONTENT;
+    }
+
 }

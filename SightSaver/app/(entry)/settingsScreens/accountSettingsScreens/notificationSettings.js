@@ -12,7 +12,7 @@ export default function NotificationSettings() {
 
     return (
         <View style={[styles.container, {backgroundColor:Colors[colorScheme ?? 'light'].background}]}>
-            <Text style={[styles.title, {color:Colors[colorScheme ?? 'light'].text}]}>Notification Settings</Text>
+            {/* <Text style={[styles.title, {color:Colors[colorScheme ?? 'light'].text}]}>Notification Settings</Text> */}
             <Text style={[styles.text, {color:Colors[colorScheme ?? 'light'].text}]}>Customize your notification preferences here.</Text>
 
             <View style={styles.setting}>

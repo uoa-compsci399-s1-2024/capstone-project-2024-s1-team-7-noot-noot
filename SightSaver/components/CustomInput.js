@@ -23,7 +23,7 @@ export default function CustomInput({ value, setValue, placeholder, secureTextEn
 const styles = StyleSheet.create({
     container: {
         width: '100%',
-        borderRadius: 50,
+        borderRadius: 20,
         paddingHorizontal: 20,
         marginVertical: 5,
         paddingVertical: 5,
