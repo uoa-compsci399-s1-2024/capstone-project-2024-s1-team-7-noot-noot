@@ -23,7 +23,7 @@ public class AuthenticationService {
     private final AuthenticationManager authenticationManager;
     
     public AuthenticationResponse register(RegisterRequest request) {
-        User user = new User(request.getUsername(), passwordEncoder.encode(request.getPassword()), request.getEmail(), Role.USER);
+        User user = new User(request.getUsername(), passwordEncoder.encode(request.getPassword()), request.getEmail());
 
         userRepository.save(user);
         var jwtToken = jwtService.generateToken(user);
@@ -32,7 +32,7 @@ public class AuthenticationService {
             .build();
     }
 
-    public Object authenticate(AuthenticationRequest request) {
+    public AuthenticationResponse authenticate(AuthenticationRequest request) {
         authenticationManager.authenticate(
             new UsernamePasswordAuthenticationToken(request.getEmail(), request.getPassword())
         );
