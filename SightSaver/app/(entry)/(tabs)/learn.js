@@ -64,8 +64,6 @@ export default function LearnScreen() {
                 Ipsum dolor sit amet consectetur adipiscing elit ut.{"\n"}
           </Text>
       </View>
-
-      <View style={[styles.separator, {backgroundColor: Colors[colorScheme ?? 'light'].seperator}]}/>
     </View>
     </ScrollView>
   );
@@ -92,11 +90,5 @@ const styles = StyleSheet.create({
   },
   centerText:{
     textAlign: 'center',
-  },
-  separator: {
-    position: 'absolute',
-    bottom: 0,
-    height: 1,
-    width: '100%',
   },
 });
