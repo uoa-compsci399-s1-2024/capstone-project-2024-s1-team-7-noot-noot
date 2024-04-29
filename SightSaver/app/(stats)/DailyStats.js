@@ -72,7 +72,26 @@ export default function DailyScreen() {
                 }}
                 />
                 </View>
+                  <View style={styles.lineSpace}>
+                  <LineChart  
+                  yAxisThickness={0}
+                  noOfSections={1}
+                  stepValue={1}
+                  spacing={4}
+                  stepHeight={100}
+                  hideDataPoints
+                  xAxisLabelTextStyle={{color:'white', width:40}}
+                  data={dayData}
+                  hideRules={true}
+                  areaChart={true}
+                  startFillColor={'#FFBC1F'}
+                  endFillColor={'#F6D78D'}
+                  color={'#404040'}
+                  xAxisColor={'#404040'}
+                  hideYAxisText={true}
+                  />
                 </View>
+            </View>
         );
  }
 }
