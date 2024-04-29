@@ -13,11 +13,26 @@ import { TextInput, Button, StyleSheet, useWindowDimensions, Image, TouchableOpa
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import SignInWithGoogleButton from '../components/SignInGoogle';
 import useKeyboardVisibility from '../components/KeyboardVisibility';
-
+import axios from 'axios';
 
 function WelcomeScreen({ navigation }) {
     const colorScheme = useColorScheme();
     const { height } = useWindowDimensions();
+    // const {axios} = require('axios');
+    const fetchData = () => {
+        axios.post('https://sightsaver-api.azurewebsites.net/child', {
+            id: '2',
+            sensor_id: '0',
+            name: 'test',
+            parent:'0'
+          })
+          .then((response) => {
+            console.log(response);
+          }, (error) => {
+            console.log(error);
+          });
+        }
+
     return (
         <View style={[styles.root, {backgroundColor:Colors[colorScheme ?? 'light'].background}]}>
             {/* Sightsaver Logo */}
@@ -28,6 +43,7 @@ function WelcomeScreen({ navigation }) {
                     resizeMode='contain'
                 />
             </View>
+            <Button title="Test" onPress={(fetchData)}></Button>
             <View style={styles.container}>    
                 {/* Signup button */}
                 <CustomButton style={[styles.signUpButton]}onPress={() => navigation.navigate('Signup')} text={"Sign up"} />
@@ -51,6 +67,7 @@ function SignIn({ navigation }) {
     const { height } = useWindowDimensions();
     const { signIn } = useSession();
 
+
     const handleLogin = () => {
         const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
         if (!emailRegex.test(email)) {
@@ -62,7 +79,8 @@ function SignIn({ navigation }) {
             return;}
 
         // Login logic
-        console.log('Signing in with:', { email, name, password });
+        console.log('Signing in with:', { email, name, password });const axios = require('axios');
+
         // Navigate to another screen upon successful signup
         signIn();
         router.replace('/');
