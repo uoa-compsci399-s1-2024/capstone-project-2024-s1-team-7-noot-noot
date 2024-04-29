@@ -32,6 +32,9 @@ function WelcomeScreen({ navigation }) {
             console.log(error);
           });
         }
+    const handleLogin = () => {
+        router.replace('/');
+        };
 
     return (
         <View style={[styles.root, {backgroundColor:Colors[colorScheme ?? 'light'].background}]}>
@@ -43,7 +46,10 @@ function WelcomeScreen({ navigation }) {
                     resizeMode='contain'
                 />
             </View>
-            <Button title="Test" onPress={(fetchData)}></Button>
+            {/* Buttons for testing */}
+            <Button title="Skip Login (for testing only)" onPress={handleLogin}></Button>
+            <View style={{margin:10}}></View>
+            <Button title="Test API" onPress={(fetchData)}></Button>
             <View style={styles.container}>    
                 {/* Signup button */}
                 <CustomButton style={[styles.signUpButton]}onPress={() => navigation.navigate('Signup')} text={"Sign up"} />
