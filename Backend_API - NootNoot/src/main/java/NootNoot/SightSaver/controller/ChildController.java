@@ -42,7 +42,7 @@ public class ChildController {
     @DeleteMapping("/{id}")
     public HttpStatus deleteChild(@PathVariable("id") Long id) {
         childService.deleteChildById(id);
-        return HttpStatus.valueOf(204);
+        return HttpStatus.valueOf(200);
     }
 
 

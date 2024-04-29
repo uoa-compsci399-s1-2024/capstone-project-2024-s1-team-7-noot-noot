@@ -36,7 +36,7 @@ public class FeedbackController {
     @DeleteMapping("/{id}")
     public HttpStatus deleteFeedback(@PathVariable Long id) {
         feedbackService.deleteFeedbackbyID(id);
-        return HttpStatus.valueOf(204);
+        return HttpStatus.valueOf(200);
     }
 
 }
