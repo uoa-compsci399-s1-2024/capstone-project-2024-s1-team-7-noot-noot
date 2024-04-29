@@ -13,7 +13,7 @@ import java.util.List;
 
 
 @RestController
-@RequestMapping("/child")
+@RequestMapping("api/child")
 public class ChildController {
 
     @Autowired

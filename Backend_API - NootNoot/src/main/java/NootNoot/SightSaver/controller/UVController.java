@@ -7,7 +7,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("/UV")
+@RequestMapping("api/uv")
 public class UVController {
 
     @Autowired
