@@ -9,7 +9,7 @@ var date = moment()
       .utcOffset('+12.00')
       .format("dddd Do MMMM");   
       
-      export default function DailyScreen() {
+export default function DailyScreen() {
         const colorScheme = useColorScheme();
         if (colorScheme == 'light') {
         return (
@@ -70,34 +70,8 @@ var date = moment()
                   return [<Text style={{fontSize: 30, color: 'white'}}>60%</Text>,
                   <Text style={{fontSize: 12, color: 'white'}}>72 Minutes</Text>];
                 }}
-                
-              />
-            </View>
-              <View style={styles.lineSpace}>
-                  <LineChart  
-                  yAxisThickness={0}
-                  noOfSections={1}
-                  stepValue={1}
-                  spacing={4}
-                  stepHeight={100}
-                  hideDataPoints
-                  xAxisLabelTextStyle={{color:'white', width:40}}
-                  data={dayData}
-                  hideRules={true}
-                  areaChart={true}
-                  startFillColor={'#FFBC1F'}
-                  endFillColor={'#F6D78D'}
-                  color={'#404040'}
-                  xAxisColor={'#404040'}
-                  hideYAxisText={true}
-                  />
-                </View>
-          </View>
-        );
-      }
-      
-      }
-      
+
+
 const styles = StyleSheet.create({
   container: {
     height: '100%',
@@ -121,7 +95,7 @@ const styles = StyleSheet.create({
   },
 });
 
-const PieDay = [
+PieDay = [
   {value: 65, color: '#FFBC1F'},
   {value: 35, color: '#F6D78D'}
 ];

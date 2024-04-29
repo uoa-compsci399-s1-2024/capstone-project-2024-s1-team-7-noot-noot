@@ -17,4 +17,16 @@ public class ParentService {
     public List<Parent> getAllParents() {
         return parentRepository.findAll();
     }
+
+    public Parent getParentById(Long id) {
+        return parentRepository.findById(id).orElse(null);
+    }
+
+    public Parent saveParent(Parent parent){
+        return parentRepository.save(parent);
+    }
+
+    public void deleteParentById(Long id){
+        parentRepository.deleteById(id);
+    }
 }

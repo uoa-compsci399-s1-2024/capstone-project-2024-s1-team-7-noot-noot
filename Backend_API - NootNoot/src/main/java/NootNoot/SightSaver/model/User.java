@@ -3,24 +3,19 @@ package NootNoot.SightSaver.model;
 import jakarta.persistence.*;
 
 @Entity
+@Table(name = "[user]")
 public class User {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
     private String username;
     private String password;
     private String email;
     private boolean parent;
 
     public User() {}
-
-    public User(String username, String password, String email, boolean parent) {
-        this.username = username;
-        this.password = password;
-        this.email = email;
-        this.parent = parent;
-    }
 
     public Long getId() {return this.id;}
 
@@ -55,5 +50,4 @@ public class User {
     public void setParent(boolean value) {
         this.parent = value;
     }
-
 }

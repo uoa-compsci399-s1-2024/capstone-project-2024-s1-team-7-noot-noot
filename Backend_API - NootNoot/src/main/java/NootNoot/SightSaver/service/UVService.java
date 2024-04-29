@@ -17,4 +17,21 @@ public class UVService {
     public List<Uv> getAllUVValues() {
         return uvRepository.findAll();
     }
+
+    public Uv getUVValueById(Long id) {
+        return uvRepository.findById(id).orElse(null);
+    }
+
+    public Long getUVValueCount(){
+        return uvRepository.count();
+    }
+
+    public Uv saveUV(Uv uv) {
+        return uvRepository.save(uv);
+    }
+
+    public void deleteUV(Long id) {
+        uvRepository.deleteById(id);
+    }
+
 }

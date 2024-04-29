@@ -19,7 +19,15 @@ public class ResearcherService {
         return researcherRepository.findAll();
     }
 
-    public Optional<Researcher> getResearcherById( Long researcherId) {
-        return researcherRepository.findById(researcherId);
+    public Researcher getResearcherById( Long researcherId) {
+        return researcherRepository.findById(researcherId).orElse(null);
+    }
+
+    public Researcher addResearcher(Researcher researcher) {
+        return researcherRepository.save(researcher);
+    }
+
+    public void deleteResearcher(Long researcherId) {
+        researcherRepository.deleteById(researcherId);
     }
 }
