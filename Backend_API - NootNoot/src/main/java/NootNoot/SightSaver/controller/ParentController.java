@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
     @RestController
-    @RequestMapping("/parent")
+    @RequestMapping("api/parent")
     public class ParentController {
         @Autowired
         private ParentService parentService;

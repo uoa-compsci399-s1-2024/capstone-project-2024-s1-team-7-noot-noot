@@ -16,7 +16,7 @@ import NootNoot.SightSaver.model.User;
 import NootNoot.SightSaver.service.UserService;
 
 @RestController
-@RequestMapping("/user")
+@RequestMapping("api/user")
 public class UserController {
     
     @Autowired
