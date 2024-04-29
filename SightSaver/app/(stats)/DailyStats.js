@@ -70,8 +70,12 @@ export default function DailyScreen() {
                   return [<Text style={{fontSize: 30, color: 'white'}}>60%</Text>,
                   <Text style={{fontSize: 12, color: 'white'}}>72 Minutes</Text>];
                 }}
-
-
+                />
+                </View>
+                </View>
+        );
+ }
+}
 const styles = StyleSheet.create({
   container: {
     height: '100%',
