@@ -51,9 +51,9 @@ function SignIn({ navigation }) {
     const { signIn } = useSession();
 
     const handleLogin = () => {
-        if (!email || !name || !password) {
-            alert("Please fill in all fields. If you don't have an account, please sign up.");
-            return;}
+        //  if (!email || !name || !password) {
+            // alert("Please fill in all fields. If you don't have an account, please sign up.");
+            // return;}
 
         // Login logic
         console.log('Signing in with:', { email, name, password });
