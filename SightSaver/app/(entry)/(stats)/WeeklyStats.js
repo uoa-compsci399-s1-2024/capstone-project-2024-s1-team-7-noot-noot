@@ -158,12 +158,12 @@ export default function WeeklyScreen() {
               data={pieData}
               innerCircleColor={'#404040'}
               centerLabelComponent={() => {
-                return <Text style={{fontSize: 30, color: 'white'}}>70%</Text>;
+                return <Text style={{fontSize: 30, color: 'white'}}>{Math.floor(Math.min(totalHours/14*100, 100))}%</Text>;
               }}
             />
           </View>
           <View style={styles.goal}>
-            <Text style={{color:Colors[colorScheme ?? 'light'].text}}>9.8/14 Hours</Text>
+            <Text style={{color:Colors[colorScheme ?? 'light'].text}}>{totalHours}/14 Hours</Text>
           </View>
           <View style={styles.barSpace}>
             <BarChart 

@@ -376,9 +376,9 @@ export default function DailyScreen() {
     return (
       <View styles={[styles.container, {backgroundColor:Colors[colorScheme ?? 'light'].background}]}>
         <View style={styles.dateSpace}>
-          <Button title="Previous Day" onPress={goToPreviousDay} />
-          <Text style={{color:Colors[colorScheme ?? 'light'].text}}>{date}</Text>
-          <Button title="Next Day" onPress={goToNextDay} />
+          <Ionicons name="chevron-back" size={20} color="white" onPress={goToPreviousDay} />
+          <Text style={[{color:Colors[colorScheme ?? 'light'].text}, {}]}>{date}</Text>
+          <Ionicons name="chevron-forward" size={20} color="white" onPress={goToNextDay} />
         </View>
         <View style={styles.pieSpace}>
           <PieChart style= {styles.PieChart}
@@ -389,32 +389,32 @@ export default function DailyScreen() {
             innerCircleColor={'#404040'}
             centerLabelComponent={() => {
               return (
-                <Text style={{fontSize: 30, color: 'white'}}>60%</Text>
+                <Text style={{fontSize: 30, color: 'white'}}>{completedPercentage}%</Text>
               );
             }}
-            />
+          />
         </View>
         <View style={styles.goal}>
-          <Text style={{color:Colors[colorScheme ?? 'light'].text}}>72/120 Minutes</Text>
+          <Text style={{color:Colors[colorScheme ?? 'light'].text}}>{totalTime}/120 Minutes</Text>
         </View>
         <View style={styles.lineSpace}>
           <LineChart  
-            yAxisThickness={0}
-            noOfSections={1}
-            stepValue={1}
-            spacing={5}
-            stepHeight={100}
-            hideDataPoints
-            xAxisLabelTextStyle={{color:'white', width:40}}
-            data={dayData}
-            hideRules={true}
-            areaChart={true}
-            startFillColor={'#FFBC1F'}
-            endFillColor={'#F6D78D'}
-            color={'#404040'}
-            xAxisColor={'#404040'}
-            hideYAxisText={true}
-            initialSpacing={0}
+          yAxisThickness={0}
+          noOfSections={1}
+          stepValue={1}
+          spacing={5}
+          stepHeight={100}
+          hideDataPoints
+          xAxisLabelTextStyle={{color:'white', width:40}}
+          data={dayData}
+          hideRules={true}
+          areaChart={true}
+          startFillColor={'#FFBC1F'}
+          endFillColor={'#F6D78D'}
+          color={'#404040'}
+          xAxisColor={'#404040'}
+          hideYAxisText={true}
+          initialSpacing={0}
           />
         </View>
       </View>
