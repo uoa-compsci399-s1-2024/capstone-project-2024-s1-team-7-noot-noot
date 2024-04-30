@@ -40,7 +40,7 @@ async function updateWeekData(searchDate) {
       if (date.isSame(date, 'week')) {
         // Add the minutes to the correct day of the week
         const dayOfWeek = date.day();
-        weekData[dayOfWeek] += parseInt(minutes) / 60; // Convert minutes to hours
+        weekData[dayOfWeek - 1] += parseInt(minutes) / 60; // Convert minutes to hours
       }
     }
   }
