@@ -155,18 +155,16 @@ function useBLE(): BluetoothLowEnergyApi {
       const chunk = decodedData.slice(i, i + 20);
 
       // Extract the time and light values from the chunk
-      let day = chunk.slice(0, 2);
-      let month = chunk.slice(2, 4);
-      let year = chunk.slice(4, 6);
-      let hour = chunk.slice(6, 8);
-      let minute = chunk.slice(8, 10);
-      let second = chunk.slice(10, 12);
+      let year = chunk.slice(0, 4);
+      let month = chunk.slice(4, 6);
+      let day = chunk.slice(6, 8);
+      let hour = chunk.slice(8, 10);
+      let minute = chunk.slice(10, 12);
+      let second = chunk.slice(12, 14);
 
-      let time = day + ':' + month + ':' + year + ' ' + hour + ':' + minute + ':' + second;
+      let time = year + ':' + month + ':' + day + ' ' + hour + ':' + minute + ':' + second;
 
-      let light = chunk.slice(12, 20);
-
-      light = light.replace(/0+$/, '');
+      let light = chunk.slice(14, 20);
 
       // Create a JSON object
       formattedData += 'time: ' + time + ' light: ' + light + 'lux\n';

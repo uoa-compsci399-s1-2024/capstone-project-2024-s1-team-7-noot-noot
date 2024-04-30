@@ -5,6 +5,7 @@ import React, { useState, useEffect, useContext } from 'react';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { Ionicons } from '@expo/vector-icons';
 import useBLE from "../useBLE";
+import * as FileSystem from 'expo-file-system';
 import { 
   StyleSheet, 
   Switch, 
@@ -17,6 +18,24 @@ import {
   ScrollView,
   Button
 } from 'react-native';
+
+function importData () {
+  const fileUri = FileSystem.documentDirectory + 'dummyData.txt';
+  const data = `
+    2024:04:29 11:03:23 42\n
+    2024:04:29 13:56:32 31\n
+    2024:04:29 16:12:05 38\n
+    2024:04:30 09:12:44 63\n
+    2024:04:30 12:53:22 42\n
+    2024:04:30 15:32:04 15\n
+    2024:04:30 16:21:03 23\n
+    2024:05:01 10:23:06 45\n
+    2024:05:01 13:02:45 61\n
+    2024:05:01 15:45:03 40\n
+  `;
+
+  FileSystem.writeAsStringAsync(fileUri, data);
+};
 
 export default function ProfileScreen() {
   const colorScheme = useColorScheme();
@@ -152,6 +171,11 @@ export default function ProfileScreen() {
         </TouchableOpacity>
       </View>
 
+      {/* Import Dummy Data Button */}
+      <View style={styles.import}>
+        <Button title="Import Dummy Data (for testing only)" onPress={importData()}></Button>
+      </View>
+
       {/* Device Modal */}
       <Modal
           animationType="fade"
@@ -269,6 +293,10 @@ const styles = StyleSheet.create({
     borderWidth: 0,
     alignItems: 'center',
     borderRadius: 5,
+    alignSelf: 'center',
+  },
+  import: {
+    width: '85%',
     alignSelf: 'center',
   },
   syncButtonText: {
