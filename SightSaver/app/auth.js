@@ -18,33 +18,36 @@ import axios from 'axios';
 function WelcomeScreen({ navigation }) {
     const colorScheme = useColorScheme();
     const { height } = useWindowDimensions();
+    const { signIn } = useSession();
 
     const fetchData = () => {
-        axios.get('https://sightsaver-api.azurewebsites.net/api/user')
-          .then((response) => {
-            const userData = response.data; // Extracting the data array from the response
+        console.log('Fetching data from API...');
+        // axios.get('https://sightsaver-api.azurewebsites.net/api/user')
+        //   .then((response) => {
+        //     const userData = response.data; // Extracting the data array from the response
             
-            // Define the email you want to check
-            const emailToCheck = "admin@gmail.com"; // Replace with the email you want to check
+        //     // Define the email you want to check
+        //     const emailToCheck = "admin@gmail.com"; // Replace with the email you want to check
             
-            // Check if the emailToCheck exists in any user object's 'email' property
-            const userWithEmail = userData.find(user => user.email === emailToCheck);
+        //     // Check if the emailToCheck exists in any user object's 'email' property
+        //     const userWithEmail = userData.find(user => user.email === emailToCheck);
             
-            if (userWithEmail) {
-              console.log(`Email ${emailToCheck} already exists.`);
-              console.log(userWithEmail.parent); // Optionally log the user object
+        //     if (userWithEmail) {
+        //       console.log(`Email ${emailToCheck} already exists.`);
+        //       console.log(userWithEmail.pa); // Optionally log the user object
 
-            } else {
-              console.log(`Email ${emailToCheck} does not exist.`);
-            }
+        //     } else {
+        //       console.log(`Email ${emailToCheck} does not exist.`);
+        //     }
             
-          })
-          .catch((error) => {
-            console.log(error);
-          });
+        //   })
+        //   .catch((error) => {
+        //     console.log(error);
+        //   });
         }
 
     const handleLogin = () => {
+        signIn();
         router.replace('/');
         };
 
@@ -85,23 +88,57 @@ function SignIn({ navigation }) {
     const { height } = useWindowDimensions();
     const { signIn } = useSession();
 
-
-    const handleLogin = () => {
+    const handleLogin = async () => {
         const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
         if (!emailRegex.test(email)) {
             alert('Please enter a valid email address.');
             return;
         }
-        if (!email || !name || !password) {
-            alert("Please fill in all fields. If you don't have an account, please sign up.");
-            return;}
-        // Login logic
-        console.log('Signing in with:', { email, name, password });const axios = require('axios');
-
-        // Navigate to another screen upon successful signup
-        signIn();
-        router.replace('/');
-        };
+        if (!email || !password) {
+            alert('Please fill in both email and password fields.');
+            return;
+        }
+    
+        try {
+            const response = await axios.post('https://sightsaver-api.azurewebsites.net/api/user', {
+                email: email,
+                password: password
+            });
+    
+            // Assuming the server responds with a success status (e.g., HTTP 200)
+            // You can handle the login process here
+            console.log('Login successful:', response.data);
+    
+            // Navigate to another screen upon successful login (example)
+            signIn(); // Call your signIn function (e.g., update state, set session)
+            navigation.replace('/'); // Navigate to home or dashboard screen
+    
+        } catch (error) {
+            if (error.response) {
+                // The request was made and the server responded with a status code
+                const status = error.response.status;
+                if (status === 404) {
+                    // Email not found
+                    alert('Email not found. Please check your email address.');
+                } else if (status === 401) {
+                    // Unauthorized - Invalid password
+                    alert('Invalid password. Please check your password.');
+                } else {
+                    // Other server errors
+                    console.error('Server Error:', error.response.data);
+                    alert('An unexpected error occurred. Please try again.');
+                }
+            } else if (error.request) {
+                // The request was made but no response was received
+                console.error('Request Error:', error.request);
+                alert('No response from server. Please try again later.');
+            } else {
+                // Something else happened in making the request
+                console.error('Error:', error.message);
+                alert('An unexpected error occurred. Please try again.');
+            }
+        }
+    };
 
     return (
         <View style={[styles.root, {backgroundColor:Colors[colorScheme ?? 'light'].background}]}>
@@ -168,11 +205,13 @@ function SignupScreen({ navigation }) {
     const { signIn } = useSession();
 
     const handleSignup = () => {
+        /// Validate email syntax
         const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
         if (!emailRegex.test(email)) {
             alert('Please enter a valid email address.');
             return;
         }
+        // Validate all fields are filled
         if (!email || !name || !password || !confirmPassword || !termsAccepted || !privacyAccepted) {
             if ((!email || !name || !password || !confirmPassword) && (!termsAccepted || !privacyAccepted)){
                 alert('Please fill in all fields and accept the terms and conditions.');
@@ -185,16 +224,41 @@ function SignupScreen({ navigation }) {
                 return;}
             return;
         }
+        // Validate password and confirm password match
         if (password !== confirmPassword) {
             alert('Password and confirm password do not match.');
             return;
         }
+
         // Signup logic
-        alert('Signed up successfully!');
-        console.log('Signing up with:', { email, name, password });
+        axios.get('https://sightsaver-api.azurewebsites.net/api/user')
+            .then((response) => {
+            const userData = response.data; // Extracting the data array from the response
+            
+            // Define the email you want to check
+            const emailToCheck = "admin@gmail.com"; // Replace with the email you want to check
+            
+            // Check if the emailToCheck exists in any user object's 'email' property
+            const userWithEmail = userData.find(user => user.email === emailToCheck);
+            
+            if (userWithEmail) {
+                console.log(`Email ${emailToCheck} already exists.`);
+                // console.log(userWithEmail.parent); // Optionally log the user object
+                alert('Email already exists');
+                
+            } else {
+                signIn();
+                router.replace('/');        
+                console.log(`Email ${emailToCheck} does not exist.`);
+            }
+            
+            })
+            .catch((error) => {
+            console.log(error);
+            });
+        // alert('Signed up successfully!');
+        // console.log('Signing up with:', { email, name, password });
         // Navigate to another screen upon successful signup
-        signIn();
-        router.replace('/');
         };
 
     return (
