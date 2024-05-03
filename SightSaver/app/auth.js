@@ -84,19 +84,23 @@ function SignIn({ navigation }) {
     const colorScheme = useColorScheme();
     const { height } = useWindowDimensions();
     const { signIn } = useSession();
+    const [showPassword, setShowPassword] = useState(false);
 
-
+    const toggleShowPassword = () => {
+        setShowPassword(!showPassword);
+    }
+    
     const handleLogin = () => {
         const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
         if (!emailRegex.test(email)) {
             alert('Please enter a valid email address.');
             return;
         }
-        if (!email || !name || !password) {
+        if (!email || !password) {
             alert("Please fill in all fields. If you don't have an account, please sign up.");
             return;}
         // Login logic
-        console.log('Signing in with:', { email, name, password });const axios = require('axios');
+        console.log('Signing in with:', { email, password });
 
         // Navigate to another screen upon successful signup
         signIn();
@@ -121,21 +125,25 @@ function SignIn({ navigation }) {
                 setValue={setEmail}
                 autoCapitalize="none"
             />
-            <CustomInput
+            {/* <CustomInput
                 style={styles.input}
                 placeholder="Name"
                 value={name}
                 setValue={setName}
-            />
+            /> */}
             <CustomInput
                 style={styles.input}
                 placeholder="Password"
                 value={password}
                 setValue={setPassword}
-                secureTextEntry
+                secureTextEntry={!showPassword}
             />
 
-            <View style={styles.container}>    
+            <View style={styles.container}>
+                {/* Show password button */}
+            <TouchableOpacity style={{color:Colors[colorScheme ?? 'light']}} onPress={toggleShowPassword}>
+                <Text>{showPassword ? 'Hide Password' : 'Show Password'}</Text>
+            </TouchableOpacity>    
                 {/* Login button */}
                 <CustomButton style={[styles.signUpButton]} onPress={handleLogin} text={"Login"} />
                 {/* Signup text */}
