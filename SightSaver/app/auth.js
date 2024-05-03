@@ -18,20 +18,32 @@ import axios from 'axios';
 function WelcomeScreen({ navigation }) {
     const colorScheme = useColorScheme();
     const { height } = useWindowDimensions();
-    // const {axios} = require('axios');
+
     const fetchData = () => {
-        axios.post('https://sightsaver-api.azurewebsites.net/child', {
-            id: '2',
-            sensor_id: '0',
-            name: 'test',
-            parent:'0'
-          })
+        axios.get('https://sightsaver-api.azurewebsites.net/api/user')
           .then((response) => {
-            console.log(response);
-          }, (error) => {
+            const userData = response.data; // Extracting the data array from the response
+            
+            // Define the email you want to check
+            const emailToCheck = "admin@gmail.com"; // Replace with the email you want to check
+            
+            // Check if the emailToCheck exists in any user object's 'email' property
+            const userWithEmail = userData.find(user => user.email === emailToCheck);
+            
+            if (userWithEmail) {
+              console.log(`Email ${emailToCheck} already exists.`);
+              console.log(userWithEmail.parent); // Optionally log the user object
+
+            } else {
+              console.log(`Email ${emailToCheck} does not exist.`);
+            }
+            
+          })
+          .catch((error) => {
             console.log(error);
           });
         }
+
     const handleLogin = () => {
         router.replace('/');
         };
