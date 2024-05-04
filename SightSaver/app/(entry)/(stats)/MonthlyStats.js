@@ -19,7 +19,11 @@ export default function MonthlyScreen() {
       <View style={[styles.CalendarPicker, ]}>
       <CalendarPicker
         onDateChange={onDateChange}
+        textStyle={{color: Colors[colorScheme].text}}
         todayBackgroundColor='#f2e6ff'
+        dayTextStyle={{color: Colors[colorScheme].text}}
+        borderColor={Colors[colorScheme].text}
+        selectedDayStyle={{backgroundColor: '#FFBD20'}}
       />
       {selectedDate && <Text>Selected Date: {moment(selectedDate).format('LL')}</Text>}
       </View>
@@ -38,8 +42,8 @@ const styles = StyleSheet.create({
   },
   CalendarPicker: {
     width: '95%',
-    backgroundColor: Colors.light.background,
-    color: Colors.light.text,
     opacity: 0.8,
+    flex:1,
+    marginTop: '10%',
   }
 });
