@@ -18,33 +18,51 @@ import axios from 'axios';
 function WelcomeScreen({ navigation }) {
     const colorScheme = useColorScheme();
     const { height } = useWindowDimensions();
+    const { signIn } = useSession();
+    email = 'admin@gmail.com';
+    password = 'Password';
+
+    const checkLogin = async (email, password) => {
+        try {
+            const response = await axios.post('https://sightsaver-api.azurewebsites.net/api/user', {
+                email,
+                password
+            });
+    
+            // Assuming the API responds with a success message or user data upon successful login attempt
+            if (response.status === 200) {
+                console.log('Login successful');
+                return true; // Return true to indicate successful login
+            } else {
+                console.log('Login failed');
+                return false; // Return false for failed login
+            }
+        } catch (error) {
+            console.error('Error logging in:', error);
+            throw new Error('Failed to login. Please try again.');
+        }
+    };
 
     const fetchData = () => {
-        axios.get('https://sightsaver-api.azurewebsites.net/api/user')
-          .then((response) => {
-            const userData = response.data; // Extracting the data array from the response
-            
-            // Define the email you want to check
-            const emailToCheck = "admin@gmail.com"; // Replace with the email you want to check
-            
-            // Check if the emailToCheck exists in any user object's 'email' property
-            const userWithEmail = userData.find(user => user.email === emailToCheck);
-            
-            if (userWithEmail) {
-              console.log(`Email ${emailToCheck} already exists.`);
-              console.log(userWithEmail.parent); // Optionally log the user object
-
-            } else {
-              console.log(`Email ${emailToCheck} does not exist.`);
-            }
-            
-          })
-          .catch((error) => {
-            console.log(error);
-          });
+        console.log('Fetching data...');
+        checkLogin(email, password)
+            .then(loginSuccessful => {
+                if (loginSuccessful) {
+                    // Handle successful login (e.g., navigate to dashboard)
+                    console.log('User logged in successfully');
+                } else {
+                    // Handle failed login (e.g., display error message)
+                    console.log('Login failed. Please check your credentials.');
+                }
+            })
+            .catch(error => {
+                // Handle error
+                console.error('Login error:', error.response.data);
+            });
         }
 
     const handleLogin = () => {
+        signIn();
         router.replace('/');
         };
 
@@ -89,23 +107,49 @@ function SignIn({ navigation }) {
     const toggleShowPassword = () => {
         setShowPassword(!showPassword);
     }
-    
+
+    const checkLogin = async (email, password) => {
+        console.log('Logging');
+        try {
+            const response = await axios.post('https://sightsaver-api.azurewebsites.net/api/user', {
+                email,
+                password
+            });
+            console.log('Login successful:', response.data);
+            return response.data; // Assuming the response contains user data upon successful login
+        } catch (error) {
+            console.error('Login error:', error);
+            throw new Error('Login failed. Please check your credentials and try again.');
+        }
+    };
+   
+
     const handleLogin = () => {
+        // Validate email
         const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
         if (!emailRegex.test(email)) {
             alert('Please enter a valid email address.');
             return;
         }
+        // Validate all fields filled
         if (!email || !password) {
             alert("Please fill in all fields. If you don't have an account, please sign up.");
             return;}
-        // Login logic
-        console.log('Signing in with:', { email, password });
-
-        // Navigate to another screen upon successful signup
-        signIn();
-        router.replace('/');
+    
+            // Login process 
+            console.log('Logging in with:', { email, password })
+            checkLogin(email, password)
+            .then(userData => {
+                console.log(response.data, 'Logged in successfully');
+                signIn();
+                router.replace('/'); 
+                })
+            .catch(error => {
+                // Handle login failure (e.g., display error message)
+                console.error(error.message);
+            });        
         };
+
 
     return (
         <View style={[styles.root, {backgroundColor:Colors[colorScheme ?? 'light'].background}]}>
@@ -141,7 +185,7 @@ function SignIn({ navigation }) {
 
             <View style={styles.container}>
                 {/* Show password button */}
-            <TouchableOpacity style={{color:Colors[colorScheme ?? 'light']}} onPress={toggleShowPassword}>
+            <TouchableOpacity style={{padding:5, borderWidth: 1 ,borderColor:'black' ,color:Colors[colorScheme ?? 'light']}} onPress={toggleShowPassword}>
                 <Text>{showPassword ? 'Hide Password' : 'Show Password'}</Text>
             </TouchableOpacity>    
                 {/* Login button */}
@@ -161,8 +205,7 @@ function SignIn({ navigation }) {
             </View>)}
         </View>
         );
-    };
-    
+    };    
     
 function SignupScreen({ navigation }) {
     const [email, setEmail] = useState('');
