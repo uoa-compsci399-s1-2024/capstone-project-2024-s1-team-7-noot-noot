@@ -1,10 +1,11 @@
 package NootNoot.SightSaver.controller;
 
-import NootNoot.SightSaver.model.Feedback;
+
 import NootNoot.SightSaver.model.Parent;
-import NootNoot.SightSaver.service.FeedbackService;
 import NootNoot.SightSaver.service.ParentService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -16,23 +17,25 @@ import java.util.List;
         private ParentService parentService;
 
         @GetMapping
-        public List<Parent> getAll() {
-            return parentService.getAllParents();
+        public ResponseEntity<List<Parent>> getAll() {
+            return new ResponseEntity<>(parentService.getAllParents(), HttpStatus.OK);
         }
 
         @GetMapping("/{id}")
-        public Parent getParentById(@PathVariable Long id) {
-            return parentService.getParentById(id);
+        public ResponseEntity<Parent> getParentById(@PathVariable Long id) {
+            return new ResponseEntity<>(parentService.getParentById(id), HttpStatus.OK);
         }
 
         @PostMapping
-        public Parent addParent(@RequestBody Parent parent) {
-            return parentService.saveParent(parent);
+        public ResponseEntity<Parent> addParent(@RequestBody Parent parent) {
+            return new ResponseEntity<>(parentService.saveParent(parent), HttpStatus.CREATED);
         }
 
         @DeleteMapping("/{id}")
-        public void deleteParent(@PathVariable Long id) {
+        public HttpStatus deleteParent(@PathVariable Long id) {
+
             parentService.deleteParentById(id);
+            return HttpStatus.NO_CONTENT;
         }
 }
 
