@@ -1,17 +1,12 @@
 import { StyleSheet, Button, Pressable, onPress, SafeAreaView, Image } from 'react-native';
-import React, {useState} from 'react';
+import React, {useState, useEffect} from 'react';
 import { Text, View } from '../../../components/Themed';
-import { useNavigation } from '@react-navigation/native';
 import moment from "moment";
-import { AntDesign } from '@expo/vector-icons';
 import Colors from '../../../constants/Colors';
 import { useColorScheme } from '../../../components/useColorScheme';
-import { StatusBar } from 'react-native';
-import { Dropdown } from 'react-native-element-dropdown';
-import {NavigationContainer} from '@react-navigation/native';
-import {createNativeStackNavigator} from '@react-navigation/native-stack';
+import * as FileSystem from 'expo-file-system';
 
-var date = moment()
+var searchDate = moment()
       .utcOffset('+12.00')
       .format("dddd Do MMMM");   ;
 import { BarChart, LineChart, PieChart, PopulationPyramid } from 'react-native-gifted-charts';
@@ -20,8 +15,74 @@ const pieData = [
   {value: 30, color: '#F6D78D'}
 ];
 
+async function updateWeekData(searchDate) {
+  // Initialize an array to store the total time for each day of the week
+  const weekData = new Array(7).fill(0);
+
+  // Read the file
+  const fileUri = FileSystem.documentDirectory + 'dummyData.txt';
+  const data = await FileSystem.readAsStringAsync(fileUri);
+  const lines = data.split('\n');
+  
+  for (const line of lines) {
+    const trimmedLine = line.trim(); // Remove leading and trailing spaces
+    
+    if (trimmedLine.length > 1) {
+      const parts = trimmedLine.split(' ');
+      const dateStr = parts[0];
+      const timeStr = parts[1];
+      const minutes = parts[2];
+
+      // Parse the searchDate string into a moment object
+      const date = moment(dateStr, "YYYY:MM:DD");
+
+      // Check if the searchDate is within the same week as the search searchDate
+      if (date.isSame(date, 'week')) {
+        // Add the minutes to the correct day of the week
+        const dayOfWeek = date.day();
+        weekData[dayOfWeek - 1] += parseInt(minutes) / 60; // Convert minutes to hours
+      }
+    }
+  }
+  return weekData;
+}
+
 export default function WeeklyScreen() {
   const colorScheme = useColorScheme();
+  const [isLoading, setIsLoading] = useState(true);
+  const [monday, setMonday] = useState(0);
+  const [tuesday, setTuesday] = useState(0);
+  const [wednesday, setWednesday] = useState(0);
+  const [thursday, setThursday] = useState(0);
+  const [friday, setFriday] = useState(0);
+  const [saturday, setSaturday] = useState(0);
+  const [sunday, setSunday] = useState(0);
+  const [totalHours, setTotalHours] = useState(0);
+
+  useEffect(() => {
+    async function fetchData() {
+      const weekData = await updateWeekData(searchDate);
+      setMonday((weekData[0]));
+      setTuesday((weekData[1]));
+      setWednesday((weekData[2]));
+      setThursday((weekData[3]));
+      setFriday((weekData[4]));
+      setSaturday((weekData[5]));
+      setSunday((weekData[6]));
+      setTotalHours((weekData[0] + weekData[1] + weekData[2] + weekData[3] + weekData[4] + weekData[5] + weekData[6]).toFixed(1));
+      setIsLoading(false);
+    }
+  
+    fetchData();
+  });
+
+  if (isLoading) {
+    return (
+      <View style={[styles.container, {justifyContent: 'center'}]}>
+        <Text style={{color:Colors[colorScheme ?? 'light'].text}}>Loading...</Text>
+      </View>
+    );
+  }
 
   function getColor(value) {
     if (value >= 2) {
@@ -34,7 +95,7 @@ export default function WeeklyScreen() {
       return (
         <View styles={[styles.container, {backgroundColor:Colors[colorScheme ?? 'light'].background}]}>
           <View style={styles.dateSpace}>
-            <Text style={{color:Colors[colorScheme ?? 'light'].text}}>{date}</Text>
+            <Text style={{color:Colors[colorScheme ?? 'light'].text}}>{searchDate}</Text>
           </View>
           <View style={styles.pieSpace}>
             <PieChart style= {styles.PieChart}
@@ -44,9 +105,12 @@ export default function WeeklyScreen() {
               data={pieData}
               innerCircleColor={'#f2f2f2'}
               centerLabelComponent={() => {
-                return <Text style={{fontSize: 30, color: 'black'}}>70%</Text>;
+                return <Text style={{fontSize: 30, color: 'black'}}>{Math.floor(Math.min(totalHours/14*100, 100))}%</Text>;
               }}
             />
+          </View>
+          <View style={styles.goal}>
+            <Text style={{color:Colors[colorScheme ?? 'light'].text}}>{totalHours}/14 Hours</Text>
           </View>
           <View style={styles.barSpace}>
             <BarChart 
@@ -58,13 +122,14 @@ export default function WeeklyScreen() {
               xAxisLabelTextStyle={{color:'black'}}
               stepValue={1}
               hideRules={true}
-              data={[{value: 4.0, label: 'M', frontColor: getColor(4.0), onPress: () => alert('Monday')},
-              {value: 7.5, label: 'T', frontColor: getColor(7.5), onPress: () => alert('Tuesday')},
-                {value: 8.0, label: 'W', frontColor: getColor(8.0), onPress: () => alert('Wednesday')},
-                {value: 4.5, label: 'T', frontColor: getColor(4.5), onPress: () => alert('Thursday')},
-                {value: 6.8, label: 'F', frontColor: getColor(6.8), onPress: () => alert('Friday')},
-                {value: 2.8, label: 'S', frontColor: getColor(2.8), onPress: () => alert('Saturday')},
-                {value: 0.2, label: 'S', frontColor: getColor(0.2), onPress: () => alert('Sunday')},
+              data={[
+                {value: monday, label: 'Mo', frontColor: getColor(monday), onPress: () => alert('Monday')},
+                {value: tuesday, label: 'Tu', frontColor: getColor(tuesday), onPress: () => alert('Tuesday')},
+                {value: wednesday, label: 'We', frontColor: getColor(wednesday), onPress: () => alert('Wednesday')},
+                {value: thursday, label: 'Th', frontColor: getColor(thursday), onPress: () => alert('Thursday')},
+                {value: friday, label: 'Fr', frontColor: getColor(friday), onPress: () => alert('Friday')},
+                {value: saturday, label: 'Sa', frontColor: getColor(saturday), onPress: () => alert('Saturday')},
+                {value: sunday, label: 'Su', frontColor: getColor(sunday), onPress: () => alert('Sunday')},
               ]}
               yAxisThickness={0}
               xAxisThickness={0}
@@ -83,7 +148,7 @@ export default function WeeklyScreen() {
    return (
         <View styles={[styles.container, {backgroundColor:Colors[colorScheme ?? 'light'].background}]}>
           <View style={styles.dateSpace}>
-            <Text style={{color:Colors[colorScheme ?? 'light'].text}}>{date}</Text>
+            <Text style={{color:Colors[colorScheme ?? 'light'].text}}>{searchDate}</Text>
           </View>
           <View style={styles.pieSpace}>
             <PieChart style= {styles.PieChart}
@@ -93,12 +158,14 @@ export default function WeeklyScreen() {
               data={pieData}
               innerCircleColor={'#404040'}
               centerLabelComponent={() => {
-                return <Text style={{fontSize: 30, color: 'white'}}>70%</Text>;
+                return <Text style={{fontSize: 30, color: 'white'}}>{Math.floor(Math.min(totalHours/14*100, 100))}%</Text>;
               }}
             />
           </View>
+          <View style={styles.goal}>
+            <Text style={{color:Colors[colorScheme ?? 'light'].text}}>{totalHours}/14 Hours</Text>
+          </View>
           <View style={styles.barSpace}>
-
             <BarChart 
               barWidth={22}
               noOfSections={3}
@@ -108,12 +175,14 @@ export default function WeeklyScreen() {
               xAxisLabelTextStyle={{color:'white'}}
               stepValue={1}
               hideRules={true}
-              data={[{value: 1.7, label: 'M', frontColor: getColor(1.7), onPress: () => alert('Monday')},
-                {value: 2.0, label: 'W', frontColor: getColor(2.0), onPress: () => alert('Wednesday')},
-                {value: 1.3, label: 'T', frontColor: getColor(1.3), onPress: () => alert('Thursday')},
-                {value: 2.8, label: 'F', frontColor: getColor(2.8), onPress: () => alert('Friday')},
-                {value: 1.1, label: 'S', frontColor: getColor(1.1), onPress: () => alert('Saturday')},
-                {value: 0.2, label: 'S', frontColor: getColor(0.2), onPress: () => alert('Sunday')},
+              data={[
+                {value: monday, label: 'Mo', frontColor: getColor(monday), onPress: () => alert('Monday')},
+                {value: tuesday, label: 'Tu', frontColor: getColor(tuesday), onPress: () => alert('Tuesday')},
+                {value: wednesday, label: 'We', frontColor: getColor(wednesday), onPress: () => alert('Wednesday')},
+                {value: thursday, label: 'Th', frontColor: getColor(thursday), onPress: () => alert('Thursday')},
+                {value: friday, label: 'Fr', frontColor: getColor(friday), onPress: () => alert('Friday')},
+                {value: saturday, label: 'Sa', frontColor: getColor(saturday), onPress: () => alert('Saturday')},
+                {value: sunday, label: 'Su', frontColor: getColor(sunday), onPress: () => alert('Sunday')},
               ]}
               yAxisThickness={0}
               xAxisThickness={0}
@@ -136,20 +205,27 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   dateSpace:{
-    height: '10%',
-    width: '100%',
+    height: '5%',
     marginTop: '5%',
+    width: '100%',
+    alignSelf: 'center',
+    marginBottom: '5%',
+  },
+  goal: {
+    height: '5%',
+    marginTop: '5%',
+    width: '100%',
     alignSelf: 'center',
   },
   pieSpace: {
-    height: '48%',
+    height: '40%',
     width: '100%',
     alignSelf: 'center',
   },
-
   barSpace: {
-    height: '30%',
+    marginTop: '10%',
     width: '100%',
+    height: '25%',
     right: '3%',
   },
   

@@ -141,36 +141,38 @@ function useBLE(): BluetoothLowEnergyApi {
     rawData += characteristic.value;
   };
 
-  const onDeviceDisconnect = () => {
+  let formattedData = "";
+  const onDeviceDisconnect = async () => {
     const decodedData = base64.decode(rawData);
+
+    const fileUri = FileSystem.documentDirectory + 'data.txt';
+
+    // Delete the previous file
+    await FileSystem.deleteAsync(fileUri, { idempotent: true });
   
     // Process the data in chunks of 20 characters
     for (let i = 0; i < decodedData.length; i += 20) {
       const chunk = decodedData.slice(i, i + 20);
 
       // Extract the time and light values from the chunk
-      let time = chunk.slice(0, 12);
-      let light = chunk.slice(12, 20);
+      let year = chunk.slice(0, 4);
+      let month = chunk.slice(4, 6);
+      let day = chunk.slice(6, 8);
+      let hour = chunk.slice(8, 10);
+      let minute = chunk.slice(10, 12);
+      let second = chunk.slice(12, 14);
 
-      // Remove trailing zeros from the light value
-      light = light.replace(/0+$/, '');
+      let time = year + ':' + month + ':' + day + ' ' + hour + ':' + minute + ':' + second;
+
+      let light = chunk.slice(14, 20);
 
       // Create a JSON object
-      const data = {
-        time: time,
-        light: light
-      };
-
-      // Convert the JSON object to a string
-      const jsonString = JSON.stringify(data);
-
-      // Write the JSON string to a file, followed by a newline character
-      const fileUri = FileSystem.documentDirectory + 'data.json';
-      FileSystem.writeAsStringAsync(fileUri, jsonString + '\n');
+      formattedData += 'time: ' + time + ' light: ' + light + 'lux\n';
     }
 
     console.log('JSON data written to file');
     setDataSyncCompleted(true);
+    FileSystem.writeAsStringAsync(fileUri, formattedData);
   };
 
   const startStreamingData = async (device: Device) => {
