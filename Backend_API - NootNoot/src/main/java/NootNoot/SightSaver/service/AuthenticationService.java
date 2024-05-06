@@ -5,7 +5,6 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import NootNoot.SightSaver.enums.Role;
 import NootNoot.SightSaver.model.User;
 import NootNoot.SightSaver.repository.UserRepository;
 import NootNoot.SightSaver.request.AuthenticationRequest;
