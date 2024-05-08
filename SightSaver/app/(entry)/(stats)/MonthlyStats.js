@@ -7,28 +7,26 @@ import { useColorScheme } from '../../../components/useColorScheme';
 import moment from 'moment';
 // import {*} from 'date-fns';
 
-export default function MonthlyScreen() {
-  const colorScheme = useColorScheme();
-  const [selectedDate, setSelectedDate] = useState(null);
-
+export default function MonthlyScreen(props) {
   const onDateChange = (date) => {
-    setSelectedDate(date);
+    const formattedDate = moment(date).format('YYYY:MM:DD');
+    props.changeSelectedItem(props.dropdownData.find(item => item.label === 'Daily'), formattedDate);
   };
+
   return (
     <View style={styles.container}>
       <View style={[styles.CalendarPicker, ]}>
-      <CalendarPicker
-        onDateChange={onDateChange}
-        textStyle={{color: Colors[colorScheme].text}}
-        todayBackgroundColor='#f2e6ff'
-        dayTextStyle={{color: Colors[colorScheme].text}}
-        borderColor={Colors[colorScheme].text}
-        selectedDayStyle={{backgroundColor: '#FFBD20'}}
-      />
+        <CalendarPicker
+          onDateChange={onDateChange}
+          textStyle={{color: Colors[colorScheme].text}}
+          todayBackgroundColor='#f2e6ff'
+          dayTextStyle={{color: Colors[colorScheme].text}}
+          borderColor={Colors[colorScheme].text}
+          selectedDayStyle={{backgroundColor: '#FFBD20'}}
+        />
       {selectedDate && <Text>Selected Date: {moment(selectedDate).format('LL')}</Text>}
       </View>
     </View>
-    
   );
 }
 
