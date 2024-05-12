@@ -3,6 +3,7 @@ package NootNoot.SightSaver.controller;
 import java.util.List;
 import java.util.Optional;
 
+import NootNoot.SightSaver.model.dto.UserDTO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -31,7 +32,7 @@ public class UserController {
     }
 
     @GetMapping("/{userId}") 
-    public ResponseEntity<Optional<User>> getUserById(@PathVariable Long userId) {
+    public ResponseEntity<UserDTO> getUserById(@PathVariable Long userId) {
         return new ResponseEntity<>(userService.getUserById(userId), HttpStatus.OK);
     }
     

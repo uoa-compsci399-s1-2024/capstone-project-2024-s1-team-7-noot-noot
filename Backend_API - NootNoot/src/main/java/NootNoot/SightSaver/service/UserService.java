@@ -1,13 +1,13 @@
 package NootNoot.SightSaver.service;
 
 import NootNoot.SightSaver.model.User;
+import NootNoot.SightSaver.model.dto.UserDTO;
 import NootNoot.SightSaver.repository.UserRepository;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.Optional;
 
 @Service
 public class UserService {
@@ -19,8 +19,9 @@ public class UserService {
         return userRepository.findAll();
     }
 
-    public Optional<User> getUserById(Long userId) {
-        return userRepository.findById(userId);
+    public UserDTO getUserById(Long userId) {
+        User repoUser = userRepository.findById(userId).orElse(null);
+        return convertToUserDTO(repoUser);
     }
 
     public void deleteUserById(Long userId) {
@@ -34,5 +35,13 @@ public class UserService {
     public User createNewUser(User newUser) {
         System.out.println(newUser);
         return userRepository.save(newUser);
+    }
+
+    public UserDTO convertToUserDTO(User user) {
+        if (user == null)
+            {
+                return null;
+            }
+        return new UserDTO(user.getUsername(), user.getEmail(), user.getParent());
     }
 }
