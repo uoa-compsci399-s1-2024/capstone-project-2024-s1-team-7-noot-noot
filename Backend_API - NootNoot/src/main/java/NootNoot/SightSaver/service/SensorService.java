@@ -1,7 +1,9 @@
 package NootNoot.SightSaver.service;
 
+import java.io.IOException;
 import java.util.List;
 
+import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -33,5 +35,14 @@ public class SensorService {
     public void deleteSensorById(Long id) {
         sensorRepository.deleteById(id);
     }
+
+    public List<Sensor> exportCustomerToExcel(HttpServletResponse response) throws IOException {
+        List<Sensor> sensors = sensorRepository.findAll();
+        ExcelExportService exportService = new ExcelExportService(sensors);
+        exportService.exportExcel(response);
+        return sensors;
+    }
+
+
 
 }
