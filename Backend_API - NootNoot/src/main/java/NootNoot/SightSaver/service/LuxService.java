@@ -1,7 +1,9 @@
 package NootNoot.SightSaver.service;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
+import NootNoot.SightSaver.model.Uv;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -33,4 +35,5 @@ public class LuxService {
     public void deleteLux(Long id) {
         luxRepository.deleteById(id);
     }
+
 }

@@ -14,6 +14,7 @@ import java.util.List;
 @RestController
 @RequestMapping("api/sensor")
 public class SensorController {
+
     @Autowired
     private SensorService sensorService;
 

@@ -1,6 +1,10 @@
 package NootNoot.SightSaver.service;
 
+import NootNoot.SightSaver.model.Lux;
 import NootNoot.SightSaver.model.Sensor;
+import NootNoot.SightSaver.model.Uv;
+import NootNoot.SightSaver.repository.LuxRepository;
+import NootNoot.SightSaver.repository.UVRepository;
 import jakarta.servlet.ServletOutputStream;
 import jakarta.servlet.http.HttpServletResponse;
 import org.apache.poi.ss.usermodel.Cell;
@@ -11,12 +15,21 @@ import org.apache.poi.ss.util.CellRangeAddress;
 import org.apache.poi.xssf.usermodel.XSSFFont;
 import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import java.io.IOException;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
 public class ExcelExportService {
+
+   // @Autowired
+    //private UVRepository uvRepository;
+
+    //@Autowired
+    //private LuxRepository luxRepository;
+
     private XSSFWorkbook workbook;
     private XSSFSheet sheet;
     private List<Sensor> SensorList;
@@ -58,7 +71,7 @@ public class ExcelExportService {
         style.setFont(font);
         style.setAlignment(HorizontalAlignment.CENTER);
         createCell(headerRow, 0, "Sensor Information", style);
-        sheet.addMergedRegion(new CellRangeAddress(0, 0, 0 , 4));
+        sheet.addMergedRegion(new CellRangeAddress(0, 0, 0 , 5));
         font.setFontHeightInPoints((short) 10);
 
         headerRow = sheet.createRow(1);
@@ -67,8 +80,9 @@ public class ExcelExportService {
         style.setFont(font);
         createCell(headerRow, 0, "ID", style);
         createCell(headerRow, 1, "User ID", style);
-        createCell(headerRow, 2, "Lux ID", style);
-        createCell(headerRow, 3, "UV ID", style);
+        createCell(headerRow, 2, "Lux Value", style);
+        createCell(headerRow, 3, "UV Value", style);
+        createCell(headerRow, 4, "DateTime", style);
     }
     private void writeSensorData(){
         int rowCount = 2;
@@ -76,14 +90,19 @@ public class ExcelExportService {
         XSSFFont font = workbook.createFont();
         font.setFontHeight(14);
         style.setFont(font);
+        SensorService sensorService = new SensorService();
+
 
         for (Sensor sensor : SensorList) {
             Row row = sheet.createRow(rowCount++);
             int columnCount = 0;
             createCell(row, columnCount++, sensor.getId(), style);
             createCell(row, columnCount++, sensor.getUserId(), style);
-            createCell(row, columnCount++, sensor.getLuxId(), style);
             createCell(row, columnCount++, sensor.getUvId(), style);
+            createCell(row, columnCount++, sensor.getLuxId(), style);
+            //createCell(row, columnCount++, findUVValueByID(sensor.getUvId()), style);
+            //createCell(row, columnCount++, findLuxValueByID(sensor.getLuxId()), style);
+            //createCell(row, columnCount++, findUVValueDateByID(sensor.getUvId()), style);
         }
     }
 
@@ -96,9 +115,40 @@ public class ExcelExportService {
 
     }
 
+    //public LocalDateTime findUVValueDateByID(Long id) {
+    //    for (Uv uv : uvRepository.findAll()) {
+    //        if (uv.getId().equals(id)) {
+    //            return uv.getDate_time();
+    //        }
+    //    }
+    //    return null;
+    //}
 
+    //public float findUVValueByID(Long id) {
+    //    for (Uv uv : uvRepository.findAll()) {
+    //        if (uv.getId().equals(id)) {
+    //            return uv.getUv_value();
+    //        }
+    //    }
+    //    return 0;
+    //}
 
+    //public float findLuxValueByID(Long id) {
+    //    for (Lux lux : luxRepository.findAll()) {
+//       if (lux.getId().equals(id)) {
+    //            return lux.getLux_value();
+    //        }
+    //    }
+     //   return 0;
+    //}
 
-
+    //public LocalDateTime findLuxValueDateByID(Long id) {
+    //    for (Lux lux : luxRepository.findAll()) {
+     //       if (lux.getId().equals(id)) {
+     //           return lux.getDate_time();
+     //       }
+     //   }
+     //   return null;
+    //}
 
 }
