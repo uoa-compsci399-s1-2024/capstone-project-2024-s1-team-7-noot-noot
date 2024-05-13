@@ -267,11 +267,19 @@ function SignupScreen({ navigation }) {
         };
    
     const handleSignup = () => {
-        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        // Validate password constraints
+        const passwordRegex = /^(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#$%^&*])(?=.{8,})/;
+        if (!passwordRegex.test(password)) {
+            alert('Password must contain at least one uppercase letter, one number, one special character, and be at least 8 characters long.');
+            return;
+    }
+        // Validate email
+        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;       
         if (!emailRegex.test(email)) {
             alert('Please enter a valid email address.');
             return;
         }
+        
         if (!email || !password || !username || !confirmPassword || !termsAccepted || !privacyAccepted) {
             if ((!email || !password || !confirmPassword) && (!termsAccepted || !privacyAccepted)){
                 alert('Please fill in all fields and accept the terms and conditions.');
