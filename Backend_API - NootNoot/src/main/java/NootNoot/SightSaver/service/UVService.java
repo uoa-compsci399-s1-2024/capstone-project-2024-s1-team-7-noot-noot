@@ -35,5 +35,23 @@ public class UVService {
         uvRepository.deleteById(id);
     }
 
+    public LocalDateTime findUVValueDateByID(Long id) {
+        List<Uv> uvList = getAllUVValues();
+        for (Uv uv : uvList) {
+            if (uv.getId().equals(id)) {
+                return uv.getDate_time();
+            }
+        }
+        return null;
+    }
 
+    public float findUVValueByID(Long id) {
+        List<Uv> uvList = getAllUVValues();
+        for (Uv uv : uvList) {
+            if (uv.getId().equals(id)) {
+                return uv.getUv_value();
+            }
+        }
+        return 0;
+    }
 }

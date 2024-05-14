@@ -36,4 +36,23 @@ public class LuxService {
         luxRepository.deleteById(id);
     }
 
+    public float findLuxValueByID(Long id) {
+        List<Lux> luxList = getAllLuxValues();
+        for (Lux lux : luxList) {
+            if (lux.getId().equals(id)) {
+                return lux.getLux_value();
+            }
+        }
+        return 0;
+    }
+
+    public LocalDateTime findLuxValueDateByID(Long id) {
+        List<Lux> luxList = getAllLuxValues();
+        for (Lux lux : luxList) {
+            if (lux.getId().equals(id)) {
+                return lux.getDate_time();
+            }
+        }
+        return null;
+    }
 }

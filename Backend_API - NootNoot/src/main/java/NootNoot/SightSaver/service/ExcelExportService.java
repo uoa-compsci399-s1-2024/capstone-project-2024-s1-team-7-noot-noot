@@ -16,19 +16,21 @@ import org.apache.poi.xssf.usermodel.XSSFFont;
 import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
 import java.io.IOException;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
+@Service
 public class ExcelExportService {
 
-   // @Autowired
-    //private UVRepository uvRepository;
+    @Autowired
+    private UVService uvService;
 
-    //@Autowired
-    //private LuxRepository luxRepository;
+    @Autowired
+    private LuxService luxService;
 
     private XSSFWorkbook workbook;
     private XSSFSheet sheet;
@@ -90,19 +92,19 @@ public class ExcelExportService {
         XSSFFont font = workbook.createFont();
         font.setFontHeight(14);
         style.setFont(font);
-        SensorService sensorService = new SensorService();
-
 
         for (Sensor sensor : SensorList) {
-            Row row = sheet.createRow(rowCount++);
-            int columnCount = 0;
-            createCell(row, columnCount++, sensor.getId(), style);
-            createCell(row, columnCount++, sensor.getUserId(), style);
-            createCell(row, columnCount++, sensor.getUvId(), style);
-            createCell(row, columnCount++, sensor.getLuxId(), style);
-            //createCell(row, columnCount++, findUVValueByID(sensor.getUvId()), style);
-            //createCell(row, columnCount++, findLuxValueByID(sensor.getLuxId()), style);
-            //createCell(row, columnCount++, findUVValueDateByID(sensor.getUvId()), style);
+            if(sensor!=null) {
+                Row row = sheet.createRow(rowCount++);
+                int columnCount = 0;
+                createCell(row, columnCount++, sensor.getId(), style);
+              createCell(row, columnCount++, sensor.getUserId(), style);
+              createCell(row, columnCount++, sensor.getUvId(), style);
+              createCell(row, columnCount++, sensor.getLuxId(), style);
+//                createCell(row, columnCount++, uvService.findUVValueByID(sensor.getUvId()), style);
+//                createCell(row, columnCount++, luxService.findLuxValueByID(sensor.getLuxId()), style);
+//                createCell(row, columnCount++, uvService.findUVValueDateByID(sensor.getUvId()), style);
+            }
         }
     }
 
@@ -115,40 +117,12 @@ public class ExcelExportService {
 
     }
 
-    //public LocalDateTime findUVValueDateByID(Long id) {
-    //    for (Uv uv : uvRepository.findAll()) {
-    //        if (uv.getId().equals(id)) {
-    //            return uv.getDate_time();
-    //        }
-    //    }
-    //    return null;
-    //}
 
-    //public float findUVValueByID(Long id) {
-    //    for (Uv uv : uvRepository.findAll()) {
-    //        if (uv.getId().equals(id)) {
-    //            return uv.getUv_value();
-    //        }
-    //    }
-    //    return 0;
-    //}
 
-    //public float findLuxValueByID(Long id) {
-    //    for (Lux lux : luxRepository.findAll()) {
-//       if (lux.getId().equals(id)) {
-    //            return lux.getLux_value();
-    //        }
-    //    }
-     //   return 0;
-    //}
 
-    //public LocalDateTime findLuxValueDateByID(Long id) {
-    //    for (Lux lux : luxRepository.findAll()) {
-     //       if (lux.getId().equals(id)) {
-     //           return lux.getDate_time();
-     //       }
-     //   }
-     //   return null;
-    //}
+
+
+
+
 
 }
