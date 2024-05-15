@@ -11,7 +11,7 @@ import { useSession } from '../ctx';
 import React, { useState } from 'react';
 import { TextInput, Button, StyleSheet, useWindowDimensions, Image, TouchableOpacity} from 'react-native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
-import SignInWithGoogleButton from '../components/SignInGoogle';
+// import SignInWithGoogleButton from '../components/SignInGoogle';
 import useKeyboardVisibility from '../components/KeyboardVisibility';
 import axios from 'axios';
 
@@ -211,9 +211,9 @@ function SignIn({ navigation }) {
             </View>
 
             {/* Google button */}
-            {!useKeyboardVisibility() && (<View style={{flex:1, justifyContent:'flex-end'}}>
+            {/* {!useKeyboardVisibility() && (<View style={{flex:1, justifyContent:'flex-end'}}>
                 <SignInWithGoogleButton />
-            </View>)}
+            </View>)} */}
         </View>
         );
     };    
@@ -375,10 +375,10 @@ function SignupScreen({ navigation }) {
                 </View>
             </View>
 
-            {/* Google button */}
+            {/* Google button
             {!useKeyboardVisibility() && (<View style={{flex:1, justifyContent:'flex-end'}}>
                 <SignInWithGoogleButton />
-            </View>)}
+            </View>)} */}
         </View>
         );
     };
