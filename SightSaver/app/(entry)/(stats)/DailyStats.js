@@ -1,4 +1,4 @@
-import { Text, View, StyleSheet, Animated } from 'react-native';
+import { Text, View, StyleSheet, Animated, ActivityIndicator } from 'react-native';
 import React, { useState, useEffect, useRef } from 'react';
 import { BarChart, EdgePosition, LineChart, PieChart, PopulationPyramid } from 'react-native-gifted-charts';
 import { useColorScheme } from '../../../components/useColorScheme';
@@ -34,8 +34,6 @@ export default function DailyScreen({selectedDate, dayDataInput, totalTimeInput,
 
   useEffect(() => {
     if (!isLoading) {
-      fadeAnim.stopAnimation();
-      fadeAnim.setValue(0);
       Animated.timing(fadeAnim, {
         toValue: 1,
         duration: 300,
@@ -56,14 +54,18 @@ export default function DailyScreen({selectedDate, dayDataInput, totalTimeInput,
       setCompletedPercentage(newCompletedPercentage);
       setNotCompletedPercentage(newNotCompletedPercentage);
   
-      setIsLoading(false);
+      setTimeout(() => {
+        setIsLoading(false);
+      }, 100);
     });
   }, [searchDate]);
 
   if (isLoading) {
+    fadeAnim.stopAnimation();
+    fadeAnim.setValue(0);
     return (
       <View style={[styles.container, {justifyContent: 'center'}]}>
-        <Text style={{color:Colors[colorScheme ?? 'light'].text}}>Loading...</Text>
+        <ActivityIndicator size="large" color="#23A0FF" />
       </View>
     );
   }
