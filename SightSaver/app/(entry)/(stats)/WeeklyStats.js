@@ -1,4 +1,4 @@
-import { StyleSheet, Animated } from 'react-native';
+import { StyleSheet, Animated, ActivityIndicator } from 'react-native';
 import React, {useState, useEffect, useRef} from 'react';
 import { Text, View } from '../../../components/Themed';
 import moment from "moment";
@@ -48,8 +48,6 @@ export default function WeeklyScreen({selectedDate, changeSelectedItem, dropdown
 
   useEffect(() => {
     if (!isLoading) {
-      fadeAnim.stopAnimation();
-      fadeAnim.setValue(0);
       Animated.timing(fadeAnim, {
         toValue: 1,
         duration: 300,
@@ -75,15 +73,18 @@ export default function WeeklyScreen({selectedDate, changeSelectedItem, dropdown
       setTotalHours(newTotalTime);
       setCompletedPercentage(newCompletedPercentage);
       setNotCompletedPercentage(newNotCompletedPercentage);
-
-      setIsLoading(false);
+      setTimeout(() => {
+        setIsLoading(false);
+      }, 100);
     });
   }, [searchWeek]);
 
   if (isLoading) {
+    fadeAnim.stopAnimation();
+    fadeAnim.setValue(0);
     return (
       <View style={[styles.container, {justifyContent: 'center'}]}>
-        <Text style={{color:Colors[colorScheme ?? 'light'].text}}>Loading...</Text>
+        <ActivityIndicator size="large" color="#23A0FF" />
       </View>
     );
   }
