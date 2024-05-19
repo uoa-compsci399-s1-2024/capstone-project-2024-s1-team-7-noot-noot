@@ -28,14 +28,14 @@ const Login = () => {
             alert('Please enter a valid email address.');
             return;
         }
-        // Validate all fields filled
+        // Validate all fields filled 
         if (!email || !password) {
             alert("Please fill in all fields. If you don't have an account, please sign up.");
             return;}
         console.log('Login');
         const result = await onLogin(email, password);
         if (result) {
-            console.log("Login Success", result);
+            console.log("Login Success", result.data);
         } else {
             console.log('Login failed');
         }

@@ -18,6 +18,7 @@ import {
   ScrollView,
   Button
 } from 'react-native';
+import { getUserDetails } from '../../../ctx';
 
 function importData () {
   const fileUri = FileSystem.documentDirectory + 'dummyData.txt';
@@ -135,6 +136,25 @@ export default function ProfileScreen() {
   const [selectedDevice, setSelectedDevice] = useState(null);
   const [alertVisible, setAlertVisible] = useState(false);
   const [alertMessage, setAlertMessage] = useState('');
+  const [username, setUsername] = useState('');
+  const [email, setEmail] = useState('');
+  
+  useEffect(() => {
+    // Fetch user details when component mounts
+    fetchUserDetails();
+  }, []);
+
+  const fetchUserDetails = async () => {
+    try {
+      const userDetails = await getUserDetails();
+      if (userDetails) {
+        setUsername(userDetails.username || 'USERNAME');
+        setEmail(userDetails.email || '');
+      }
+    } catch (error) {
+      console.error('Error fetching user details:', error);
+    }
+  };
   const {
     requestPermissions,
     scanForPeripherals,
@@ -198,6 +218,7 @@ export default function ProfileScreen() {
       AsyncStorage.setItem('activeButton', index.toString());
   };
 
+
   return (
     <View style={[styles.container]}>
       <StatusBar barStyle={barStyle=Colors[colorScheme ?? 'light'].barStyle}/>
@@ -206,8 +227,8 @@ export default function ProfileScreen() {
           <View style={styles.headerContent}>
               <Ionicons name="person-circle-outline" size={50} color={Colors[colorScheme ?? 'light'].text} />
               <View style={styles.headerText}>
-                  <Text style={styles.name}>John Doe</Text>
-                  <Text style={styles.userInfo}>info@company.com</Text>
+                  <Text style={styles.name}>{username}</Text>
+                  <Text style={styles.userInfo}>{email}</Text>
               </View>
           </View>
 

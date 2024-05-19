@@ -22,6 +22,8 @@ interface AuthProps {
 }
 
 const TOKEN_KEY = 'token';
+const USERNAME = 'username';
+const EMAIL = 'email';
 export const API_URL = 'https://sightsaver-api.azurewebsites.net/api/auth';
 const AuthContext = createContext<Partial<AuthProps>>({});
 
@@ -72,6 +74,8 @@ useEffect(() => {
       axios.defaults.headers.common['Authorization'] = `Bearer ${result.data.token}`;
 
       await SecureStore.setItemAsync(TOKEN_KEY, result.data.token);
+      await SecureStore.setItemAsync(USERNAME, username);
+      await SecureStore.setItemAsync(EMAIL, email);
       return result;
     } catch (error:any){
       console.log(error);
@@ -93,6 +97,8 @@ useEffect(() => {
       axios.defaults.headers.common['Authorization'] = `Bearer ${result.data.token}`;
 
       await SecureStore.setItemAsync(TOKEN_KEY, result.data.token);
+      // await SecureStore.setItemAsync(USERNAME, username);
+      await SecureStore.setItemAsync(EMAIL, email);
       return result;
 
     } catch (error:any) {
@@ -120,12 +126,19 @@ useEffect(() => {
 };
 
 //Export Token
-export const getTokenKey = async () => {
+export const getUserDetails = async () => {
   try {
-    const token = await SecureStore.getItemAsync(TOKEN_KEY);
-    return token;
+    const username = await SecureStore.getItemAsync(USERNAME);
+    const email = await SecureStore.getItemAsync(EMAIL);
+    return {username, email};
   } catch (error) {
-    console.error('Error retrieving token:', error);
-    return null;
+    try{
+      const email = await SecureStore.getItemAsync(EMAIL);
+      return {email};
+    }
+    catch (error) {
+      console.error('Error retrieving token:', error);
+      return null;
+    }
   }
 };

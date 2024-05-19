@@ -10,13 +10,13 @@ import { useColorScheme } from '../../../components/useColorScheme';
 import Colors from '../../../constants/Colors';
 import CustomButton from '../../../components/CustomButton';
 import { useAuth } from '../../../ctx';
-import { getTokenKey } from '../../../ctx';
+import { getUserDetails } from '../../../ctx';
 
 function AccountSettings({ navigation }) {
     
     const handlePress = async () => {
         try {
-        const token = await getTokenKey();
+        const token = await getUserDetails();
         console.log('Stored token:', token);
         } catch (error) {
         console.error('Error retrieving token:', error);
