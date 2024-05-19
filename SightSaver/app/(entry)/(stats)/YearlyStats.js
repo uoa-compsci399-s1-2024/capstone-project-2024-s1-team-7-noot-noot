@@ -1,31 +1,54 @@
 import React from 'react';
-import { Text, View, StyleSheet } from 'react-native';
+import { Text, View, StyleSheet} from 'react-native';
 import * as Progress from 'react-native-progress';
 import { useColorScheme } from '../../../components/useColorScheme';
 import Colors from '../../../constants/Colors';
+import { getMonthData } from '../../../components/helpers/MonthlyData'
+import moment from "moment";
+import { TouchableOpacity } from 'react-native'; // Import the TouchableOpacity component
 
+const currentYear = moment().year();
 
 function getProgressData(completedDays, month) {
-  const totalDays = new Date(2024, month, 0).getDate(); // total number of days in the month
+  const totalDays = getTotalDays(month+1);
+  //const completedDays = getCompletedDays(totalDays, month);
+  //console.log("Completed Days: ", completedDays);
   return (completedDays / totalDays);
 }
-// function getCompletedDays(month) {
-//   return completedDays;
-// }
+
 function getTotalDays(month) {
-  const totalDays = new Date(2024, month, 0).getDate(); // total number of days in the month
-  return totalDays;
+  const totalDays = new Date(currentYear, month+1, 0).getDate(); // total number of days in the month
+  //console.log("Total Days: ", totalDays);
+  return totalDays; 
+}
+
+  //const searchMonth = moment(`${year}:${(month)}:${1}`, "YYYY:MM:DD");
+async function getCompletedDays(totalDays,month) {
+  const searchMonth = new Date(currentYear, month, 1, 13); 
+  console.log("Search: ", searchMonth);
+  const monthArray = await getMonthData(searchMonth, totalDays);
+  var completedDays = 0;
+  for (let i of monthArray) {
+    if (i > 2) {
+      completedDays += 1;
+    }
+  }
+  //console.log(monthArray);
+  //console.log("Completed Days: ", completedDays);
+  return completedDays;
+
 }
 export default function YearlyScreen() {
-  const colorScheme = useColorScheme();
-
+  const colorScheme = useColorScheme(); 
   return (
     <View style={styles.container}>
+      <TouchableOpacity onPress={() => getCompletedDays(31, 4)}> 
+        <Text style={{color: Colors[colorScheme ?? 'light'].text}}>Yearly Stats</Text>
+      </TouchableOpacity>
       <View style={styles.progressBars}>
           <Text style={[styles.month, {color: Colors[colorScheme ?? 'light'].text}]}>Jan</Text>
-          <Progress.Bar progress={getProgressData(19,1)} label={'January'} width= {350} height={20} borderWidth={0} color={'#FFBD20'} unfilledColor={'rgba(255, 189, 32, 0.5)'}/>
-          <Text style={styles.progressNum}>19/{getTotalDays(1)}</Text>
-      </View>
+          <Progress.Bar progress={getProgressData(15,0)} label={'January'} width= {350} height={20} borderWidth={0} color={'#FFBD20'} unfilledColor={'rgba(255, 189, 32, 0.5)'}/>
+          <Text style={styles.progressNum}></Text>
       <View style={styles.progressBars}><Text style={[styles.month, {color: Colors[colorScheme ?? 'light'].text}]}>Feb</Text><Progress.Bar progress={getProgressData(18,2)} label={'February'} width= {350} height={20} borderWidth={0} color={'#FFBD20'} unfilledColor={'rgba(255, 189, 32, 0.5)'}/><Text style={styles.progressNum}>18/{getTotalDays(2)}</Text></View>
       <View style={styles.progressBars}><Text style={[styles.month, {color: Colors[colorScheme ?? 'light'].text}]}>Mar</Text><Progress.Bar progress={getProgressData(25,3)} label={'March'} width= {350} height={20} borderWidth={0} color={'#FFBD20'} unfilledColor={'rgba(255, 189, 32, 0.5)'}/><Text style={styles.progressNum}>25/{getTotalDays(3)}</Text></View>
       <View style={styles.progressBars}><Text style={[styles.month, {color: Colors[colorScheme ?? 'light'].text}]}>Apr</Text><Progress.Bar progress={getProgressData(22,4)} label={'April'} width= {350} height={20} borderWidth={0} color={'#FFBD20'} unfilledColor={'rgba(255, 189, 32, 0.5)'}/><Text style={styles.progressNum}>22/{getTotalDays(4)}</Text></View>
@@ -37,8 +60,10 @@ export default function YearlyScreen() {
       <View style={styles.progressBars}><Text style={[styles.month, {color: Colors[colorScheme ?? 'light'].text}]}>Oct</Text><Progress.Bar progress={getProgressData(0,10)} label={'October'} width= {350} height={20} borderWidth={0} color={'#FFBD20'} unfilledColor={'rgba(255, 189, 32, 0.5)'}/><Text style={styles.progressNum}>-/{getTotalDays(10)}</Text></View>
       <View style={styles.progressBars}><Text style={[styles.month, {color: Colors[colorScheme ?? 'light'].text}]}>Nov</Text><Progress.Bar progress={getProgressData(0,11)} label={'November'} width= {350} height={20} borderWidth={0} color={'#FFBD20'} unfilledColor={'rgba(255, 189, 32, 0.5)'}/><Text style={styles.progressNum}>-/{getTotalDays(11)}</Text></View>
       <View style={styles.progressBars}><Text style={[styles.month, {color: Colors[colorScheme ?? 'light'].text}]}>Dec</Text><Progress.Bar progress={getProgressData(0,12)} label={'December'} width= {350} height={20} borderWidth={0} color={'#FFBD20'} unfilledColor={'rgba(255, 189, 32, 0.5)'}/><Text style={styles.progressNum}>-/{getTotalDays(12)}</Text></View>
+      </View>
     </View>
   );
+  
 }
 
 const styles = StyleSheet.create({
@@ -49,9 +74,7 @@ const styles = StyleSheet.create({
 
   },
   progressBars: {
-    margin: '3%',
     width: '100%',
-    flexDirection:"row",
   },
   month: {
     marginLeft: 10,
