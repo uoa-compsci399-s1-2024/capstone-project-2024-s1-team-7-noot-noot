@@ -9,11 +9,22 @@ import PrivacySettings from './accountSettingsScreens/privacySettings';
 import { useColorScheme } from '../../../components/useColorScheme';
 import Colors from '../../../constants/Colors';
 import CustomButton from '../../../components/CustomButton';
-import { useSession } from '../../../ctx';
+import { useAuth } from '../../../ctx';
+import { getTokenKey } from '../../../ctx';
 
 function AccountSettings({ navigation }) {
+    
+    const handlePress = async () => {
+        try {
+        const token = await getTokenKey();
+        console.log('Stored token:', token);
+        } catch (error) {
+        console.error('Error retrieving token:', error);
+        }
+    };
+
     const colorScheme = useColorScheme();
-    const { signOut } = useSession();
+    const { onLogout } = useAuth();
 
     const handleEditProfile = () => {
         // Navigate to the EditProfile page
@@ -53,9 +64,15 @@ function AccountSettings({ navigation }) {
             <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
             <CustomButton
                 onPress={() => {
-                signOut();
+                onLogout();
                 }}
                     text={"Sign Out"}
+            />
+            <CustomButton
+                onPress={
+                    handlePress
+                }
+                    text={"test"}
             />
             </View>
         </View>
