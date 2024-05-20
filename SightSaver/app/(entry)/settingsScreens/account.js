@@ -1,9 +1,7 @@
 import React from 'react';
 import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
-import { useNavigation, NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import EditProfile from './accountSettingsScreens/editProfile';
-import ChangePassword from './accountSettingsScreens/changePassword';
 import NotificationSettings from './accountSettingsScreens/notificationSettings';
 import PrivacySettings from './accountSettingsScreens/privacySettings';
 import { useColorScheme } from '../../../components/useColorScheme';
@@ -17,7 +15,7 @@ function AccountSettings({ navigation }) {
     const handlePress = async () => {
         try {
         const token = await getUserDetails();
-        console.log('Stored token:', token);
+        console.log('Data:', token);
         } catch (error) {
         console.error('Error retrieving token:', error);
         }
@@ -29,11 +27,6 @@ function AccountSettings({ navigation }) {
     const handleEditProfile = () => {
         // Navigate to the EditProfile page
         navigation.navigate('EditProfile');
-    };
-
-    const handleChangePassword = () => {
-        // Navigate to the ChangePassword page
-        navigation.navigate('ChangePassword');
     };
 
     const handleNotificationSettings = () => {
@@ -50,11 +43,11 @@ function AccountSettings({ navigation }) {
         <View style={[styles.container, {backgroundColor:Colors[colorScheme ?? 'light'].background}]}>
             {/* Add account settings options here */}
             <TouchableOpacity style={[styles.option, {borderColor:Colors[colorScheme ?? 'light'].seperator}]} onPress={handleEditProfile}>
-                <Text style={[styles.optionText, {color:Colors[colorScheme ?? 'light'].text}]}>Edit Profile</Text>
+                <Text style={[styles.optionText, {color:Colors[colorScheme ?? 'light'].text}]}>Update Account Details</Text>
             </TouchableOpacity>
-            <TouchableOpacity style={[styles.option, {borderColor:Colors[colorScheme ?? 'light'].seperator}]} onPress={handleChangePassword}>
+            {/* <TouchableOpacity style={[styles.option, {borderColor:Colors[colorScheme ?? 'light'].seperator}]} onPress={handleChangePassword}>
                 <Text style={[styles.optionText, {color:Colors[colorScheme ?? 'light'].text}]}>Change Password</Text>
-            </TouchableOpacity>
+            </TouchableOpacity> */}
             <TouchableOpacity style={[styles.option, {borderColor:Colors[colorScheme ?? 'light'].seperator}]} onPress={handleNotificationSettings}>
                 <Text style={[styles.optionText, {color:Colors[colorScheme ?? 'light'].text}]}>Notification Settings</Text>
             </TouchableOpacity>
@@ -87,7 +80,7 @@ export default function App() {
         <Stack.Navigator>
             <Stack.Screen name="AccountSettings" component={AccountSettings} options={{ headerTitle:"Account Settings" }} />
             <Stack.Screen name="EditProfile" component={EditProfile} options={{ headerTitle:"Profile Settings" }} />
-            <Stack.Screen name="ChangePassword" component={ChangePassword} options={{ headerTitle:"Password Settings" }} />
+            {/* <Stack.Screen name="ChangePassword" component={ChangePassword} options={{ headerTitle:"Password Settings" }} /> */}
             <Stack.Screen name="NotificationSettings" component={NotificationSettings} options={{ headerTitle:"Notification Settings" }}/>
             <Stack.Screen name="PrivacySettings" component={PrivacySettings} options={{ headerTitle:"Privacy Settings" }} />
         </Stack.Navigator>

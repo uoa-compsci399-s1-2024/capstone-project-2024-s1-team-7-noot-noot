@@ -7,7 +7,6 @@ import { router } from 'expo-router';
 import React, { useState } from 'react';
 import { TextInput, Button, StyleSheet, useWindowDimensions, Image, TouchableOpacity} from 'react-native';
 import { useAuth } from "../../ctx";
-import * as SecureStore from 'expo-secure-store';
 
 export default function SignupScreen() {
     const [email, setEmail] = useState('');
@@ -22,6 +21,27 @@ export default function SignupScreen() {
     const [showPassword, setShowPassword] = useState(false);
 
     const register = async () => {
+
+        // Check if the terms of service and privacy policy have been accepted
+        if (!termsAccepted && !privacyAccepted) {
+            alert('Please accept the Terms of Service and Privacy Policy.');
+            return; 
+        }
+
+        // Check password constraints (e.g., minimum length)
+        const passwordRegex = /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{8,}$/;
+        if (!passwordRegex.test(password)) {
+            alert('Password does not meet constraints. Password must be at least 8 characters long and contain at least one uppercase letter, one lowercase letter, and one number.');
+            console.log('Password does not meet constraints');
+            return; // Exit the function if password doesn't meet constraints
+        }
+
+        // Check if the new passwords match
+        if (password !== confirmPassword) {
+            console.log('Passwords do not match');
+            return; // Exit the function if passwords don't match
+        }
+          
         const result = await onRegister(email, password, username);
         if (result) {
             console.log('Registration successful',result);
@@ -29,10 +49,10 @@ export default function SignupScreen() {
             console.log('Registration failed');
         }
     }
+
     const toggleShowPassword = () => {
         setShowPassword(!showPassword);
     }
-
 
     return (
         <View style={[styles.root, {backgroundColor:Colors[colorScheme ?? 'light'].background}]}>
@@ -72,13 +92,7 @@ export default function SignupScreen() {
                 setValue={setConfirmPassword}
                 secureTextEntry={!showPassword}
             />
-             <View style={styles.container}>
-                {/* Show password button */}
-            <TouchableOpacity style={{margin:5,padding:5, borderWidth: 1 ,borderColor:'black' ,color:Colors[colorScheme ?? 'light']}} onPress={toggleShowPassword}>
-                <Text>{showPassword ? 'Hide Password' : 'Show Password'}</Text>
-            </TouchableOpacity>
-            </View>
-
+             
             {/* Terms of serivce*/}
             <View style={styles.checkboxContainer}>
                 <TouchableOpacity

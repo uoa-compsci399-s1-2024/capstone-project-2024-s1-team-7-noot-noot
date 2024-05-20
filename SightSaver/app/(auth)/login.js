@@ -17,11 +17,6 @@ const Login = () => {
     const [showPassword, setShowPassword] = useState(false);
     const { onLogin } = useAuth();
 
-    const toggleShowPassword = () => {
-        setShowPassword(!showPassword);
-    }
-
-
     const login = async () => {
         const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
         if (!emailRegex.test(email)) {
@@ -35,7 +30,7 @@ const Login = () => {
         console.log('Login');
         const result = await onLogin(email, password);
         if (result) {
-            console.log("Login Success", result.data);
+            console.log("Login Success", result);
         } else {
             console.log('Login failed');
         }
@@ -74,10 +69,7 @@ const Login = () => {
             />
 
             <View style={styles.container}>
-                {/* Show password button */}
-            <TouchableOpacity style={{padding:5, borderWidth: 1 ,borderColor:'black' ,color:Colors[colorScheme ?? 'light']}} onPress={toggleShowPassword}>
-                <Text>{showPassword ? 'Hide Password' : 'Show Password'}</Text>
-            </TouchableOpacity>    
+                  
                 {/* Login button */}
                 <CustomButton style={[styles.signUpButton]} onPress={login} text={"Login"} />
                 {/* Signup text */}

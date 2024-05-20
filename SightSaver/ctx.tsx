@@ -24,7 +24,7 @@ interface AuthProps {
 const TOKEN_KEY = 'token';
 const USERNAME = 'username';
 const EMAIL = 'email';
-export const API_URL = 'https://sightsaver-api.azurewebsites.net/api/auth';
+export const API_URL = 'https://sightsaver-api.azurewebsites.net/api';
 const AuthContext = createContext<Partial<AuthProps>>({});
 
 export const useAuth = () => {
@@ -41,11 +41,12 @@ export const AuthProvider = ({children}: any) => {
     authenticated: null,
   });
 
+  //Check if token is stored
 useEffect(() => {
   const loadToken = async () => {
       const token = await SecureStore.getItemAsync(TOKEN_KEY);
       console.log("Stored: ", token);
-
+      //If token is stored, login the user and set authenticated to true
       if (token){
         axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;
 
@@ -58,10 +59,11 @@ useEffect(() => {
   loadToken();
 }, []);
 
+  //Register User
   const register = async (email: string, password: string, username: string) => {
     console.log("register", email, password, username);
     try{ 
-      const result = await axios.post(`${API_URL}/register`, {
+      const result = await axios.post(`${API_URL}/auth/register`, {
         "username": username,
         "email": email, 
         "password": password,
@@ -82,10 +84,11 @@ useEffect(() => {
     }
   }
 
+  //Login User
   const login = async (email: string, password: string) => {
     console.log("login", email, password);
     try{ 
-      const result = await axios.post(`${API_URL}/authenticate`, {
+      const result = await axios.post(`${API_URL}/auth/authenticate`, {
         "email": email, 
         "password": password
       });
@@ -97,7 +100,6 @@ useEffect(() => {
       axios.defaults.headers.common['Authorization'] = `Bearer ${result.data.token}`;
 
       await SecureStore.setItemAsync(TOKEN_KEY, result.data.token);
-      // await SecureStore.setItemAsync(USERNAME, username);
       await SecureStore.setItemAsync(EMAIL, email);
       return result;
 
@@ -106,6 +108,7 @@ useEffect(() => {
       }
     }
 
+    //Logout User
   const logout = async () => {
     await SecureStore.deleteItemAsync(TOKEN_KEY);
     axios.defaults.headers.common['Authorization'] = '';
@@ -125,16 +128,23 @@ useEffect(() => {
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
 };
 
-//Export Token
+//Get User Details
 export const getUserDetails = async () => {
   try {
-    const username = await SecureStore.getItemAsync(USERNAME);
     const email = await SecureStore.getItemAsync(EMAIL);
+    const config = {
+      headers:{
+        Authorization: `Bearer ${await SecureStore.getItemAsync(TOKEN_KEY)}`
+      }
+    };
+    const username = await axios.get(`${API_URL}/user/email/iru007@gmail.com`, config).then((res) => res.data);
     return {username, email};
   } catch (error) {
     try{
+      console.log({error})
       const email = await SecureStore.getItemAsync(EMAIL);
-      return {email};
+      const username = await SecureStore.getItemAsync(USERNAME);
+      return {email, username};
     }
     catch (error) {
       console.error('Error retrieving token:', error);
@@ -142,3 +152,21 @@ export const getUserDetails = async () => {
     }
   }
 };
+
+//Change User Details
+export const changeUserDetails = async (newUsername: string, currentPassword: string, newPassword: string) => {
+  try {
+    const email = await SecureStore.getItemAsync(EMAIL);
+    const result = await axios.post(`${API_URL}/change`, {
+      "email": email,
+      "currentPassword": currentPassword,
+      "newPassword": newPassword,
+      "newUsername": newUsername
+    });
+    await SecureStore.setItemAsync(USERNAME, newUsername);
+    return result;
+  } catch (error) {
+    console.error('Error changing user details:', error);
+    return null;
+  }
+}
