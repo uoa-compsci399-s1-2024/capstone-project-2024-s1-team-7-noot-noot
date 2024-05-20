@@ -154,10 +154,12 @@ export const getUserDetails = async () => {
 };
 
 //Change User Details
+
+//WIP NEED TO SEPERATE PASSWORD AND USERNAME
 export const changeUserDetails = async (newUsername: string, currentPassword: string, newPassword: string) => {
   try {
     const email = await SecureStore.getItemAsync(EMAIL);
-    const result = await axios.post(`${API_URL}/change`, {
+    const result = await axios.post(`${API_URL}/user/change`, {
       "email": email,
       "currentPassword": currentPassword,
       "newPassword": newPassword,
