@@ -35,4 +35,13 @@ public class UserService {
         System.out.println(newUser);
         return userRepository.save(newUser);
     }
+
+    public String getUsernameByEmail (String email) {
+        for (User user : getAllUsers()) {
+            if (user.getEmail().equals(email)) {
+                return user.getUsername();
+            }
+        }
+        return null;
+    }
 }

@@ -53,4 +53,9 @@ public class UserController {
         return HttpStatus.NO_CONTENT;
     }
 
+    @GetMapping("/{userId}")
+    public ResponseEntity<String> getUsernameByEmail(@PathVariable String email) {
+        return new ResponseEntity<>(userService.getUsernameByEmail(email), HttpStatus.OK);
+    }
+
 }
