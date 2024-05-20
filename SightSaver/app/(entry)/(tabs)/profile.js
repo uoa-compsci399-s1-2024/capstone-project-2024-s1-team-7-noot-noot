@@ -19,7 +19,7 @@ import {
   ScrollView,
   Button
 } from 'react-native';
-import { getUserDetails } from '../../../ctx';
+import { getToken,getUserDetails } from '../../../ctx';
 
 var data = `
 2024:05:01 10:23:06 45\n
@@ -162,10 +162,15 @@ function deleteData () {
 function pushData () {
   const convertedData = convertData();
   console.log(convertedData);
-  axios.post('https://sightsaver-api.azurewebsites.net/api/lux', convertedData)
+  axios.post('https://sightsaver-api.azurewebsites.net/api/lux', convertedData, {
+    headers:{
+      'Authorization': `Bearer ${getToken()}`
+      }
+    }
+  )
   .then(response => {
     // Handle success, log the response
-    console.log('Response data:', response.data.token);
+    console.log('Response data:', response.data);
   })
   .catch(error => {
     // Handle error, log the error message

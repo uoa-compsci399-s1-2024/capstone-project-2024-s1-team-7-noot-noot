@@ -172,3 +172,14 @@ export const changeUserDetails = async (newUsername: string, currentPassword: st
     return null;
   }
 }
+
+export const getToken = async () => {
+  try {
+    const token = await SecureStore.getItemAsync(TOKEN_KEY);
+    console.log(token);
+    return token;
+  } catch (error) {
+    console.error('Error retrieving token:', error);
+    return null;
+  }
+}
