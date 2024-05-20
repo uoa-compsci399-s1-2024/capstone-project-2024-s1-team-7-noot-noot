@@ -46,14 +46,14 @@ public class UserController {
     }
 
 
-@DeleteMapping("/{userId}")
+    @DeleteMapping("/{userId}")
     public HttpStatus deleteUserById(@PathVariable Long userId) {
 
         userService.deleteUserById(userId);
         return HttpStatus.NO_CONTENT;
     }
 
-    @GetMapping("/{userId}")
+    @GetMapping("/email/{email}")
     public ResponseEntity<String> getUsernameByEmail(@PathVariable String email) {
         return new ResponseEntity<>(userService.getUsernameByEmail(email), HttpStatus.OK);
     }
