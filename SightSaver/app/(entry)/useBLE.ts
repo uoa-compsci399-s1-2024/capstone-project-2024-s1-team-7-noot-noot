@@ -1,5 +1,6 @@
 import { useMemo, useState } from "react";
 import { PermissionsAndroid, Platform } from "react-native";
+import { JSONToEncoded } from '../../components/helpers/JSONToEncoded';
 import {
   BleError,
   BleManager,
@@ -144,16 +145,16 @@ function useBLE(): BluetoothLowEnergyApi {
   let formattedData = "";
   const onDeviceDisconnect = async () => {
     const decodedData = base64.decode(rawData);
-
-    const fileUri = FileSystem.documentDirectory + 'data.txt';
-
+  
+    const fileUri = FileSystem.documentDirectory + 'tempData.json';
+  
     // Delete the previous file
     await FileSystem.deleteAsync(fileUri, { idempotent: true });
   
     // Process the data in chunks of 20 characters
     for (let i = 0; i < decodedData.length; i += 20) {
       const chunk = decodedData.slice(i, i + 20);
-
+  
       // Extract the time and light values from the chunk
       let year = chunk.slice(0, 4);
       let month = chunk.slice(4, 6);
@@ -161,18 +162,25 @@ function useBLE(): BluetoothLowEnergyApi {
       let hour = chunk.slice(8, 10);
       let minute = chunk.slice(10, 12);
       let second = chunk.slice(12, 14);
-
+  
       let time = year + ':' + month + ':' + day + ' ' + hour + ':' + minute + ':' + second;
-
+  
       let light = chunk.slice(14, 20);
-
+  
       // Create a JSON object
-      formattedData += 'time: ' + time + ' light: ' + light + 'lux\n';
+      let dataObject = {
+        time: time,
+        light: light
+      };
+  
+      // Convert the JSON object to a string and append it to formattedData
+      formattedData += JSON.stringify(dataObject) + '\n';
     }
-
+  
     console.log('JSON data written to file');
     setDataSyncCompleted(true);
-    FileSystem.writeAsStringAsync(fileUri, formattedData);
+    await FileSystem.writeAsStringAsync(fileUri, formattedData);
+    JSONToEncoded();
   };
 
   const startStreamingData = async (device: Device) => {

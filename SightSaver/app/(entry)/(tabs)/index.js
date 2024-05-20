@@ -8,6 +8,9 @@ import WeeklyScreen from '../(stats)/WeeklyStats';
 import MonthlyScreen from '../(stats)/MonthlyStats';
 import YearlyScreen from '../(stats)/YearlyStats';
 import DataScreen from '../(stats)/Data';
+import moment from "moment";
+moment.locale('en-gb'); 
+import { updateDayData } from '../../../components/helpers/DayData'
 
 var dropdownData = [
   { label: 'Daily', value: 'Daily Sunlight' },
@@ -21,15 +24,36 @@ export default function IndexScreen() {
   const colorScheme = useColorScheme();
   const [selectedItem, setSelectedItem] = useState(dropdownData.find(item => item.label === 'Weekly'));
   const [dropdownDataState, setDropdownDataState] = useState(dropdownData);
+  const [selectedDate, setSelectedDate] = useState(moment().utcOffset('+12:00').format("YYYY:MM:DD"));
+  const [dayData, setDayData] = useState([]);
+  const [totalTime, setTotalTime] = useState(0);
+  const [completedPercentage, setCompletedPercentage] = useState(0);
+  const [notCompletedPercentage, setNotCompletedPercentage] = useState(100);
+
+  const changeSelectedItem = async (item, date) => {
+    setSelectedItem(item);
+    setSelectedDate(date);
+    await updateDayData(date).then((dayValues) => {
+      const newDayData = dayValues[0];
+      const newTotalTime = dayValues[1];
+      const newCompletedPercentage = Math.floor(Math.min(newTotalTime / 120 * 100, 100));
+      const newNotCompletedPercentage = 100 - newCompletedPercentage;
+  
+      setDayData(newDayData);
+      setTotalTime(newTotalTime);
+      setCompletedPercentage(newCompletedPercentage);
+      setNotCompletedPercentage(newNotCompletedPercentage);
+    });
+  };
 
   const renderContent = () => {
     switch (selectedItem?.value) {
       case 'Daily Sunlight':
-        return <DailyScreen/>;
+        return <DailyScreen selectedDate={selectedDate} dayDataInput={dayData} totalTimeInput={totalTime} completedPercentage={completedPercentage} notCompletedPercentage={notCompletedPercentage}/>;
       case 'Weekly Sunlight':
-        return <WeeklyScreen/>;
+        return <WeeklyScreen selectedDate={selectedDate} changeSelectedItem={changeSelectedItem} dropdownData={dropdownData}/>;
       case 'Monthly Sunlight':
-        return <MonthlyScreen/>;
+        return <MonthlyScreen changeSelectedItem={changeSelectedItem} dropdownData={dropdownData}/>;
       case 'Yearly Sunlight':
         return <YearlyScreen/>;
       case 'Raw Data':
@@ -42,7 +66,6 @@ export default function IndexScreen() {
   useEffect(() => {
     setDropdownDataState(dropdownData.filter(item => item.label !== selectedItem.label));
   }, [selectedItem]);
-
 
   return (
     <View style={[styles.container, {backgroundColor:Colors[colorScheme ?? 'light'].background}]}>
@@ -66,7 +89,10 @@ export default function IndexScreen() {
         labelField="label"
         valueField="value"
         placeholder={selectedItem?.label || "Select a page"}
-        onChange={item => setSelectedItem(item)}
+        onChange={item => {
+          setSelectedItem(item);
+          setSelectedDate(moment().utcOffset('+12:00').format("YYYY:MM:DD"));
+        }}
       />
         {renderContent()}
     </View>

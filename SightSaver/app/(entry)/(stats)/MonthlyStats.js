@@ -1,30 +1,44 @@
-import React, {useState} from 'react';
-import {StyleSheet } from 'react-native';
+import React, {useState, useRef, useEffect} from 'react';
+import {StyleSheet, Animated } from 'react-native';
 import CalendarPicker from "react-native-calendar-picker";
 import Colors from '../../../constants/Colors';
 import { Text, View } from '../../../components/Themed';
 import { useColorScheme } from '../../../components/useColorScheme';
 import moment from 'moment';
+import { FA5Style } from '@expo/vector-icons/build/FontAwesome5';
 // import {*} from 'date-fns';
 
-export default function MonthlyScreen() {
+export default function MonthlyScreen(props) {
   const colorScheme = useColorScheme();
-  const [selectedDate, setSelectedDate] = useState(null);
-
+  const fadeAnim = useRef(new Animated.Value(0)).current;
   const onDateChange = (date) => {
-    setSelectedDate(date);
+    const formattedDate = moment(date).format('YYYY:MM:DD');
+    props.changeSelectedItem(props.dropdownData.find(item => item.label === 'Daily'), formattedDate);
   };
+
+  useEffect(() => {
+    fadeAnim.stopAnimation();
+    fadeAnim.setValue(0);
+    Animated.timing(fadeAnim, {
+      toValue: 1,
+      duration: 300,
+      useNativeDriver: true,
+    }).start();
+  });
+
   return (
-    <View style={styles.container}>
+    <Animated.View style={[styles.container, {opacity: fadeAnim}]}>
       <View style={[styles.CalendarPicker, ]}>
-      <CalendarPicker
-        onDateChange={onDateChange}
-        todayBackgroundColor='#f2e6ff'
-      />
-      {selectedDate && <Text>Selected Date: {moment(selectedDate).format('LL')}</Text>}
+        <CalendarPicker
+          onDateChange={onDateChange}
+          textStyle={{color: Colors[colorScheme].text}}
+          todayBackgroundColor='#f2e6ff'
+          dayTextStyle={{color: Colors[colorScheme].text}}
+          borderColor={Colors[colorScheme].text}
+          selectedDayStyle={{backgroundColor: '#FFBD20'}}
+        />
       </View>
-    </View>
-    
+    </Animated.View>
   );
 }
 
@@ -38,8 +52,8 @@ const styles = StyleSheet.create({
   },
   CalendarPicker: {
     width: '95%',
-    backgroundColor: Colors.light.background,
-    color: Colors.light.text,
     opacity: 0.8,
+    flex:1,
+    marginTop: '10%',
   }
 });

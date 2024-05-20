@@ -18,21 +18,48 @@ import axios from 'axios';
 function WelcomeScreen({ navigation }) {
     const colorScheme = useColorScheme();
     const { height } = useWindowDimensions();
-    // const {axios} = require('axios');
+    const { signIn } = useSession();
+
+    const checkLogin = () => {
+    };
+
+    const postData = {
+        "email": "test_user_1@gmail.com", 
+        "password": "test_user_1"
+    }
     const fetchData = () => {
-        axios.post('https://sightsaver-api.azurewebsites.net/child', {
-            id: '2',
-            sensor_id: '0',
-            name: 'test',
-            parent:'0'
-          })
-          .then((response) => {
-            console.log(response);
-          }, (error) => {
-            console.log(error);
-          });
-        }
+        console.log('Fetching data...');
+        axios.post('https://sightsaver-api.azurewebsites.net/api/auth/authenticate', postData)
+        .then(response => {
+        // Handle success, log the response
+        console.log('Response data:', response.data.token);
+        authToken = response.data.token;
+        console.log(authToken);
+        getUserData(authToken);
+        })
+        .catch(error => {
+        // Handle error, log the error message
+        console.error('Error posting data:', error);
+        });
+        // checkLogin()
+        };
+    
+    const getUserData = (authToken) => {
+        console.log('authtoken is',authToken)
+        const config = {
+            headers: {
+              Authorization: `Bearer ${authToken}`
+            }
+          };
+        axios.get('https://sightsaver-api.azurewebsites.net/api/user', config)
+        .then(response => {
+            console.log('User data:', response.data);
+        })
+    };
+
+
     const handleLogin = () => {
+        signIn();
         router.replace('/');
         };
 
@@ -66,30 +93,74 @@ function WelcomeScreen({ navigation }) {
 }
 
 function SignIn({ navigation }) {
+    const { signIn } = useSession();
     const [email, setEmail] = useState('');
     const [name, setName] = useState('');
     const [password, setPassword] = useState('');
     const colorScheme = useColorScheme();
     const { height } = useWindowDimensions();
-    const { signIn } = useSession();
+    const [showPassword, setShowPassword] = useState(false);
 
+    // const getUserData = (authToken) => {
+    //     console.log('authtoken is',authToken)
+    //     const config = {
+    //         headers: {
+    //           Authorization: `Bearer ${authToken}`
+    //         }
+    //       };
+    //     axios.get('https://sightsaver-api.azurewebsites.net/api/user', config)
+    //     .then(response => {
+    //         console.log('User data:', response.data);
+    //     })
+    // };
 
+    const toggleShowPassword = () => {
+        setShowPassword(!showPassword);
+    }
+
+    const authLogin = (postData) => {
+        console.log('Fetching data...');
+        axios.post('https://sightsaver-api.azurewebsites.net/api/auth/authenticate', postData)
+        .then(response => {
+            // Handle success, log the response
+            console.log('Response data:', response.data.token);
+            authToken = response.data.token;
+            console.log(authToken);
+            signIn();
+            router.replace('/');
+        })
+        .catch(error => {
+            // Handle error, log the error message
+            console.error('Error posting data:', error);
+        });
+        };
+    
+    const checkLogin = async (email, password) => {
+        const postData = {
+            "email": email, 
+            "password": password
+        }
+        console.log(postData);
+        authLogin(postData);
+        };
+   
     const handleLogin = () => {
+        // Validate email
         const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
         if (!emailRegex.test(email)) {
             alert('Please enter a valid email address.');
             return;
         }
-        if (!email || !name || !password) {
+        // Validate all fields filled
+        if (!email || !password) {
             alert("Please fill in all fields. If you don't have an account, please sign up.");
             return;}
-        // Login logic
-        console.log('Signing in with:', { email, name, password });const axios = require('axios');
-
-        // Navigate to another screen upon successful signup
-        signIn();
-        router.replace('/');
+    
+            // Login process 
+            console.log('Logging in with:', { email, password })
+            checkLogin(email, password)        
         };
+
 
     return (
         <View style={[styles.root, {backgroundColor:Colors[colorScheme ?? 'light'].background}]}>
@@ -109,21 +180,25 @@ function SignIn({ navigation }) {
                 setValue={setEmail}
                 autoCapitalize="none"
             />
-            <CustomInput
+            {/* <CustomInput
                 style={styles.input}
                 placeholder="Name"
                 value={name}
                 setValue={setName}
-            />
+            /> */}
             <CustomInput
                 style={styles.input}
                 placeholder="Password"
                 value={password}
                 setValue={setPassword}
-                secureTextEntry
+                secureTextEntry={!showPassword}
             />
 
-            <View style={styles.container}>    
+            <View style={styles.container}>
+                {/* Show password button */}
+            <TouchableOpacity style={{padding:5, borderWidth: 1 ,borderColor:'black' ,color:Colors[colorScheme ?? 'light']}} onPress={toggleShowPassword}>
+                <Text>{showPassword ? 'Hide Password' : 'Show Password'}</Text>
+            </TouchableOpacity>    
                 {/* Login button */}
                 <CustomButton style={[styles.signUpButton]} onPress={handleLogin} text={"Login"} />
                 {/* Signup text */}
@@ -141,12 +216,11 @@ function SignIn({ navigation }) {
             </View>)}
         </View>
         );
-    };
-    
+    };    
     
 function SignupScreen({ navigation }) {
     const [email, setEmail] = useState('');
-    const [name, setName] = useState('');
+    const [username, setUsername] = useState('');
     const [password, setPassword] = useState('');
     const [confirmPassword, setConfirmPassword] = useState('');
     const [termsAccepted, setTermsAccepted] = useState(false);
@@ -154,18 +228,63 @@ function SignupScreen({ navigation }) {
     const colorScheme = useColorScheme();
     const { height } = useWindowDimensions();
     const { signIn } = useSession();
+    const [showPassword, setShowPassword] = useState(false);
 
+    const toggleShowPassword = () => {
+        setShowPassword(!showPassword);
+    }
+
+    //Checks if user in database, creates user if not    
+    const authLogin = (postData) => {
+        console.log('Fetching data...');
+        axios.post('https://sightsaver-api.azurewebsites.net/api/auth/register', postData)
+        .then(response => {
+            // Handle success, log the response
+            console.log('Response data:', response.data.token);
+            authToken = response.data.token;
+            console.log(authToken);
+            signIn();
+            router.replace('/');
+        })
+        .catch(error => {
+            // Handle error, log the error message
+            alert('Username or email already in use. Please try again with a different username or email address.')
+            console.error('Error posting data:', error);
+        });
+        };
+    
+        //Creates post data and sends it to check user function
+    const checkUser = async (email, password,username) => {
+        const postData = {
+            "username": username,
+            "email": email, 
+            "password": password,
+            "parent": true
+            
+        }
+        console.log(postData);
+        authLogin(postData);
+        };
+   
     const handleSignup = () => {
-        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        // Validate password constraints
+        const passwordRegex = /^(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#$%^&*])(?=.{8,})/;
+        if (!passwordRegex.test(password)) {
+            alert('Password must contain at least one uppercase letter, one number, one special character, and be at least 8 characters long.');
+            return;
+    }
+        // Validate email
+        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;       
         if (!emailRegex.test(email)) {
             alert('Please enter a valid email address.');
             return;
         }
-        if (!email || !name || !password || !confirmPassword || !termsAccepted || !privacyAccepted) {
-            if ((!email || !name || !password || !confirmPassword) && (!termsAccepted || !privacyAccepted)){
+        
+        if (!email || !password || !username || !confirmPassword || !termsAccepted || !privacyAccepted) {
+            if ((!email || !password || !confirmPassword) && (!termsAccepted || !privacyAccepted)){
                 alert('Please fill in all fields and accept the terms and conditions.');
                 return;}
-            if (!email || !name || !password || !confirmPassword){
+            if (!email || !password || !confirmPassword){
                 alert('Please fill in all fields.');
                 return;}
             if (!termsAccepted || !privacyAccepted){
@@ -178,11 +297,8 @@ function SignupScreen({ navigation }) {
             return;
         }
         // Signup logic
-        alert('Signed up successfully!');
-        console.log('Signing up with:', { email, name, password });
-        // Navigate to another screen upon successful signup
-        signIn();
-        router.replace('/');
+        console.log('Logging in with:', { email, password })
+        checkUser(email, password,username)  
         };
 
     return (
@@ -205,24 +321,28 @@ function SignupScreen({ navigation }) {
             />
             <CustomInput
                 style={styles.input}
-                placeholder="Name"
-                value={name}
-                setValue={setName}
+                placeholder="Username"
+                value={username}
+                setValue={setUsername}
             />
             <CustomInput
                 style={styles.input}
                 placeholder="Password"
                 value={password}
                 setValue={setPassword}
-                secureTextEntry
+                secureTextEntry={!showPassword}
             />
             <CustomInput
                 style={styles.input}
                 placeholder="Confirm Password"
                 value={confirmPassword}
                 setValue={setConfirmPassword}
-                secureTextEntry
+                secureTextEntry={!showPassword}
             />
+            {/* Show password button */}
+            <TouchableOpacity style={{padding:5, borderWidth: 1 ,borderColor:'black' ,color:Colors[colorScheme ?? 'light']}} onPress={toggleShowPassword}>
+                <Text>{showPassword ? 'Hide Password' : 'Show Password'}</Text>
+            </TouchableOpacity>
 
             {/* Terms of serivce*/}
             <View style={styles.checkboxContainer}>

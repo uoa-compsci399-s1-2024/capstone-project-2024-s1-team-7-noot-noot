@@ -11,7 +11,7 @@ export default function DataScreen() {
   const colorScheme = useColorScheme();
 
   useEffect(() => {
-    const fileUri = FileSystem.documentDirectory + 'data.txt';
+    const fileUri = FileSystem.documentDirectory + 'tempData.json';
 
     FileSystem.readAsStringAsync(fileUri)
       .then(fileContent => {
