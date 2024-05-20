@@ -27,14 +27,15 @@ async function getCompletedDays(totalDays,month) {
   const searchMonth = new Date(currentYear, month, 1, 13); 
   console.log("Search: ", searchMonth);
   const monthArray = await getMonthData(searchMonth, totalDays);
+  console.log(monthArray);
   var completedDays = 0;
   for (let i of monthArray) {
     if (i > 2) {
       completedDays += 1;
     }
   }
-  //console.log(monthArray);
-  //console.log("Completed Days: ", completedDays);
+  
+  console.log("Completed Days: ", completedDays);
   return completedDays;
 
 }
@@ -42,7 +43,7 @@ export default function YearlyScreen() {
   const colorScheme = useColorScheme(); 
   return (
     <View style={styles.container}>
-      <TouchableOpacity onPress={() => getCompletedDays(31, 4)}> 
+      <TouchableOpacity onPress={() => getCompletedDays(getTotalDays(4), 4)}> 
         <Text style={{color: Colors[colorScheme ?? 'light'].text}}>Yearly Stats</Text>
       </TouchableOpacity>
       <View style={styles.progressBars}>
