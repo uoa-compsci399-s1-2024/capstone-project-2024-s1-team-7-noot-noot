@@ -9,6 +9,8 @@ import { FA5Style } from '@expo/vector-icons/build/FontAwesome5';
 // import {*} from 'date-fns';
 
 export default function MonthlyScreen(props) {
+  const yearMonth = props.selectedDate.split(":");
+  const selectedDate = new Date(yearMonth[0], yearMonth[1] - 1, 2);
   const colorScheme = useColorScheme();
   const fadeAnim = useRef(new Animated.Value(0)).current;
   const onDateChange = (date) => {
@@ -31,6 +33,7 @@ export default function MonthlyScreen(props) {
       <View style={[styles.CalendarPicker, ]}>
         <CalendarPicker
           onDateChange={onDateChange}
+          initialDate={selectedDate}
           textStyle={{color: Colors[colorScheme].text}}
           todayBackgroundColor='#f2e6ff'
           dayTextStyle={{color: Colors[colorScheme].text}}
