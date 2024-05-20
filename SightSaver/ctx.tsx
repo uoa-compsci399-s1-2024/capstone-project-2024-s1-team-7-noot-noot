@@ -137,7 +137,7 @@ export const getUserDetails = async () => {
         Authorization: `Bearer ${await SecureStore.getItemAsync(TOKEN_KEY)}`
       }
     };
-    const username = await axios.get(`${API_URL}/user/email/iru007@gmail.com`, config).then((res) => res.data);
+    const username = await axios.get(`${API_URL}/user/email/${email}`, config).then((res) => res.data);
     return {username, email};
   } catch (error) {
     try{

@@ -30,7 +30,7 @@ const Login = () => {
         console.log('Login');
         const result = await onLogin(email, password);
         if (result) {
-            console.log("Login Success", result);
+            console.log("Login Success", result.data);
         } else {
             console.log('Login failed');
         }
