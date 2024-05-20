@@ -8,6 +8,7 @@ export const getMonthData = async (searchMonth, daysInMonth) => {
   //console.log(searchMonth);
   // Parse the searchWeek string into a moment object
   const searchDate = moment(searchMonth, "YYYY:MM");
+  //console.log("Search Date: ", searchDate)
   //console.log(searchDate);
 
   // Read the file
@@ -28,6 +29,7 @@ export const getMonthData = async (searchMonth, daysInMonth) => {
       //console.log(searchDate.month());
       // Check if the date is within the same month as the search date
       if (date.month() === searchDate.month()) {
+        //console.log(minutes)
         // Add the minutes to the correct day of the month
         //console.log(date.date());
         monthData[date.date()-1] += parseInt(minutes) / 60; // Convert minutes to hours
@@ -35,7 +37,7 @@ export const getMonthData = async (searchMonth, daysInMonth) => {
       }
     }
   }
-  console.log(monthData); 
+  //console.log(monthData); 
   return monthData;
 
 }
