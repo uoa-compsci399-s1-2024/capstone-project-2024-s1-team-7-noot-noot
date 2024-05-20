@@ -1,5 +1,6 @@
 package NootNoot.SightSaver.service;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -10,7 +11,7 @@ import NootNoot.SightSaver.repository.UVRepository;
 
 @Service
 public class UVService {
-    
+
     @Autowired
     private UVRepository uvRepository;
 
@@ -34,4 +35,21 @@ public class UVService {
         uvRepository.deleteById(id);
     }
 
+    public String findUVValueDateByID(Long id) {
+        for (Uv uv : uvRepository.findAll()) {
+            if (uv.getId().equals(id)) {
+                return uv.getDate_time().toString();
+            }
+        }
+        return null;
+    }
+
+    public float findUVValueByID(Long id) {
+        for (Uv uv : uvRepository.findAll()) {
+            if (uv.getId().equals(id)) {
+                return uv.getUv_value();
+            }
+        }
+        return 0;
+    }
 }
