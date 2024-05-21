@@ -8,11 +8,26 @@ import AccessibilityScreen from './settingsScreens/accessibility';
 import DataSafetyScreen from './settingsScreens/dataSafety';
 import DeviceScreen from './settingsScreens/device';
 import NotificationSettings from './settingsScreens/notificationSettings';
+import CustomButton from '../../components/CustomButton';
+import { useAuth, getUserDetails } from '../../ctx';
+import axios from 'axios';
 
 function Settings({navigation}) {
     // const navigation = useNavigation();
     const colorScheme = useColorScheme();
-    
+    const handlePress = async () => {
+        try {
+            console.log('Attempting to get data');
+            await axios.get(`https://sightsaver-api.azurewebsites.net/api/child/numberOfChildren`).then((res) => console.log(res.data));
+
+            // const token = await getUserDetails();
+            // console.log('Data:', token);
+        } catch (error) {
+            console.error('Error retrieving token:', error);
+        }
+    };
+
+    const { onLogout } = useAuth();
     return (
         <View style={[styles.container, {backgroundColor:Colors[colorScheme ?? 'light'].background}]}>
             <StatusBar barStyle={barStyle=Colors[colorScheme ?? 'light'].barStyle}/>
@@ -29,6 +44,20 @@ function Settings({navigation}) {
             <TouchableOpacity style={[styles.option, {borderBottomColor:Colors[colorScheme ?? 'light'].seperator}]} onPress={() => navigation.navigate('Notifications')}>
                 <Text style={[styles.optionText, {color:Colors[colorScheme ?? 'light'].text}]}>Notifications</Text>
             </TouchableOpacity>
+            <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
+            <CustomButton
+                onPress={() => {
+                onLogout();
+                }}
+                    text={"Sign Out"}
+            />
+            <CustomButton
+                onPress={
+                    handlePress
+                }
+                    text={"test"}
+            />
+            </View>
         </View>
     );
 }

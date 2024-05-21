@@ -104,7 +104,7 @@ useEffect(() => {
       return result;
 
     } catch (error:any) {
-      console.log(error);
+      console.log("error in loading:",error);
       }
     }
 
@@ -137,11 +137,11 @@ export const getUserDetails = async () => {
         Authorization: `Bearer ${await SecureStore.getItemAsync(TOKEN_KEY)}`
       }
     };
-    const username = await axios.get(`${API_URL}/user/email/${email}`, config).then((res) => res.data);
+    const username = await axios.get(`${API_URL}/user/email/${email}`).then((res) => res.data);
     return {username, email};
   } catch (error) {
     try{
-      console.log({error})
+      console.log("error in ctx",{error})
       const email = await SecureStore.getItemAsync(EMAIL);
       const username = await SecureStore.getItemAsync(USERNAME);
       return {email, username};

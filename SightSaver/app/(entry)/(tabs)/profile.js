@@ -162,9 +162,9 @@ function deleteData () {
 function pushData () {
   const convertedData = convertData();
   console.log(convertedData);
-  axios.post('https://sightsaver-api.azurewebsites.net/api/lux', convertedData, {
+  axios.post('https://sightsaver-api.azurewebsites.net/api/lux', convertedData,{
     headers:{
-      'Authorization': `Bearer ${getToken()}`
+      Authorization: `Bearer ${getToken()}`
       }
     }
   )
