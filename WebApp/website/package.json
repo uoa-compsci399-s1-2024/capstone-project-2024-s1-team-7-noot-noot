@@ -10,13 +10,15 @@
     "@testing-library/user-event": "^13.5.0",
     "axios": "^1.7.1",
     "bootstrap": "^5.3.3",
+    "csv-writer": "^1.6.0",
     "expo-secure-store": "^13.0.1",
     "js-cookie": "^3.0.5",
     "react": "^18.3.1",
     "react-bootstrap": "^2.10.2",
     "react-dom": "^18.3.1",
     "react-scripts": "5.0.1",
-    "web-vitals": "^2.1.4"
+    "web-vitals": "^2.1.4",
+    "xml2js": "^0.6.2"
   },
   "scripts": {
     "start": "react-scripts start",

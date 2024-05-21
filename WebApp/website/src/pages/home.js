@@ -4,19 +4,36 @@ import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import { getToken } from './login';
 
-export const API_URL = 'https://sightsaver-api.azurewebsites.net/api';
+export const API_URL = 'https://cors-anywhere.herokuapp.com/https://sightsaver-api.azurewebsites.net/api';
 
 const setupAxiosInterceptors = async () => {
     const TOKEN_KEY = await getToken();
-    axios.defaults.headers.common['Authorization'] = `Bearer ${TOKEN_KEY}`;
     console.log(`Token set: ${TOKEN_KEY}`);
+    const config = {
+        headers: {
+            Authorization: `Bearer ${TOKEN_KEY}`
+        },
+        responseType: 'blob' // Set the response type to blob
+    }
+    return config;
 }
 
-setupAxiosInterceptors();
-
 const onExport = async () => {
-    try { 
-        const result = await axios.get(`${API_URL}/sensor/exportToExcel`);
+    try {
+        const config = await setupAxiosInterceptors();
+        const result = await axios.get(`${API_URL}/sensor/exportToExcel`, config);
+
+        // Create a blob from the response data
+        const url = window.URL.createObjectURL(new Blob([result.data], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' }));
+
+        // Create a link element and trigger the download
+        const link = document.createElement('a');
+        link.href = url;
+        link.setAttribute('download', 'exported_data.xlsx'); // Set the file name
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link); // Clean up the link element
+
         return result;
     } catch (error) {
         console.error(error);
@@ -25,7 +42,7 @@ const onExport = async () => {
 }
 
 const logout = async () => {
-    delete axios.defaults.headers.common['Authorization'];
+    // delete axios.defaults.headers.common['Authorization'];
 }
 
 function Home() {
@@ -40,6 +57,7 @@ function Home() {
         const result = await onExport();
         if (result) {
             alert("Export Success");
+            console.log(result.data);
         } else {
             alert('Export failed');
         }
