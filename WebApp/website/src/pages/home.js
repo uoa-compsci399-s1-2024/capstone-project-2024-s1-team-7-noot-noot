@@ -8,7 +8,7 @@ export const API_URL = 'https://sightsaver-api.azurewebsites.net/api';
 
 const setupAxiosInterceptors = async () => {
     const TOKEN_KEY = await getToken();
-    // axios.defaults.headers.common['Authorization'] = `Bearer ${TOKEN_KEY}`;
+    axios.defaults.headers.common['Authorization'] = `Bearer ${TOKEN_KEY}`;
     console.log(`Token set: ${TOKEN_KEY}`);
 }
 
