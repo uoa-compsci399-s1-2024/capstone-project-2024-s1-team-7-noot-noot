@@ -6,11 +6,6 @@
     justify-content: center;
     min-height: 100vh;
   }
-
-  .text {
-    margin-top: 1vh;
-    margin-bottom: 0;
-  }
   
   .Login-logo {
     height: 5vmin;
@@ -34,7 +29,7 @@
   }
 
   .input {
-    width: 11.5vw;
+    width: 19vw;
     margin-top: 2vh;
     padding: 1vh;
     border-radius: 0.5vw;
@@ -42,15 +37,9 @@
   }
   
   .Login-button {
-    margin-top: 7.2vh;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-  }
-  
-  .button {
     background-Color: #1970B4;
     width: 12vw;
+    margin-top: 6vh;
     align-items: center;
     border-radius: 1.5vw;
     font-size: 2vmin;
@@ -67,19 +56,20 @@
   .sign-up-text {
     flex-direction: row;
     display: flex;
-    vertical-align: middle;
     color: white;
     font-size: 1.5vmin;
+    align-items: center;
+    justify-content: center;
+    margin-top: 0vh;
   }
   
   .register {
     color: #A4D0F3;
     cursor: pointer;
-    vertical-align: middle;
-    margin-left: 10px;
-    margin-top: 1vh;
     font-size: 1.5vmin;
     text-decoration: none;
+    margin-top: 0vh;
+    margin-left: 0.2vw;
   }
 
   .forgot-pw {

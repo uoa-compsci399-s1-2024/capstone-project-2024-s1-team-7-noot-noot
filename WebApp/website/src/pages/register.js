@@ -5,6 +5,7 @@ import { Link } from 'react-router-dom';
 import axios from 'axios';
 
 const EMAIL = 'email';
+const TOKEN_KEY = 'token';
 export const API_URL = 'https://cors-anywhere.herokuapp.com/https://sightsaver-api.azurewebsites.net/api';
 
 const onRegister = async (email, password, username) => {
@@ -20,6 +21,7 @@ const onRegister = async (email, password, username) => {
     axios.defaults.headers.common['Authorization'] = `Bearer ${result.data.token}`;
 
     localStorage.setItem(EMAIL, email);
+    localStorage.setItem(TOKEN_KEY, result.data.token);
 
     return result;
   } catch (error) {
@@ -82,7 +84,7 @@ function Register() {
               value={confirmPassword} 
               onChange={(e) => setConfirmPassword(e.target.value)}
             />
-            <button type="submit" className='button'>
+            <button type="submit" className='Registers-button'>
               <p className='button-text'>
                 Register
               </p>

@@ -17,18 +17,18 @@ function Welcome() {
         </div>
         <div className="Welcome-button">
           <Link to="/login">
-            <button type="button" className='button'>
+            <button type="button" className='Welcomes-button'>
               <p className='button-text'>
                 Login
               </p>
             </button>
           </Link>
           <div className='sign-up-text'>
-            <p className='text'>
+            <p>
               Don't have an account?
             </p>
-            <Link to="/register">
-              <p className='register'>
+            <Link to="/register" className='register'>
+              <p>
                 Register
               </p>
             </Link>

@@ -1,9 +1,10 @@
 import React, { useState } from 'react';
 import logo from '../logo.png';
 import './styles/login.css';
-import { Link, useHistory } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import axios from 'axios';
 
+const TOKEN_KEY = 'token';
 const EMAIL = 'email';
 export const API_URL = 'https://cors-anywhere.herokuapp.com/https://sightsaver-api.azurewebsites.net/api';
 
@@ -18,6 +19,7 @@ const onLogin = async (email, password) => {
     axios.defaults.headers.common['Authorization'] = `Bearer ${result.data.token}`;
 
     localStorage.setItem(EMAIL, email);
+    localStorage.setItem(TOKEN_KEY, result.data.token);
 
     return result;
   } catch (error) {
@@ -28,7 +30,7 @@ const onLogin = async (email, password) => {
 function Login() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  const history = useHistory();
+  const navigate = useNavigate();
 
   const login = async (e) => {
     e.preventDefault();
@@ -47,7 +49,7 @@ function Login() {
 
     if (result) {
       console.log("Login Success");
-      history.push('/home');
+      navigate('/home');
 
     } else {
       alert('Login failed');
@@ -77,7 +79,7 @@ function Login() {
             <p className='forgot-pw'>
               Forgot Password?
             </p>
-            <button type="submit" className='button'>
+            <button type="submit" className='Login-button'>
               <p className='button-text'>
                 Login
               </p>
@@ -85,11 +87,11 @@ function Login() {
           </form>
         </div>
         <div className='sign-up-text'>
-          <p className='text'>
+          <p>
             Don't have an account?
           </p>
-          <Link to="/register">
-            <p className='register'>
+          <Link to="/register" className='register'>
+            <p>
               Register
             </p>
           </Link>
