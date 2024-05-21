@@ -122,8 +122,8 @@ useEffect(() => {
   //Fetch Children Count
   const fetchChildrenCount = async () => {
     try {
-      const response = await axios.get(`${API_URL}/api/child/numberOfChildren`);
-      console.log(response.data); // You can handle the response data here
+      const response = await axios.get(`${API_URL}/child/numberOfChildren`);
+      console.log('ctx',response.data); // You can handle the response data here
     } catch (error) {
       console.error('Error fetching children count:', error);
     }

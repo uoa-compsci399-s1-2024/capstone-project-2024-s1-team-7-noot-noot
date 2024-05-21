@@ -19,7 +19,8 @@ import {
   ScrollView,
   Button
 } from 'react-native';
-import { useAuth, getUserDetails } from '../../../ctx';
+import { getUserDetails } from '../../../ctx';
+import ChildrenButtons from '../../../components/ChildrenButtons';
 
 var data = `
 2024:05:01 10:23:06 45\n
@@ -162,15 +163,10 @@ function deleteData () {
 function pushData () {
   const convertedData = convertData();
   console.log(convertedData);
-  axios.post('https://sightsaver-api.azurewebsites.net/api/lux', convertedData,{
-    headers:{
-      Authorization: `Bearer ${getToken()}`
-      }
-    }
-  )
+  axios.post('https://sightsaver-api.azurewebsites.net/api/lux', convertedData)
   .then(response => {
     // Handle success, log the response
-    console.log('Response data:', response.data);
+    console.log('Response data:', response.data.token);
   })
   .catch(error => {
     // Handle error, log the error message
@@ -267,44 +263,6 @@ export default function ProfileScreen() {
       setActiveButton(index);
       AsyncStorage.setItem('activeButton', index.toString());
   };
-  
-  const { authState, fetchChildrenCount } = useAuth();
-  const [childrenCount, setChildrenCount] = useState(0);
-
-  useEffect(() => {
-    if (authState.authenticated) {
-      fetchChildrenCount(); // Fetch the number of children when the component mounts or when user authentication changes
-    }
-  }, [authState.authenticated]);
-
-  useEffect(() => {
-    if (authState.authenticated && authState.childrenCount !== null) {
-      setChildrenCount(authState.childrenCount); // Update the state with the fetched number of children
-    }
-  }, [authState.childrenCount]);
-
-  // Function to handle button press
-  const handleChildButtonPress = (childIndex) => {
-    console.log(`Child button ${childIndex + 1} pressed`);
-    // Add your logic here for handling button press
-  };
-
-  // Render children buttons based on the number of children
-  const renderChildrenButtons = () => {
-    const buttons = [];
-    for (let i = 0; i < childrenCount; i++) {
-      buttons.push(
-        <TouchableOpacity
-          key={i}
-          style={[styles.childButton, {backgroundColor:Colors[colorScheme ?? 'light'].buttonColor}]}
-          onPress={() => handleChildButtonPress(i)}
-        >
-          <Text style={styles.buttonText}>Child {i + 1}</Text>
-        </TouchableOpacity>
-      );
-    }
-    return buttons;
-  };
 
 
   return (
@@ -320,9 +278,9 @@ export default function ProfileScreen() {
               </View>
           </View>
 
-      {/* Display children buttons */}
+      {/* Children buttons */}
       <View style={styles.childrenContainer}>
-        {renderChildrenButtons()}
+        <ChildrenButtons />
       </View>
 
       {/* Sync Data Button */}
@@ -562,13 +520,5 @@ const styles = StyleSheet.create({
     flexWrap: 'wrap',
     justifyContent: 'center',
     marginTop: 20,
-  },
-  childButton: {
-    padding: 10,
-    margin: 5,
-    borderRadius: 5,
-  },
-  buttonText: {
-    fontSize: 16,
-  },
+  }
 });

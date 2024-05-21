@@ -6,8 +6,6 @@ import Colors from '../../constants/Colors';
 import { useColorScheme } from '../../components/useColorScheme';
 import AccessibilityScreen from './settingsScreens/accessibility';
 import DataSafetyScreen from './settingsScreens/dataSafety';
-import DeviceScreen from './settingsScreens/device';
-import NotificationSettings from './settingsScreens/notificationSettings';
 import CustomButton from '../../components/CustomButton';
 import { useAuth, getUserDetails } from '../../ctx';
 import axios from 'axios';
@@ -38,12 +36,12 @@ function Settings({navigation}) {
             <TouchableOpacity style={[styles.option, {borderBottomColor:Colors[colorScheme ?? 'light'].seperator}]} onPress={() => navigation.navigate('Data Safety')}>
                 <Text style={[styles.optionText, {color:Colors[colorScheme ?? 'light'].text}]}>Data Safety</Text>
             </TouchableOpacity>
-            <TouchableOpacity style={[styles.option, {borderBottomColor:Colors[colorScheme ?? 'light'].seperator}]} onPress={() => navigation.navigate('Device')}>
+            {/* <TouchableOpacity style={[styles.option, {borderBottomColor:Colors[colorScheme ?? 'light'].seperator}]} onPress={() => navigation.navigate('Device')}>
                 <Text style={[styles.optionText, {color:Colors[colorScheme ?? 'light'].text}]}>Device</Text>
             </TouchableOpacity>
             <TouchableOpacity style={[styles.option, {borderBottomColor:Colors[colorScheme ?? 'light'].seperator}]} onPress={() => navigation.navigate('Notifications')}>
                 <Text style={[styles.optionText, {color:Colors[colorScheme ?? 'light'].text}]}>Notifications</Text>
-            </TouchableOpacity>
+            </TouchableOpacity> */}
             <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
             <CustomButton
                 onPress={() => {
@@ -71,8 +69,6 @@ export default function SettingsScreens() {
             <Stack.Screen name="Settings" component={Settings} />
             <Stack.Screen name="Accessibility" component={AccessibilityScreen} />
             <Stack.Screen name="Data Safety" component={DataSafetyScreen} />
-            {/* <Stack.Screen name="Device" component={DeviceScreen} /> */}
-            {/* <Stack.Screen name="Notifications" component={NotificationSettings} /> */}
         </Stack.Navigator>
     );
 }
