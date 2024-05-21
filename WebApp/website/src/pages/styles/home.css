@@ -1,0 +1,68 @@
+.Home {
+    display: flex;
+    flex-direction: column;
+    background-color: #4B4B4B;
+    align-items: center;
+    justify-content: center;
+    min-height: 100vh;
+  }
+
+  .text {
+    margin-top: 1vh;
+    margin-bottom: 0;
+  }
+  
+  .Home-logo {
+    height: 5vmin;
+    pointer-events: none;
+    margin-top: 2vh;
+  }
+  
+  .Home-header {
+    background-color: #404040;
+    font-size: calc(10px + 2vmin);
+    color: black;
+    border-radius: 2vw;
+    padding: 2vw;
+    height: 40vh;
+  }
+
+  .Home-div {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .input {
+    width: 11.5vw;
+    margin-top: 2vh;
+    padding: 1vh;
+    border-radius: 0.5vw;
+    border-width: 0;
+  }
+  
+  .Home-button {
+    margin-top: 7.2vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+  
+  .button {
+    background-Color: #1970B4;
+    width: 12vw;
+    align-items: center;
+    border-radius: 1.5vw;
+    font-size: 2vmin;
+    color: white;
+    cursor: pointer;
+    border-width: 0;
+  }
+  
+  .button-text {
+    margin: 0;
+    padding: 1.5vh;
+  }
+
+  
+  

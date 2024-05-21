@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import logo from '../logo.png';
 import './styles/login.css';
-import { Link } from 'react-router-dom';
+import { Link, useHistory } from 'react-router-dom';
 import axios from 'axios';
 
 const EMAIL = 'email';
@@ -28,6 +28,7 @@ const onLogin = async (email, password) => {
 function Login() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const history = useHistory();
 
   const login = async (e) => {
     e.preventDefault();
@@ -46,7 +47,7 @@ function Login() {
 
     if (result) {
       console.log("Login Success");
-      <Link to="/welcome" />;
+      history.push('/home');
 
     } else {
       alert('Login failed');
