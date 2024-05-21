@@ -6,8 +6,6 @@ import { Text, View } from '../../../components/Themed';
 import { useColorScheme } from '../../../components/useColorScheme';
 import moment from 'moment';
 import { FA5Style } from '@expo/vector-icons/build/FontAwesome5';
-import { get } from 'react-native/Libraries/TurboModule/TurboModuleRegistry';
-
 
 export default function MonthlyScreen(props) {
   const yearMonth = props.selectedDate.split(":");
