@@ -5,7 +5,7 @@ import { Link } from 'react-router-dom';
 import axios from 'axios';
 
 const EMAIL = 'email';
-export const API_URL = 'https://sightsaver-api.azurewebsites.net/api';
+export const API_URL = 'https://cors-anywhere.herokuapp.com/https://sightsaver-api.azurewebsites.net/api';
 
 const onRegister = async (email, password, username) => {
   console.log("register", email, password, username);
