@@ -19,6 +19,7 @@ interface AuthProps {
     password: string
   ) => void;
   onLogout: () => void;
+  fetchChildrenCount: () => void;
 }
 
 const TOKEN_KEY = 'token';
@@ -102,13 +103,13 @@ useEffect(() => {
       await SecureStore.setItemAsync(TOKEN_KEY, result.data.token);
       await SecureStore.setItemAsync(EMAIL, email);
       return result;
-
+      
     } catch (error:any) {
       console.log("error in loading:",error);
       }
     }
-
-    //Logout User
+  
+  //Logout User
   const logout = async () => {
     await SecureStore.deleteItemAsync(TOKEN_KEY);
     axios.defaults.headers.common['Authorization'] = '';
@@ -117,14 +118,24 @@ useEffect(() => {
       authenticated: false
     });
   }
-
+  
+  //Fetch Children Count
+  const fetchChildrenCount = async () => {
+    try {
+      const response = await axios.get(`${API_URL}/api/child/numberOfChildren`);
+      console.log(response.data); // You can handle the response data here
+    } catch (error) {
+      console.error('Error fetching children count:', error);
+    }
+  };
+  
   const value = {
     onRegister: register,
     onLogin: login,
     onLogout: logout,
+    fetchChildrenCount,
     authState
   };
-
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
 };
 
@@ -152,6 +163,7 @@ export const getUserDetails = async () => {
     }
   }
 };
+
 
 //Change User Details
 

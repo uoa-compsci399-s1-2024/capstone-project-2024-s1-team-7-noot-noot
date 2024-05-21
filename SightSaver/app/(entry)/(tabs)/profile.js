@@ -19,7 +19,7 @@ import {
   ScrollView,
   Button
 } from 'react-native';
-import { getToken,getUserDetails } from '../../../ctx';
+import { useAuth, getUserDetails } from '../../../ctx';
 
 var data = `
 2024:05:01 10:23:06 45\n
@@ -267,6 +267,44 @@ export default function ProfileScreen() {
       setActiveButton(index);
       AsyncStorage.setItem('activeButton', index.toString());
   };
+  
+  const { authState, fetchChildrenCount } = useAuth();
+  const [childrenCount, setChildrenCount] = useState(0);
+
+  useEffect(() => {
+    if (authState.authenticated) {
+      fetchChildrenCount(); // Fetch the number of children when the component mounts or when user authentication changes
+    }
+  }, [authState.authenticated]);
+
+  useEffect(() => {
+    if (authState.authenticated && authState.childrenCount !== null) {
+      setChildrenCount(authState.childrenCount); // Update the state with the fetched number of children
+    }
+  }, [authState.childrenCount]);
+
+  // Function to handle button press
+  const handleChildButtonPress = (childIndex) => {
+    console.log(`Child button ${childIndex + 1} pressed`);
+    // Add your logic here for handling button press
+  };
+
+  // Render children buttons based on the number of children
+  const renderChildrenButtons = () => {
+    const buttons = [];
+    for (let i = 0; i < childrenCount; i++) {
+      buttons.push(
+        <TouchableOpacity
+          key={i}
+          style={[styles.childButton, {backgroundColor:Colors[colorScheme ?? 'light'].buttonColor}]}
+          onPress={() => handleChildButtonPress(i)}
+        >
+          <Text style={styles.buttonText}>Child {i + 1}</Text>
+        </TouchableOpacity>
+      );
+    }
+    return buttons;
+  };
 
 
   return (
@@ -282,45 +320,9 @@ export default function ProfileScreen() {
               </View>
           </View>
 
-      {/* Children buttons */}
-      <View style={{justifyContent:"center", alignItems:"center", marginTop:20}}>
-        <Text style={[styles.title,{fontWeight:"bold",fontSize:20}]}>Display Data for:</Text>
-
-        {/* Child 1 Button */}
-        <TouchableOpacity
-            style={[styles.button, {backgroundColor:Colors[colorScheme ?? 'light'].buttonColor}]}
-            onPress={() => handlePress(1)} // Pass index 1
-        >
-          <View style={{flexDirection: 'column', justifyContent: 'center', alignItems:'left'}}>
-            <Text style={[styles.buttonText, {backgroundColor:Colors[colorScheme ?? 'light'].buttonColor}]}>Child 1</Text>
-            <Text style={[styles.buttonText, {fontSize: 10, backgroundColor:Colors[colorScheme ?? 'light'].buttonColor}]}>Device: Sun Sensor 1</Text>
-          </View>             
-          <View
-              style={[
-                  styles.circle,
-                  {backgroundColor:Colors[colorScheme ?? 'light'].buttonColor},
-                  activeButton === 1 && styles.circlePressed, // Apply style when button 1 is active
-              ]}
-          />
-        </TouchableOpacity>
-
-        {/* Child 2 Button */}
-        <TouchableOpacity
-          style={[styles.button, {backgroundColor:Colors[colorScheme ?? 'light'].buttonColor}]}
-          onPress={() => handlePress(2)} // Pass index 2
-        >
-        <View style={{flexDirection: 'column', justifyContent: 'center', alignItems:'left'}}>
-          <Text style={[styles.buttonText, {backgroundColor:Colors[colorScheme ?? 'light'].buttonColor}]}>Child 2</Text>
-          <Text style={[styles.buttonText, {fontSize: 10, backgroundColor:Colors[colorScheme ?? 'light'].buttonColor}]}>Device: Sun Sensor 2</Text>
-        </View>      
-          <View
-            style={[
-              styles.circle,
-              {backgroundColor:Colors[colorScheme ?? 'light'].buttonColor},
-              activeButton === 2 && styles.circlePressed, // Apply style when button 1 is active
-          ]}
-          />
-        </TouchableOpacity>
+      {/* Display children buttons */}
+      <View style={styles.childrenContainer}>
+        {renderChildrenButtons()}
       </View>
 
       {/* Sync Data Button */}
@@ -553,5 +555,20 @@ const styles = StyleSheet.create({
   },
   deviceButtonText: {
     fontSize: 18,
-  }
+  },
+
+  childrenContainer: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    justifyContent: 'center',
+    marginTop: 20,
+  },
+  childButton: {
+    padding: 10,
+    margin: 5,
+    borderRadius: 5,
+  },
+  buttonText: {
+    fontSize: 16,
+  },
 });

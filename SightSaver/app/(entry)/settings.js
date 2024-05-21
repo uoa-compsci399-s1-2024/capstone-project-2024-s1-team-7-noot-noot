@@ -71,8 +71,8 @@ export default function SettingsScreens() {
             <Stack.Screen name="Settings" component={Settings} />
             <Stack.Screen name="Accessibility" component={AccessibilityScreen} />
             <Stack.Screen name="Data Safety" component={DataSafetyScreen} />
-            <Stack.Screen name="Device" component={DeviceScreen} />
-            <Stack.Screen name="Notifications" component={NotificationSettings} />
+            {/* <Stack.Screen name="Device" component={DeviceScreen} /> */}
+            {/* <Stack.Screen name="Notifications" component={NotificationSettings} /> */}
         </Stack.Navigator>
     );
 }
