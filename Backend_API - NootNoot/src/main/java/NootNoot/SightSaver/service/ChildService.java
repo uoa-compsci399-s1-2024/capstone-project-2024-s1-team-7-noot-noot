@@ -2,6 +2,7 @@ package NootNoot.SightSaver.service;
 
 import java.util.List;
 
+import NootNoot.SightSaver.model.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -13,6 +14,8 @@ public class ChildService {
     
     @Autowired
     private ChildRepository childRepository;
+    @Autowired
+    private UserService userService;
 
     public List<Child> getAllChildren() {
         return childRepository.findAll();
@@ -27,6 +30,19 @@ public class ChildService {
     }
 
     public Child saveChild(Child child) {
+        return childRepository.save(child);
+    }
+
+    public Child saveChild(String email, String name, long sensorid) {
+        Child child = new Child();
+        child.setName(name);
+        List<User> users = userService.getAllUsers();
+        for (User user : users) {
+            if (user.getEmail().equals(email)) {
+                child.setParent(user.getId());
+            }
+        }
+        child.setSensor_id(sensorid);
         return childRepository.save(child);
     }
 
