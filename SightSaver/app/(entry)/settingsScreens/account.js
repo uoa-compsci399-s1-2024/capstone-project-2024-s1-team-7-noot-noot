@@ -2,7 +2,7 @@ import React from 'react';
 import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import EditProfile from './accountSettingsScreens/editProfile';
-import NotificationSettings from './accountSettingsScreens/notificationSettings';
+import NotificationSettings from './notificationSettings';
 import PrivacySettings from './accountSettingsScreens/privacySettings';
 import { useColorScheme } from '../../../components/useColorScheme';
 import Colors from '../../../constants/Colors';

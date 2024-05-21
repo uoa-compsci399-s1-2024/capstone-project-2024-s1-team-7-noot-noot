@@ -7,7 +7,7 @@ import { useColorScheme } from '../../components/useColorScheme';
 import AccessibilityScreen from './settingsScreens/accessibility';
 import DataSafetyScreen from './settingsScreens/dataSafety';
 import DeviceScreen from './settingsScreens/device';
-import AccountScreen from './settingsScreens/account';
+import NotificationSettings from './settingsScreens/notificationSettings';
 
 function Settings({navigation}) {
     // const navigation = useNavigation();
@@ -26,8 +26,8 @@ function Settings({navigation}) {
             <TouchableOpacity style={[styles.option, {borderBottomColor:Colors[colorScheme ?? 'light'].seperator}]} onPress={() => navigation.navigate('Device')}>
                 <Text style={[styles.optionText, {color:Colors[colorScheme ?? 'light'].text}]}>Device</Text>
             </TouchableOpacity>
-            <TouchableOpacity style={[styles.option, {borderBottomColor:Colors[colorScheme ?? 'light'].seperator}]} onPress={() => navigation.navigate('Account')}>
-                <Text style={[styles.optionText, {color:Colors[colorScheme ?? 'light'].text}]}>Account</Text>
+            <TouchableOpacity style={[styles.option, {borderBottomColor:Colors[colorScheme ?? 'light'].seperator}]} onPress={() => navigation.navigate('Notifications')}>
+                <Text style={[styles.optionText, {color:Colors[colorScheme ?? 'light'].text}]}>Notifications</Text>
             </TouchableOpacity>
         </View>
     );
@@ -43,7 +43,7 @@ export default function SettingsScreens() {
             <Stack.Screen name="Accessibility" component={AccessibilityScreen} />
             <Stack.Screen name="Data Safety" component={DataSafetyScreen} />
             <Stack.Screen name="Device" component={DeviceScreen} />
-            <Stack.Screen name="Account" component={AccountScreen} options={{ headerShown: false }}/>
+            <Stack.Screen name="Notifications" component={NotificationSettings} />
         </Stack.Navigator>
     );
 }
