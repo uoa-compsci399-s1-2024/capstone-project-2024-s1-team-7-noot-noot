@@ -18,7 +18,7 @@ const onRegister = async (email, password, username) => {
       parent: false
     });
     
-    axios.defaults.headers.common['Authorization'] = `Bearer ${result.data.token}`;
+    // axios.defaults.headers.common['Authorization'] = `Bearer ${result.data.token}`;
 
     localStorage.setItem(EMAIL, email);
     localStorage.setItem(TOKEN_KEY, result.data.token);
