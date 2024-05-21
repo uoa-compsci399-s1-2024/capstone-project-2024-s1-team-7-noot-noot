@@ -6,7 +6,11 @@ import axios from 'axios';
 
 const TOKEN_KEY = 'token';
 const EMAIL = 'email';
-export const API_URL = 'https://cors-anywhere.herokuapp.com/https://sightsaver-api.azurewebsites.net/api';
+export const API_URL = 'https://sightsaver-api.azurewebsites.net/api';
+
+export const getToken = async () => {
+  return localStorage.getItem(TOKEN_KEY);
+}
 
 const onLogin = async (email, password) => {
   console.log("login", email, password);
@@ -16,10 +20,12 @@ const onLogin = async (email, password) => {
       password
     });
 
-    axios.defaults.headers.common['Authorization'] = `Bearer ${result.data.token}`;
+    //axios.defaults.headers.common['Authorization'] = `Bearer ${result.data.token}`;
 
     localStorage.setItem(EMAIL, email);
     localStorage.setItem(TOKEN_KEY, result.data.token);
+    console.log(result.data.token);
+    console.log(localStorage.getItem(TOKEN_KEY));
 
     return result;
   } catch (error) {
