@@ -3,6 +3,8 @@ package NootNoot.SightSaver.service;
 import java.io.IOException;
 import java.util.List;
 
+import NootNoot.SightSaver.model.User;
+import NootNoot.SightSaver.repository.UserRepository;
 import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -20,6 +22,8 @@ public class SensorService {
     private UVService uvService;
     @Autowired
     private LuxService luxService;
+    @Autowired
+    private UserRepository userRepository;
 
     public List<Sensor> getAllSensors() {
         return sensorRepository.findAll();
@@ -34,7 +38,14 @@ public class SensorService {
     }
 
     public Sensor saveSensor(Sensor sensor) {
-        return sensorRepository.save(sensor);
+        List<User> users = userRepository.findAll();
+        for (User user : users) {
+            if (user.getId().equals(sensor.getUserId())) {
+                return sensorRepository.save(sensor);
+            }
+        }
+        return null;
+
     }
 
     public void deleteSensorById(Long id) {
