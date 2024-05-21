@@ -4,7 +4,7 @@ import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import { getToken } from './login';
 
-export const API_URL = 'https://cors-anywhere.herokuapp.com/https://sightsaver-api.azurewebsites.net/api';
+export const API_URL = 'https://sightsaver-api.azurewebsites.net/api';
 
 const setupAxiosInterceptors = async () => {
     const TOKEN_KEY = await getToken();
