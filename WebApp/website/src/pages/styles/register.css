@@ -1,0 +1,99 @@
+.Register {
+    display: flex;
+    flex-direction: column;
+    background-color: #4B4B4B;
+    align-items: center;
+    justify-content: center;
+    min-height: 100vh;
+  }
+  
+  .Register-logo {
+    height: 5vmin;
+    pointer-events: none;
+    margin-top: 2vh;
+  }
+  
+  .Register-header {
+    background-color: #404040;
+    font-size: calc(10px + 2vmin);
+    color: black;
+    border-radius: 2vw;
+    padding: 2vw;
+    height: 40vh;
+  }
+  
+  .Register-title {
+    font-size: calc(2vmin);
+    color: white;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin: 0;
+  }
+  
+  .header {
+    margin-top: 2vh;
+    margin-bottom: 0;
+  }
+  
+  .text {
+    margin-top: 1vh;
+    margin-bottom: 0;
+  }
+  
+  .Register-button {
+    margin-top: 6.2vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .Register-div {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .input {
+    width: 11.5vw;
+    margin-top: 2vh;
+    padding: 1vh;
+    border-radius: 0.5vw;
+    border-width: 0;
+  }
+  
+  .button {
+    background-Color: #1970B4;
+    width: 12vw;
+    align-items: center;
+    border-radius: 1.5vw;
+    font-size: 2vmin;
+    color: white;
+    cursor: pointer;
+    border-width: 0;
+  }
+  
+  .button-text {
+    margin: 0;
+    padding: 1.5vh;
+  }
+  
+  .login-text {
+    flex-direction: row;
+    display: flex;
+    vertical-align: middle;
+    color: white;
+    font-size: 1.5vmin;
+  }
+  
+  .login {
+    color: #A4D0F3;
+    cursor: pointer;
+    vertical-align: middle;
+    margin-left: 10px;
+    margin-top: 1vh;
+    font-size: 1.5vmin;
+    text-decoration: none;
+  }
+  
+  
