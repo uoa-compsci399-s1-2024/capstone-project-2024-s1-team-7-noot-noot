@@ -50,7 +50,9 @@ public class ChildService {
         childRepository.deleteById(id);
     }
 
-
+    public List<Child> getChildByParent(Long id) {
+        return childRepository.findAllByParentId(id);
+    }
 
 
 
