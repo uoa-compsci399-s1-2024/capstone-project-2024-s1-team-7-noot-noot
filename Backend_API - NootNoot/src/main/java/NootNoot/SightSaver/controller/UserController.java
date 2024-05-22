@@ -1,8 +1,11 @@
 package NootNoot.SightSaver.controller;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
+import NootNoot.SightSaver.model.Lux;
+import NootNoot.SightSaver.service.SensorService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -23,6 +26,9 @@ public class UserController {
     
     @Autowired
     private UserService userService;
+
+    @Autowired
+    private SensorService sensorService;
 
     @GetMapping
     public ResponseEntity<List<User>> getAllUsers() {
@@ -56,6 +62,11 @@ public class UserController {
     @GetMapping("/email/{email}")
     public ResponseEntity<String> getUsernameByEmail(@PathVariable String email) {
         return new ResponseEntity<>(userService.getUsernameByEmail(email), HttpStatus.OK);
+    }
+
+    @GetMapping("/getAllLux/{email}")
+    public ResponseEntity<Map<String, List<Lux>>> getAllLuxByEmail(@PathVariable String email) {
+        return new ResponseEntity<>(sensorService.getAllSensorLuxDataByEmail(email), HttpStatus.OK);
     }
 
 }
