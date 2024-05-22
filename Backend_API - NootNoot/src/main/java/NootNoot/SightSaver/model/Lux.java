@@ -32,8 +32,19 @@ public class Lux{
     public LocalDateTime getDate_time(){return this.date_time;}
     public Long getSensorId(){return this.sensorId;}
 
+    @Override
+    public String toString() {
+        return "Lux{" +
+                "id=" + id +
+                ", lux_value=" + lux_value +
+                ", date_time=" + date_time +
+                ", sensorId=" + sensorId +
+                '}';
+    }
+
     public void setId(Long id){this.id = id;}
     public void setLux_value(float lux_value){this.lux_value = lux_value;}
     public void setDate_time(String date_time){this.date_time = LocalDateTime.parse(date_time, DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));}
+
 
 }
