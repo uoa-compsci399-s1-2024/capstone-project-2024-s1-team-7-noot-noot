@@ -27,10 +27,8 @@ export default function YearlyScreen({selectedDate, changeSelectedItem, dropdown
   const [searchYear, setSearchYear] = useState(moment(selectedDate, "YYYY:MM:DD").utcOffset('+12:00').format("YYYY"));
   const fadeAnim = useRef(new Animated.Value(0)).current;
 
-  const currentYear = moment().year();
-
   function getTotalDays(month) {
-    const totalDays = new Date(currentYear, month+1, 0).getDate();
+    const totalDays = new Date(searchYear, month+1, 0).getDate();
     return totalDays; 
   }
 
