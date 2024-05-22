@@ -37,7 +37,6 @@ function Settings({navigation}) {
 const Stack = createNativeStackNavigator();
 export default function SettingsScreens() {
     return (
-        console.debug('settings'),
         <Stack.Navigator>
             <Stack.Screen name="Settings" component={Settings} />
             <Stack.Screen name="Accessibility" component={AccessibilityScreen} />
