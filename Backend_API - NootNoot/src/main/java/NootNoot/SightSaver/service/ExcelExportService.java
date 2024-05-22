@@ -1,5 +1,6 @@
 package NootNoot.SightSaver.service;
 
+import NootNoot.SightSaver.model.Lux;
 import NootNoot.SightSaver.model.Sensor;
 import jakarta.servlet.ServletOutputStream;
 import jakarta.servlet.http.HttpServletResponse;
@@ -93,14 +94,16 @@ public class ExcelExportService {
         SensorService sensorService = new SensorService();
 
         for (Sensor sensor : SensorList) {
-            if(uvService.findUVValueByID(sensor.getUvId()) != 0 && luxService.findLuxValueByID(sensor.getLuxId()) != 0) {
-                Row row = sheet.createRow(rowCount++);
-                int columnCount = 0;
-                createCell(row, columnCount++, sensor.getId(), style);
-                createCell(row, columnCount++, sensor.getUserId(), style);
-                createCell(row, columnCount++, uvService.findUVValueByID(sensor.getUvId()), style);
-                createCell(row, columnCount++, luxService.findLuxValueByID(sensor.getLuxId()), style);
-                createCell(row, columnCount++, uvService.findUVValueDateByID(sensor.getUvId()), style);
+            if(!luxService.findLuxByID(sensor.getId()).isEmpty()) {
+                for (Lux lux : luxService.findLuxByID(sensor.getId())) {
+                    Row row = sheet.createRow(rowCount++);
+                    int columnCount = 0;
+                    createCell(row, columnCount++, sensor.getId(), style);
+                    createCell(row, columnCount++, sensor.getChild_id(), style);
+                    createCell(row, columnCount++, luxService.findLuxValueByID(lux.getId()), style);
+                    createCell(row, columnCount++, luxService.findLuxValueByID(lux.getId()), style);
+                    createCell(row, columnCount++, luxService.findLuxValueDateByID(lux.getId()), style);
+                }
             }
         }
 
