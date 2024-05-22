@@ -1,3 +1,5 @@
 {
-    "java.compile.nullAnalysis.mode": "automatic"
+    "java.compile.nullAnalysis.mode": "automatic",
+    "appService.defaultWebAppToDeploy": "/subscriptions/db5d8e49-51b9-46a1-9d89-136eefa96a54/resourceGroups/Noot-Noot/providers/Microsoft.Web/sites/SightSaver",
+    "appService.deploySubpath": "."
 }

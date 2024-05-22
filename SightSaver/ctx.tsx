@@ -1,47 +1,174 @@
+import {createContext, useContext, useEffect, useState} from 'react';
 import React from 'react';
-import { useStorageState } from './useStorageState';
+import axios, { AxiosError } from 'axios';
+import * as SecureStore from 'expo-secure-store';
 
-const AuthContext = React.createContext<{
-  signIn: () => void;
-  signOut: () => void;
-  session?: string | null;
-  isLoading: boolean;
-}>({
-  signIn: () => null,
-  signOut: () => null,
-  session: null,
-  isLoading: false,
-});
+interface AuthProps {
+  authState: { 
+    token: string | null; 
+    authenticated: boolean | null;
+  };
+  onRegister: (
+    email: string, 
+    password: string, 
+    username: string, 
+    parent: boolean
+  ) => void;
+  onLogin: (
+    username: string, 
+    password: string
+  ) => void;
+  onLogout: () => void;
+}
 
-// This hook can be used to access the user info.
-export function useSession() {
-  const value = React.useContext(AuthContext);
-  if (process.env.NODE_ENV !== 'production') {
-    if (!value) {
-      throw new Error('useSession must be wrapped in a <SessionProvider />');
+const TOKEN_KEY = 'token';
+const USERNAME = 'username';
+const EMAIL = 'email';
+export const API_URL = 'https://sightsaver-api.azurewebsites.net/api';
+const AuthContext = createContext<Partial<AuthProps>>({});
+
+export const useAuth = () => {
+  return useContext(AuthContext);
+};
+
+
+export const AuthProvider = ({children}: any) => {
+  const [authState, setAuthState] = useState<{
+    token: string | null; 
+    authenticated: boolean | null;
+  }>({
+    token: null,
+    authenticated: null,
+  });
+
+  //Check if token is stored
+useEffect(() => {
+  const loadToken = async () => {
+      const token = await SecureStore.getItemAsync(TOKEN_KEY);
+      console.log("Stored: ", token);
+      //If token is stored, login the user and set authenticated to true
+      if (token){
+        axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;
+
+        setAuthState({
+          token,
+          authenticated: true
+        });
+      }
+  }
+  loadToken();
+}, []);
+
+  //Register User
+  const register = async (email: string, password: string, username: string) => {
+    console.log("register", email, password, username);
+    try{ 
+      const result = await axios.post(`${API_URL}/auth/register`, {
+        "username": username,
+        "email": email, 
+        "password": password,
+        "parent": true
+      });
+      setAuthState({
+        token: result.data.token,
+        authenticated: true
+      })
+      axios.defaults.headers.common['Authorization'] = `Bearer ${result.data.token}`;
+
+      await SecureStore.setItemAsync(TOKEN_KEY, result.data.token);
+      await SecureStore.setItemAsync(USERNAME, username);
+      await SecureStore.setItemAsync(EMAIL, email);
+      return result;
+    } catch (error:any){
+      console.log(error);
     }
   }
 
-  return value;
-}
+  //Login User
+  const login = async (email: string, password: string) => {
+    console.log("login", email, password);
+    try{ 
+      const result = await axios.post(`${API_URL}/auth/authenticate`, {
+        "email": email, 
+        "password": password
+      });
 
-export function SessionProvider(props: React.PropsWithChildren) {
-  const [[isLoading, session], setSession] = useStorageState('session');
+      setAuthState({
+        token: result.data.token,
+        authenticated: true
+      })
+      axios.defaults.headers.common['Authorization'] = `Bearer ${result.data.token}`;
 
-  return (
-    <AuthContext.Provider
-      value={{
-        signIn: () => {
-          // Perform sign-in logic here
-          setSession('xxx');
-        },
-        signOut: () => {
-          setSession(null);
-        },
-        session,
-        isLoading,
-      }}>
-      {props.children}
-    </AuthContext.Provider>
-  );
+      await SecureStore.setItemAsync(TOKEN_KEY, result.data.token);
+      await SecureStore.setItemAsync(EMAIL, email);
+      return result;
+
+    } catch (error:any) {
+      console.log(error);
+      }
+    }
+
+    //Logout User
+  const logout = async () => {
+    await SecureStore.deleteItemAsync(TOKEN_KEY);
+    axios.defaults.headers.common['Authorization'] = '';
+    setAuthState({
+      token: null,
+      authenticated: false
+    });
+  }
+
+  const value = {
+    onRegister: register,
+    onLogin: login,
+    onLogout: logout,
+    authState
+  };
+
+  return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
+};
+
+//Get User Details
+export const getUserDetails = async () => {
+  try {
+    const email = await SecureStore.getItemAsync(EMAIL);
+    const config = {
+      headers:{
+        Authorization: `Bearer ${await SecureStore.getItemAsync(TOKEN_KEY)}`
+      }
+    };
+    const username = await axios.get(`${API_URL}/user/email/iru007@gmail.com`, config).then((res) => res.data);
+    return {username, email};
+  } catch (error) {
+    try{
+      console.log({error})
+      const email = await SecureStore.getItemAsync(EMAIL);
+      const username = await SecureStore.getItemAsync(USERNAME);
+      return {email, username};
+    }
+    catch (error) {
+      console.error('Error retrieving token:', error);
+      return null;
+    }
+  }
+};
+
+//Change User Details
+
+//WIP NEED TO SEPERATE PASSWORD AND USERNAME
+export const changeUserDetails = async (newUsername: string, currentPassword: string, newPassword: string) => {
+  try {
+    const email = await SecureStore.getItemAsync(EMAIL);
+    const result = await axios.post(`${API_URL}/user/change`, {
+      "email": email,
+      "currentPassword": currentPassword,
+      "newPassword": newPassword,
+      "newUsername": newUsername
+    });
+    await SecureStore.setItemAsync(USERNAME, newUsername);
+    return result;
+  } catch (error) {
+    console.error('Error changing user details:', error);
+    return null;
+  }
 }

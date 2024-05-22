@@ -53,9 +53,9 @@ export default function IndexScreen() {
       case 'Weekly Sunlight':
         return <WeeklyScreen selectedDate={selectedDate} changeSelectedItem={changeSelectedItem} dropdownData={dropdownData}/>;
       case 'Monthly Sunlight':
-        return <MonthlyScreen changeSelectedItem={changeSelectedItem} dropdownData={dropdownData}/>;
+        return <MonthlyScreen selectedDate={selectedDate} changeSelectedItem={changeSelectedItem} dropdownData={dropdownData}/>;
       case 'Yearly Sunlight':
-        return <YearlyScreen/>;
+        return <YearlyScreen selectedDate={selectedDate} changeSelectedItem={changeSelectedItem} dropdownData={dropdownData}/>;
       case 'Raw Data':
         return <DataScreen/>;
       default:

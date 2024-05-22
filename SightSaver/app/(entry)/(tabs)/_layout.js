@@ -15,7 +15,6 @@ export default function TabLayout() {
   const colorScheme = useColorScheme();
 
   return (
-    console.debug('tabs'),
     <Tabs
       screenOptions={{
         headerTitle: '',

@@ -1,40 +1,38 @@
-import * as SplashScreen from 'expo-splash-screen';
-import { SessionProvider } from '../ctx';
-import { Slot } from 'expo-router';
-import { useFonts } from 'expo-font';
-import FontAwesome from '@expo/vector-icons/FontAwesome';
+import {AuthProvider, useAuth } from '../ctx';
+import {Stack ,useRouter, useSegments } from 'expo-router';
 import React, { useEffect } from 'react';
 
+const StackLayout = () => {
+	const { authState, onLogout } = useAuth();
+	const segments = useSegments();
+	const router = useRouter();
 
-// Prevent the splash screen from auto-hiding before asset loading is complete.
-// SplashScreen.preventAutoHideAsync();
+	useEffect(() => {
+		const inAuthGroup = segments[0] === '(entry)';
 
-export default function Root() {
-//   const [loaded, error] = useFonts({
-//     SpaceMono: require('../assets/fonts/SpaceMono-Regular.ttf'),
-//     ...FontAwesome.font,
-//   });
+		if (!authState?.authenticated && inAuthGroup) {
+			router.replace('/');
+		} else if (authState?.authenticated === true) {
+			router.replace('/(entry)');
+		}
+	}, [authState]);
 
-//   // Expo Router uses Error Boundaries to catch errors in the navigation tree.
-//   useEffect(() => {
-//    if (error) throw error;
-//  }, [error]);
+	return (
+		<Stack>
+			<Stack.Screen name="index" options={{ headerShown: false }} />
+			<Stack.Screen name="(entry)" options={{ headerShown: false }} />
+			<Stack.Screen name="(auth)/signup" options={{ headerShown: false }} />
+			<Stack.Screen name="(auth)/login" options={{ headerShown: false }} />
+		</Stack>
+	);
+};
 
-//    useEffect(() => {
-//     if (loaded) {
-//       console.debug('Hiding splash screen');
-//       SplashScreen.hideAsync();
-//     }
-//   }, [loaded]);
+const RootLayoutNav = () => {
+	return (
+		<AuthProvider>
+			<StackLayout />
+		</AuthProvider>
+	);
+};
 
-//   if (!loaded) {
-//     return null;
-//   }
-
-  // Render the main content once assets are loaded
-  return (
-    <SessionProvider>
-      <Slot />
-    </SessionProvider>
-  );
-}
+export default RootLayoutNav;
