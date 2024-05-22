@@ -186,21 +186,16 @@ export default function ProfileScreen() {
   const [email, setEmail] = useState('');
   
   useEffect(() => {
-    // Fetch user details when component mounts
+    const fetchUserDetails = async () =>{
+      const userDetails = await getUserDetails();
+      console.log("lkog", userDetails);
+      setUsername(userDetails.username);
+      setEmail(userDetails.email);
+    };
+
     fetchUserDetails();
   }, []);
 
-  const fetchUserDetails = async () => {
-    try {
-      const userDetails = await getUserDetails();
-      if (userDetails) {
-        setUsername(userDetails.username || 'USERNAME');
-        setEmail(userDetails.email || '');
-      }
-    } catch (error) {
-      console.error('Error fetching user details:', error);
-    }
-  };
   const {
     requestPermissions,
     scanForPeripherals,
@@ -279,9 +274,9 @@ export default function ProfileScreen() {
           </View>
 
       {/* Children buttons */}
-      <View style={styles.childrenContainer}>
+      {/* <View style={styles.childrenContainer}>
         <ChildrenButtons />
-      </View>
+      </View> */}
 
       {/* Sync Data Button */}
       <View>

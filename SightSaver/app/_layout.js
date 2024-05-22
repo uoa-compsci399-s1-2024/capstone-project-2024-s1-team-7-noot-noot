@@ -1,21 +1,42 @@
 import {AuthProvider, useAuth } from '../ctx';
 import {Stack ,useRouter, useSegments } from 'expo-router';
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
+import { getUserDetails, setUserDetails } from '../ctx';
 
 const StackLayout = () => {
 	const { authState, onLogout } = useAuth();
 	const segments = useSegments();
 	const router = useRouter();
+	
+	// State to hold user details upon launching app
+	const fetchUserDetails = async () => {
+		try {
+		  const userDetails = await getUserDetails();
+		  if (userDetails) {
+			console.log('User details:', userDetails);
+			await setUserDetails(userDetails.username, userDetails.email);
+
+		  }
+		} catch (error) {
+		  console.error('Error fetching user details:', error);
+		}
+	  };
 
 	useEffect(() => {
 		const inAuthGroup = segments[0] === '(entry)';
 
 		if (!authState?.authenticated && inAuthGroup) {
 			router.replace('/');
+			console.log('replacing')
 		} else if (authState?.authenticated === true) {
-			router.replace('/(entry)');
+			console.log("Loading User Details")
+			fetchUserDetails().then(() => {
+				router.replace('/(entry)');
+				console.log('replacing index')
+			});
 		}
 	}, [authState]);
+
 
 	return (
 		<Stack>

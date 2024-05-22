@@ -25,6 +25,7 @@ interface AuthProps {
 const TOKEN_KEY = 'token';
 const USERNAME = 'username';
 const EMAIL = 'email';
+
 export const API_URL = 'https://sightsaver-api.azurewebsites.net/api';
 const AuthContext = createContext<Partial<AuthProps>>({});
 
@@ -46,10 +47,10 @@ export const AuthProvider = ({children}: any) => {
 useEffect(() => {
   const loadToken = async () => {
       const token = await SecureStore.getItemAsync(TOKEN_KEY);
-      console.log("Stored: ", token);
       //If token is stored, login the user and set authenticated to true
       if (token){
         axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;
+        console.log("Stored: ", token);
 
         setAuthState({
           token,
@@ -112,6 +113,8 @@ useEffect(() => {
   //Logout User
   const logout = async () => {
     await SecureStore.deleteItemAsync(TOKEN_KEY);
+    await SecureStore.deleteItemAsync(USERNAME);
+    await SecureStore.deleteItemAsync(EMAIL);
     axios.defaults.headers.common['Authorization'] = '';
     setAuthState({
       token: null,
@@ -123,7 +126,8 @@ useEffect(() => {
   const fetchChildrenCount = async () => {
     try {
       const response = await axios.get(`${API_URL}/child/numberOfChildren`);
-      console.log('ctx',response.data); // You can handle the response data here
+      console.log('fetch children',response.data); // You can handle the response data here
+      return response.data;
     } catch (error) {
       console.error('Error fetching children count:', error);
     }
@@ -139,31 +143,35 @@ useEffect(() => {
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
 };
 
-//Get User Details
+// Get User Details
 export const getUserDetails = async () => {
   try {
-    const email = await SecureStore.getItemAsync(EMAIL);
-    const config = {
-      headers:{
-        Authorization: `Bearer ${await SecureStore.getItemAsync(TOKEN_KEY)}`
-      }
-    };
-    const username = await axios.get(`${API_URL}/user/email/${email}`).then((res) => res.data);
-    return {username, email};
+    console.log("running")
+    let email = await SecureStore.getItemAsync(EMAIL);
+    let username = await SecureStore.getItemAsync(USERNAME);
+
+    if (!email || !username) {
+      // If email or username is not present, fetch them from the API
+      email = await SecureStore.getItemAsync(EMAIL);
+      username = await axios.get(`${API_URL}/user/email/${email}`).then((res) => res.data);
+    }
+
+    return { username, email };
   } catch (error) {
-    try{
-      console.log("error in ctx",{error})
-      const email = await SecureStore.getItemAsync(EMAIL);
-      const username = await SecureStore.getItemAsync(USERNAME);
-      return {email, username};
-    }
-    catch (error) {
-      console.error('Error retrieving token:', error);
-      return null;
-    }
+    console.error('Error retrieving user details:', error);
+    return null;
   }
 };
 
+//Set username and email in async storage
+export const setUserDetails = async (username: string, email: string) => {
+  try {
+    await SecureStore.setItemAsync(USERNAME, username);
+    await SecureStore.setItemAsync(EMAIL, email);
+  } catch (error) {
+    console.error('Error setting user details:', error);
+  }
+}
 
 //Change User Details
 

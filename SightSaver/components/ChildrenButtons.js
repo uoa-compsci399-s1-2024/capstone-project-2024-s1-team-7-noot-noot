@@ -36,12 +36,22 @@ const ChildrenButtons = ({ colorScheme }) => {
   const renderChildrenButtons = () => {
     // If there are no children, render a button to add new
     if (childrenCount === 0) {
+        console.log('No children found')
       return (
         <TouchableOpacity
-          style={[styles.addButton, { backgroundColor: Colors[colorScheme ?? 'light'].buttonColor }]}
-          onPress={() => handleAddChild()}
+          style={[styles.button, {backgroundColor: Colors[colorScheme ?? 'light'].buttonColor, width: '70%'}]}
+          // onPress={() => handlePress(1)} // Pass index 1
         >
-          <Text style={styles.buttonText}>No children add new?</Text>
+          <View style={{flexDirection: 'column', justifyContent: 'center', alignItems:'left'}}>
+            <Text style={[styles.buttonText, {backgroundColor: Colors[colorScheme ?? 'light'].buttonColor}]}>Child 1</Text>
+            <Text style={[styles.buttonText, {fontSize: 10, backgroundColor: Colors[colorScheme ?? 'light'].buttonColor}]}>Device: Sun Sensor 1</Text>
+          </View>             
+          <View
+              style={[
+                  styles.circle,
+                  {backgroundColor: Colors[colorScheme ?? 'light'].buttonColor},
+              ]}
+          />
         </TouchableOpacity>
       );
     }
@@ -52,7 +62,7 @@ const ChildrenButtons = ({ colorScheme }) => {
       buttons.push(
         <TouchableOpacity
           key={i}
-          style={[styles.childButton, { backgroundColor: Colors[colorScheme ?? 'light'].buttonColor }]}
+          style={[styles.childButton, { backgroundColor: Colors[colorScheme ?? 'light'].buttonColor, width: '70%' }]}
           onPress={() => handleChildButtonPress(i)}
         >
           <Text style={styles.buttonText}>Child {i + 1}</Text>
@@ -64,7 +74,7 @@ const ChildrenButtons = ({ colorScheme }) => {
 
   return (
     // Render the generated buttons
-    <View>
+    <View style={styles.container}>
       {renderChildrenButtons()}
     </View>
   );
@@ -72,23 +82,39 @@ const ChildrenButtons = ({ colorScheme }) => {
 
 // Define styles
 const styles = StyleSheet.create({
-  addButton: {
-    padding: 10,
-    marginVertical: 5,
-    borderRadius: 5,
-    alignItems: 'center',
-  },
-  childButton: {
-    padding: 10,
-    marginVertical: 5,
-    borderRadius: 5,
-    alignItems: 'center',
+  container: {
+    alignItems: 'center', // Align buttons to the center of the screen horizontally
   },
   buttonText: {
     fontSize: 16,
-    fontWeight: 'bold',
-    color: 'white',
   },
+  button: {
+    flexDirection: 'row', // Set the button layout to row
+    alignItems: 'center', // Center the text and circle within the button
+    justifyContent: 'space-between', // Center the text and circle within the button
+    paddingHorizontal: 20, // Add padding on the left and right (20px from the edge)
+    paddingVertical: 20, // Add padding on the top and bottom (20px from the edge)
+    borderWidth: 0,
+    borderRadius: 5, // Rounded corners
+    marginVertical: 5, // Add vertical margin for spacing between buttons
+  },
+  circle: {
+    width: 20, // Circle size
+    height: 20, // Circle size
+    borderRadius: 10, // Full circle
+    borderWidth: 1,
+    marginRight: 10, // Add margin between the circle and the text
+  },
+  childButton: {
+    flexDirection: 'row', // Set the button layout to row
+    alignItems: 'center', // Center the text and circle within the button
+    justifyContent: 'space-between', // Center the text and circle within the button
+    paddingHorizontal: 20, // Add padding on the left and right (20px from the edge)
+    paddingVertical: 20, // Add padding on the top and bottom (20px from the edge)
+    borderWidth: 0,
+    borderRadius: 5, // Rounded corners
+    marginVertical: 5, // Add vertical margin for spacing between buttons
+  }
 });
 
 export default ChildrenButtons; // Export the component
