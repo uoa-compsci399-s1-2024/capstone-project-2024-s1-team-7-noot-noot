@@ -17,7 +17,7 @@ function Settings({navigation}) {
     const handlePress = async () => {
         try {
             console.log('Attempting to get data');
-            await axios.get(`https://sightsaver-api.azurewebsites.net/api/child/numberOfChildren`).then((res) => console.log(res.data));
+            await axios.get(`https://sightsaver-api.azurewebsites.net/api/sensor/exportToExcel`).then((res) => console.log(res.data));
 
             // const token = await getUserDetails();
             // console.log('Data:', token);

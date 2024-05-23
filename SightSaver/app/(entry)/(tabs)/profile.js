@@ -273,15 +273,17 @@ export default function ProfileScreen() {
               </View>
           </View>
 
+      <ScrollView style={{ maxHeight: '60%' }}>
       {/* Children buttons */}
-      {/* <View style={styles.childrenContainer}>
+      <View style={styles.childrenContainer}>
         <ChildrenButtons />
-      </View> */}
+      </View>
+      </ScrollView>
 
       {/* Sync Data Button */}
-      <View>
+      <View style={{ width: '100%' }}>
         <TouchableOpacity
-          style={[styles.syncButton, {backgroundColor:Colors[colorScheme ?? 'light'].buttonColor}]}
+          style={[styles.syncButton]}
           onPress={() => setModalVisible(true)}>
           <Text style={styles.syncButtonText}>Sync Data</Text>
         </TouchableOpacity>
@@ -383,15 +385,12 @@ export default function ProfileScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    alignItems: 'center',
-    justifyContent: 'center',
+    // alignItems: 'center',
+    // justifyContent: 'center',
   },
   title: {
     fontSize: 20,
     fontWeight: 'bold',
-  },
-  container: {
-    flex: 1,
   },
   headerContent: {
     marginHorizontal: 20,
@@ -418,13 +417,16 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     borderRadius: 5,
     alignSelf: 'center',
+    backgroundColor: '#1970B4',
   },
   import: {
     width: '85%',
     alignSelf: 'center',
   },
   syncButtonText: {
-    fontSize: 18,
+    fontSize: 20,
+    color: 'white',
+    fontWeight: 'bold',
   },
   title: {
     fontSize: 18,
@@ -511,8 +513,8 @@ const styles = StyleSheet.create({
   },
 
   childrenContainer: {
+    flex: 1,
     flexDirection: 'row',
-    flexWrap: 'wrap',
     justifyContent: 'center',
     marginTop: 20,
   }
