@@ -19,7 +19,10 @@ interface AuthProps {
     password: string
   ) => void;
   onLogout: () => void;
-  fetchChildrenCount: () => void;
+  fetchChildrenCount: (email: string) => Promise<{
+    numberOfChildren: number;
+    childrenInfo: { childName: string; sensorId: number }[];
+  }>;
 }
 
 const TOKEN_KEY = 'token';
@@ -122,17 +125,41 @@ useEffect(() => {
     });
   }
   
-  //Fetch Children Count
-  const fetchChildrenCount = async () => {
-    try {
-      const response = await axios.get(`${API_URL}/child/numberOfChildren`);
-      console.log('fetch children',response.data); // You can handle the response data here
-      return response.data;
-    } catch (error) {
-      console.error('Error fetching children count:', error);
+// Fetch Children Count
+const fetchChildrenCount = async (email: string) => {
+  try {
+    // Make POST request to fetch children data, with email in the request body
+    const response = await axios.post(`${API_URL}/children`, { email });
+
+    // Extract data from the API response
+    const childrenData = response.data as { [key: string]: { id: number; lux_value: number; date_time: string; sensorId: number }[] };
+
+    // Count the number of children
+    const numberOfChildren = Object.keys(childrenData).length;
+
+    // Prepare an array to hold child objects containing name and sensorId
+    const childrenInfo: { childName: string; sensorId: number }[] = [];
+
+    // Loop through each child's data to extract name and sensorId
+    for (const [childName, childData] of Object.entries(childrenData)) {
+      // Extracting the sensorId for each child, assuming all data for a child is consistent
+      const sensorId = childData[0].sensorId;
+
+      // Pushing child's name and sensorId to the array
+      childrenInfo.push({ childName, sensorId });
     }
-  };
-  
+
+    console.log('Number of children:', numberOfChildren);
+    console.log('Children info:', childrenInfo);
+
+    return { numberOfChildren, childrenInfo };
+  } catch (error) {
+    console.error('Error fetching children count:', error);
+    return { numberOfChildren: 0, childrenInfo: [] };
+  }
+};
+
+ 
   const value = {
     onRegister: register,
     onLogin: login,
