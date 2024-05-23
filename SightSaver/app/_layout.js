@@ -4,7 +4,7 @@ import React, { useEffect, useState } from 'react';
 import { getUserDetails, setUserDetails } from '../ctx';
 
 const StackLayout = () => {
-	const { authState, onLogout } = useAuth();
+	const { authState } = useAuth();
 	const segments = useSegments();
 	const router = useRouter();
 	

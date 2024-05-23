@@ -188,7 +188,7 @@ export default function ProfileScreen() {
   useEffect(() => {
     const fetchUserDetails = async () =>{
       const userDetails = await getUserDetails();
-      console.log("lkog", userDetails);
+      // console.log("lkog", userDetails);
       setUsername(userDetails.username);
       setEmail(userDetails.email);
     };

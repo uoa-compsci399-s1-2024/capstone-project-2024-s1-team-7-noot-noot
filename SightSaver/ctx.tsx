@@ -126,10 +126,13 @@ useEffect(() => {
   }
   
 // Fetch Children Count
-const fetchChildrenCount = async (email: string) => {
+const fetchChildrenCount = async () => {
+  // const email = await SecureStore.getItemAsync(EMAIL);
   try {
+    console.log('Fetching children count1...');
     // Make POST request to fetch children data, with email in the request body
-    const response = await axios.post(`${API_URL}/children`, { email });
+    const response = await axios.get(`${API_URL}/user/getAllLux/iru007@gmail.com`);
+    console.log('Fetching children count2...');
 
     // Extract data from the API response
     const childrenData = response.data as { [key: string]: { id: number; lux_value: number; date_time: string; sensorId: number }[] };

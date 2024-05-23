@@ -11,6 +11,8 @@ import { getUserDetails } from '../ctx';
 const ChildrenButtons = ({ colorScheme }) => {
   // Get fetchChildrenCount function from useAuth hook
   const { fetchChildrenCount } = useAuth();
+  const userDetails =  getUserDetails();
+  const email = userDetails.email;
 
   // State to hold the count of children and the index of the selected child
   const [childrenCount, setChildrenCount] = useState(0);
@@ -19,9 +21,11 @@ const ChildrenButtons = ({ colorScheme }) => {
 
   // Fetch the number of children when the component mounts
   useEffect(() => {
+    console.log('Fetching children count...');
     // Fetch the number of children
     fetchChildrenCount()
-      .then(count => setChildrenCount(count)) // Update childrenCount state with fetched count
+    .then((res) => console.log(res.data))
+      // .then(count => setChildrenCount(count)) // Update childrenCount state with fetched count
       .catch(error => console.error('Error fetching children count:', error));
   }, [fetchChildrenCount]);
 
@@ -34,8 +38,7 @@ const ChildrenButtons = ({ colorScheme }) => {
 
   // Function to handle adding a new child
   const handleAddChild = async (childName) => {
-    const userDetails = await getUserDetails();
-    const email = userDetails.email;
+    
     // Add your logic here for adding a new child
     console.log('[On email]:', email, '[Adding new child]:', childName);
     try{
