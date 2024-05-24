@@ -155,7 +155,7 @@ const fetchChildrenCount = async () => {
     console.log('Number of children:', numberOfChildren);
     console.log('Children info:', childrenInfo);
 
-    return { numberOfChildren, childrenInfo };
+    return { numberOfChildren, childrenInfo, childrenData };
   } catch (error) {
     console.error('Error fetching children count:', error);
     return { numberOfChildren: 0, childrenInfo: [] };
@@ -176,7 +176,7 @@ const fetchChildrenCount = async () => {
 // Get User Details
 export const getUserDetails = async () => {
   try {
-    console.log("running")
+    console.log("getting user details")
     let email = await SecureStore.getItemAsync(EMAIL);
     let username = await SecureStore.getItemAsync(USERNAME);
 

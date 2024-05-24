@@ -24,7 +24,7 @@ const ChildrenButtons = ({ colorScheme }) => {
     console.log('Fetching children count...');
     // Fetch the number of children
     fetchChildrenCount()
-    .then((res) => console.log(res.data))
+    .then((res) => console.log("data:",res))
       // .then(count => setChildrenCount(count)) // Update childrenCount state with fetched count
       .catch(error => console.error('Error fetching children count:', error));
   }, [fetchChildrenCount]);
@@ -40,12 +40,12 @@ const ChildrenButtons = ({ colorScheme }) => {
   const handleAddChild = async (childName) => {
     
     // Add your logic here for adding a new child
-    console.log('[On email]:', email, '[Adding new child]:', childName);
+    console.log('[On email]:', {email}, '[Adding new child]:', childName);
     try{
         await axios.post(`https://sightsaver-api.azurewebsites.net/api/child/addChild`, {
             email: email,
             name: childName,
-            sensor_id: 3,
+            sensor_id: 5,
         }).then((res) => console.log(res.data));
     } catch (error) {
         console.log('Error adding new child:', error);
