@@ -137,7 +137,7 @@ export default function YearlyScreen({selectedDate, changeSelectedItem, dropdown
           onDateChange(getMonthofYear(searchYear, 0));
         }}>
           <Progress.Bar progress={January[2]} label={'January'} width= {250} height={25} borderWidth={0} color={'#FFBD20'} unfilledColor={'rgba(255, 189, 32, 0.5)'}/>
-          <Text style={styles.text}>January {January[0]}/{January[1]}</Text>
+          <Text style={[styles.text, {color:Colors[colorScheme ?? 'light'].text}]}>January {January[0]}/{January[1]}</Text>
         </Pressable>
       </View>
       <View style={styles.progressBars}>
@@ -145,7 +145,7 @@ export default function YearlyScreen({selectedDate, changeSelectedItem, dropdown
           onDateChange(getMonthofYear(searchYear, 1));
         }}>
           <Progress.Bar progress={February[2]} label={'February'} width= {250} height={25} borderWidth={0} color={'#FFBD20'} unfilledColor={'rgba(255, 189, 32, 0.5)'}/>
-          <Text style={styles.text}>February {February[0]}/{February[1]}</Text>
+          <Text style={[styles.text, {color:Colors[colorScheme ?? 'light'].text}]}>February {February[0]}/{February[1]}</Text>
         </Pressable> 
       </View>
       <View style={styles.progressBars}>
@@ -153,7 +153,7 @@ export default function YearlyScreen({selectedDate, changeSelectedItem, dropdown
           onDateChange(getMonthofYear(searchYear, 2));
         }}>
           <Progress.Bar progress={March[2]} label={'March'} width= {250} height={25} borderWidth={0} color={'#FFBD20'} unfilledColor={'rgba(255, 189, 32, 0.5)'}/>
-          <Text style={styles.text}>March {March[0]}/{March[1]}</Text>
+          <Text style={[styles.text, {color:Colors[colorScheme ?? 'light'].text}]}>March {March[0]}/{March[1]}</Text>
         </Pressable> 
       </View>
       <View style={styles.progressBars}>
@@ -161,7 +161,7 @@ export default function YearlyScreen({selectedDate, changeSelectedItem, dropdown
           onDateChange(getMonthofYear(searchYear, 3));
         }}>
           <Progress.Bar progress={April[2]} label={'April'} width= {250} height={25} borderWidth={0} color={'#FFBD20'} unfilledColor={'rgba(255, 189, 32, 0.5)'}/>
-          <Text style={styles.text}>April {April[0]}/{April[1]}</Text>
+          <Text style={[styles.text, {color:Colors[colorScheme ?? 'light'].text}]}>April {April[0]}/{April[1]}</Text>
         </Pressable> 
       </View>
       <View style={styles.progressBars}>
@@ -169,7 +169,7 @@ export default function YearlyScreen({selectedDate, changeSelectedItem, dropdown
           onDateChange(getMonthofYear(searchYear, 4));
         }}>
           <Progress.Bar progress={May[2]} label={'May'} width= {250} height={25} borderWidth={0} color={'#FFBD20'} unfilledColor={'rgba(255, 189, 32, 0.5)'}/>
-          <Text style={styles.text}>May {May[0]}/{May[1]}</Text>
+          <Text style={[styles.text, {color:Colors[colorScheme ?? 'light'].text}]}>May {May[0]}/{May[1]}</Text>
         </Pressable> 
       </View>
       <View style={styles.progressBars}>
@@ -177,7 +177,7 @@ export default function YearlyScreen({selectedDate, changeSelectedItem, dropdown
           onDateChange(getMonthofYear(searchYear, 5));
         }}>
           <Progress.Bar progress={June[2]} label={'June'} width= {250} height={25} borderWidth={0} color={'#FFBD20'} unfilledColor={'rgba(255, 189, 32, 0.5)'}/>
-          <Text style={styles.text}>June {June[0]}/{June[1]}</Text>
+          <Text style={[styles.text, {color:Colors[colorScheme ?? 'light'].text}]}>June {June[0]}/{June[1]}</Text>
         </Pressable> 
       </View>
       <View style={styles.progressBars}>
@@ -185,7 +185,7 @@ export default function YearlyScreen({selectedDate, changeSelectedItem, dropdown
           onDateChange(getMonthofYear(searchYear, 6));
         }}>
           <Progress.Bar progress={July[2]} label={'July'} width= {250} height={25} borderWidth={0} color={'#FFBD20'} unfilledColor={'rgba(255, 189, 32, 0.5)'}/>
-          <Text style={styles.text}>July {July[0]}/{July[1]}</Text>
+          <Text style={[styles.text, {color:Colors[colorScheme ?? 'light'].text}]}>July {July[0]}/{July[1]}</Text>
         </Pressable> 
       </View>
       <View style={styles.progressBars}>
@@ -193,7 +193,7 @@ export default function YearlyScreen({selectedDate, changeSelectedItem, dropdown
           onDateChange(getMonthofYear(searchYear, 7));
         }}>
           <Progress.Bar progress={August[2]} label={'August'} width= {250} height={25} borderWidth={0} color={'#FFBD20'} unfilledColor={'rgba(255, 189, 32, 0.5)'}/>
-          <Text style={styles.text}>August {August[0]}/{August[1]}</Text>
+          <Text style={[styles.text, {color:Colors[colorScheme ?? 'light'].text}]}>August {August[0]}/{August[1]}</Text>
         </Pressable> 
       </View>
       <View style={styles.progressBars}>
@@ -201,7 +201,7 @@ export default function YearlyScreen({selectedDate, changeSelectedItem, dropdown
           onDateChange(getMonthofYear(searchYear, 8));
         }}>
           <Progress.Bar progress={September[2]} label={'September'} width= {250} height={25} borderWidth={0} color={'#FFBD20'} unfilledColor={'rgba(255, 189, 32, 0.5)'}/>
-          <Text style={styles.text}>September {September[0]}/{September[1]}</Text>
+          <Text style={[styles.text, {color:Colors[colorScheme ?? 'light'].text}]}>September {September[0]}/{September[1]}</Text>
         </Pressable> 
       </View>
       <View style={styles.progressBars}>
@@ -209,7 +209,7 @@ export default function YearlyScreen({selectedDate, changeSelectedItem, dropdown
           onDateChange(getMonthofYear(searchYear, 9));
         }}>
           <Progress.Bar progress={October[2]} label={'October'} width= {250} height={25} borderWidth={0} color={'#FFBD20'} unfilledColor={'rgba(255, 189, 32, 0.5)'}/>
-          <Text style={styles.text}>October {October[0]}/{October[1]}</Text>
+          <Text style={[styles.text, {color:Colors[colorScheme ?? 'light'].text}]}>October {October[0]}/{October[1]}</Text>
         </Pressable> 
       </View>
       <View style={styles.progressBars}>
@@ -217,7 +217,7 @@ export default function YearlyScreen({selectedDate, changeSelectedItem, dropdown
           onDateChange(getMonthofYear(searchYear, 10));
         }}>
           <Progress.Bar progress={November[2]} label={'November'} width= {250} height={25} borderWidth={0} color={'#FFBD20'} unfilledColor={'rgba(255, 189, 32, 0.5)'}/>
-          <Text style={styles.text}>November {November[0]}/{November[1]}</Text>
+          <Text style={[styles.text, {color:Colors[colorScheme ?? 'light'].text}]}>November {November[0]}/{November[1]}</Text>
         </Pressable> 
       </View>
       <View style={styles.progressBars}>
@@ -225,7 +225,7 @@ export default function YearlyScreen({selectedDate, changeSelectedItem, dropdown
           onDateChange(getMonthofYear(searchYear, 11));
         }}>
           <Progress.Bar progress={December[2]} label={'December'} width= {250} height={25} borderWidth={0} color={'#FFBD20'} unfilledColor={'rgba(255, 189, 32, 0.5)'}/>
-          <Text style={styles.text}>December {December[0]}/{December[1]}</Text>
+          <Text style={[styles.text, {color:Colors[colorScheme ?? 'light'].text}]}>December {December[0]}/{December[1]}</Text>
         </Pressable> 
       </View>
     </Animated.View>
@@ -251,7 +251,6 @@ const styles = StyleSheet.create({
   },
   text: {
     position: 'absolute',
-    color: 'white',
     marginLeft: '3%',
     marginTop: '1.4%',
   },
