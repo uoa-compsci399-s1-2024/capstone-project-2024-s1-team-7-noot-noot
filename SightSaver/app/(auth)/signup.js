@@ -5,7 +5,7 @@ import CustomInput from '../../components/CustomInput';
 import { useColorScheme } from '../../components/useColorScheme';
 import { router } from 'expo-router';
 import React, { useState } from 'react';
-import { TextInput, Button, StyleSheet, useWindowDimensions, Image, TouchableOpacity} from 'react-native';
+import { TextInput, Keyboard, StyleSheet, useWindowDimensions, Image, TouchableOpacity, ActivityIndicator } from 'react-native';
 import { useAuth } from "../../ctx";
 
 export default function SignupScreen() {
@@ -19,6 +19,7 @@ export default function SignupScreen() {
     const { height } = useWindowDimensions();
     const { onRegister } = useAuth();
     const [showPassword, setShowPassword] = useState(false);
+    const [isLoading, setIsLoading] = useState(false);
 
     const register = async () => {
 
@@ -41,12 +42,25 @@ export default function SignupScreen() {
             console.log('Passwords do not match');
             return; // Exit the function if passwords don't match
         }
-          
-        const result = await onRegister(email, password, username);
-        if (result) {
-            console.log('Registration successful',result);
-        } else {
-            console.log('Registration failed');
+        
+        setIsLoading(true); // Start loading
+        // Call register function
+        try {
+            Keyboard.dismiss();
+            setIsLoading(true); // Start loading
+            console.log('Register');
+            const result = await onRegister(email, password, username);
+            if (result) {
+                console.log('Registration successful', result.data);
+            } else {
+                console.log('Login failed');
+            }
+        } catch (error) {
+            console.log('Registration failed', error);
+        } finally {
+            setTimeout(() => {
+                setIsLoading(false); // Stop loading
+            },1000)
         }
     }
 
@@ -123,6 +137,13 @@ export default function SignupScreen() {
                     </TouchableOpacity>
                 </View>
             </View>
+
+            {/* Loading Indicator */}
+            {isLoading && (
+                <View style={[styles.loadingContainer]}>
+                    <ActivityIndicator size="large" color="#fff" />
+                </View>
+            )}
 
         </View>
         );
@@ -221,4 +242,12 @@ export default function SignupScreen() {
             position: 'absolute',
             bottom: 20,
         },
+        loadingContainer: {
+            ...StyleSheet.absoluteFillObject,
+            backgroundColor: 'rgba(0, 0, 0, 0.5)', // Semi-transparent black
+            justifyContent: 'center',
+            alignItems: 'center',
+            zIndex: 999, // Ensure it's above other components
+        },
     });
+

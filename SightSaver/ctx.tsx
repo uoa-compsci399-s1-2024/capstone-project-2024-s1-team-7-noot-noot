@@ -127,13 +127,11 @@ useEffect(() => {
   
 // Fetch Children Count
 const fetchChildrenCount = async () => {
-  // const email = await SecureStore.getItemAsync(EMAIL);
   try {
-    console.log('Fetching children count1...');
+    console.log('Fetching children count...');
     // Make POST request to fetch children data, with email in the request body
     const response = await axios.get(`${API_URL}/user/getAllLux/iru007@gmail.com`);
-    console.log('Fetching children count2...');
-
+    
     // Extract data from the API response
     const childrenData = response.data as { [key: string]: { id: number; lux_value: number; date_time: string; sensorId: number }[] };
 
@@ -145,22 +143,28 @@ const fetchChildrenCount = async () => {
 
     // Loop through each child's data to extract name and sensorId
     for (const [childName, childData] of Object.entries(childrenData)) {
-      // Extracting the sensorId for each child, assuming all data for a child is consistent
-      const sensorId = childData[0].sensorId;
+      // Check if childData is not empty
+      if (childData.length > 0) {
+        // Extracting the sensorId for each child, assuming all data for a child is consistent
+        const sensorId = childData[0].sensorId;
 
-      // Pushing child's name and sensorId to the array
-      childrenInfo.push({ childName, sensorId });
+        // Pushing child's name and sensorId to the array
+        childrenInfo.push({ childName, sensorId });
+      } else {
+        console.warn(`No data found for child: ${childName}`);
+      }
     }
 
     console.log('Number of children:', numberOfChildren);
     console.log('Children info:', childrenInfo);
 
-    return { numberOfChildren, childrenInfo, childrenData };
+    return { numberOfChildren, childrenInfo };
   } catch (error) {
     console.error('Error fetching children count:', error);
     return { numberOfChildren: 0, childrenInfo: [] };
   }
 };
+
 
  
   const value = {

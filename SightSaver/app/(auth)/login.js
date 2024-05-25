@@ -5,8 +5,9 @@ import CustomInput from '../../components/CustomInput';
 import { useColorScheme } from '../../components/useColorScheme';
 import React, { useState } from 'react';
 import { router } from 'expo-router';
-import { TextInput, Button, StyleSheet, useWindowDimensions, Image, TouchableOpacity} from 'react-native';
+import { ActivityIndicator, Keyboard, Button, StyleSheet, useWindowDimensions, Image, TouchableOpacity} from 'react-native';
 import { useAuth } from "../../ctx";
+
 
 const Login = () => {
     const [email, setEmail] = useState('');
@@ -16,8 +17,10 @@ const Login = () => {
     const { height } = useWindowDimensions();
     const [showPassword, setShowPassword] = useState(false);
     const { onLogin } = useAuth();
+    const [isLoading, setIsLoading] = useState(false);
 
     const login = async () => {
+        
         const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
         if (!emailRegex.test(email)) {
             alert('Please enter a valid email address.');
@@ -26,13 +29,26 @@ const Login = () => {
         // Validate all fields filled 
         if (!email || !password) {
             alert("Please fill in all fields. If you don't have an account, please sign up.");
-            return;}
-        console.log('Login');
-        const result = await onLogin(email, password);
-        if (result) {
-            console.log("Login Success", result.data);
-        } else {
-            console.log('Login failed');
+            return;
+        }
+        // Call login function
+        try {
+            Keyboard.dismiss();
+            setIsLoading(true); // Start loading
+            console.log('Login');
+            const result = await onLogin(email, password);
+            if (result) {
+                console.log("Login Success", result.data);
+            } else {
+                console.log('Login failed');
+            }
+        } catch (error) {
+            console.error('Login error:', error);
+        } finally {
+            setTimeout(() => {
+                setIsLoading(false); // Stop loading
+            },1000)
+
         }
     }
 
@@ -69,7 +85,6 @@ const Login = () => {
             />
 
             <View style={styles.container}>
-                  
                 {/* Login button */}
                 <CustomButton style={[styles.signUpButton]} onPress={login} text={"Login"} />
                 {/* Signup text */}
@@ -80,6 +95,13 @@ const Login = () => {
                     </TouchableOpacity>
                 </View>
             </View>
+
+            {/* Loading Indicator */}
+            {isLoading && (
+                <View style={[styles.loadingContainer]}>
+                    <ActivityIndicator size="large" color="#fff" />
+                </View>
+            )}
         </View>
     )
 }
@@ -168,15 +190,15 @@ const styles = StyleSheet.create({
         fontSize: 13,
         fontWeight: 'bold',
     },
-    googleLogin: {
-        position: 'absolute',
-        bottom: '10%',
-        width: '100%',
-    },
     signUpButton: {
         justifyContent: 'center',
         position: 'absolute',
         bottom: 20,
+    },
+    loadingContainer: {
+        ...StyleSheet.absoluteFillObject,
+        backgroundColor: 'rgba(0, 0, 0, 0.5)', // Semi-transparent black
+        justifyContent: 'center',
     },
 });
 

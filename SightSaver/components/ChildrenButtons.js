@@ -43,8 +43,8 @@ const ChildrenButtons = ({ colorScheme }) => {
     console.log('[On email]:', {email}, '[Adding new child]:', childName);
     try{
         await axios.post(`https://sightsaver-api.azurewebsites.net/api/child/addChild`, {
-            email: email,
-            name: childName,
+            email: "iru007@gmail.com",
+            name: "testChild",
             sensor_id: 5,
         }).then((res) => console.log(res.data));
     } catch (error) {
