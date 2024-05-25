@@ -1,6 +1,7 @@
 package NootNoot.SightSaver.controller;
 
 import NootNoot.SightSaver.model.Lux;
+import NootNoot.SightSaver.request.AddLuxRequest;
 import NootNoot.SightSaver.service.LuxService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -31,9 +32,14 @@ public class LuxController {
         return new ResponseEntity<>(luxService.getNumberOfLuxValues(), HttpStatus.OK);
     }
 
-    @PostMapping
-    public ResponseEntity<Lux> addLux(@RequestBody Lux lux) {
+    @PostMapping("/addLux")
+    public ResponseEntity<String> addLux(@RequestBody Lux lux) {
         return new ResponseEntity<>(luxService.saveLux(lux), HttpStatus.CREATED);
+    }
+
+    @PostMapping
+    public ResponseEntity<String> addLux(@RequestBody AddLuxRequest luxRequest) {
+        return new ResponseEntity<>(luxService.saveLuxList(luxRequest), HttpStatus.CREATED);
     }
 
 
