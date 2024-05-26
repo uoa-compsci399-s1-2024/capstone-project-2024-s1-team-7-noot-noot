@@ -1,7 +1,7 @@
 // Import necessary dependencies
 import React, { useEffect, useState } from 'react';
 import { TouchableOpacity, Text, View, StyleSheet, Button } from 'react-native';
-import { useAuth } from '../ctx';
+import { fetchChildrenCount } from '../ctx';
 import Colors from '../constants/Colors'; // Assuming this is where the color scheme is defined
 import AddChildModal from './helpers/AddNewChild'; // Import the modal component
 import axios from 'axios';
@@ -9,8 +9,7 @@ import { getUserDetails } from '../ctx';
 
 // Define the component for rendering children buttons
 const ChildrenButtons = ({ colorScheme }) => {
-  // Get fetchChildrenCount function from useAuth hook
-  const { fetchChildrenCount } = useAuth();
+  // const { fetchChildrenCount } = fetchChildrenCount();
   const userDetails =  getUserDetails();
   const email = userDetails.email;
 
@@ -24,8 +23,8 @@ const ChildrenButtons = ({ colorScheme }) => {
     console.log('Fetching children count...');
     // Fetch the number of children
     fetchChildrenCount()
-    .then((res) => console.log("data:",res))
-      // .then(count => setChildrenCount(count)) // Update childrenCount state with fetched count
+    // .then((res) => console.log("data:",res))
+      .then(count => setChildrenCount(count)) // Update childrenCount state with fetched count
       .catch(error => console.error('Error fetching children count:', error));
   }, [fetchChildrenCount]);
 
@@ -43,14 +42,13 @@ const ChildrenButtons = ({ colorScheme }) => {
     console.log('[On email]:', {email}, '[Adding new child]:', childName);
     try{
         await axios.post(`https://sightsaver-api.azurewebsites.net/api/child/addChild`, {
-            email: "iru007@gmail.com",
+            email: email,
             name: "testChild",
             sensor_id: 5,
         }).then((res) => console.log(res.data));
     } catch (error) {
         console.log('Error adding new child:', error);
     }
-    // You can add logic here to actually add the new child
   };
 
   return (
