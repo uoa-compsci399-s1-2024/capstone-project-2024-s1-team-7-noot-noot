@@ -21,6 +21,7 @@ export interface AuthProps {
 const TOKEN_KEY = 'token';
 const USERNAME = 'username';
 const EMAIL = 'email';
+const CHILDREN_INFO = 'childrenInfo';
 
 export const API_URL = 'https://sightsaver-api.azurewebsites.net/api';
 const AuthContext = createContext<Partial<AuthProps>>({});
@@ -29,96 +30,21 @@ export const useAuth = () => {
   return useContext(AuthContext);
 };
 
-// Axios Interceptors for handling 403 errors
-axios.interceptors.response.use(
-  (response) => {
-    return response;
-  },
-  (error) => {
-    if (error.response && error.response.status === 403) {
-      console.log('Axios 403 error intercepted.');
-      // logout(); // Logout user on 403 error
+
+export const setupAxiosInterceptors = (onLogout: () => void) => {
+  axios.interceptors.response.use(
+    (response) => {
+      return response;
+    },
+    (error) => {
+      if (error.response && error.response.status === 403) {
+        alert('Sorry, the session has expired. Please login again.');
+        onLogout(); // Logout user on 403 error
+        console.log('Axios 403 error intercepted.');
+      }
+      return Promise.reject(error);
     }
-    return Promise.reject(error);
-  }
-);
-
-// Fetch Children Count
-// export const fetchChildrenCount = async () => {
-//   const email = await SecureStore.getItemAsync(EMAIL);
-//   try {
-//     console.log('Fetching children count...');
-//     // Make POST request to fetch children data, with email in the request body
-//     const response = await axios.get(`${API_URL}/user/getAllLux/${email}`);
-
-//     // Extract data from the API response
-//     const childrenData = response.data as {
-//       [key: string]: {
-//         id: number;
-//         lux_value: number;
-//         date_time: string;
-//         sensorId: number;
-//       }[];
-//     };
-
-//     // Count the number of children
-//     const numberOfChildren = Object.keys(childrenData).length;
-
-//     // Prepare an array to hold child objects containing name and sensorId
-//     const childrenInfo: {childName: string; sensorId: number | null}[] = [];
-
-//     // Loop through each child's data to extract name and sensorId
-//     for (const [childName, childData] of Object.entries(childrenData)) {
-//       // Extracting the sensorId for each child, even if lux values are not present
-//       const sensorId = childData.length > 0 ? childData[0].sensorId : null;
-
-//       // Pushing child's name and sensorId to the array
-//       childrenInfo.push({ childName, sensorId });
-//     }
-
-//     console.log('Number of children:', numberOfChildren);
-//     console.log('Children info:', childrenInfo);
-
-//     return { numberOfChildren, childrenInfo };
-//   } catch (error) {
-//     console.error('Error fetching children count:', error);
-//     return { numberOfChildren: 0, childrenInfo: [] };
-//   }
-// };
-export const fetchChildrenCount = async () => {
-  try {
-    console.log('Fetching children count...');
-    // Make GET request to fetch children data
-    const response = await axios.get(`${API_URL}/children`);
-
-    // Extract data from the API response
-    const childrenData = response.data as {
-      id: number;
-      sensor_id: number;
-      name: string;
-      parent: number;
-    }[];
-
-    // Count the number of children
-    const numberOfChildren = childrenData.length;
-
-    // Prepare an array to hold child objects containing name and sensorId
-    const childrenInfo: {childName: string; sensorId: number | null}[] = [];
-
-    // Loop through each child's data to extract name and sensorId
-    childrenData.forEach(child => {
-      // Pushing child's name and sensorId to the array
-      childrenInfo.push({ childName: child.name, sensorId: child.sensor_id });
-    });
-
-    console.log('Number of children:', numberOfChildren);
-    console.log('Children info:', childrenInfo);
-
-    return { numberOfChildren, childrenInfo };
-  } catch (error) {
-    console.error('Error fetching children count:', error);
-    return { numberOfChildren: 0, childrenInfo: [] };
-  }
+  );
 };
 
 
@@ -202,12 +128,18 @@ export const AuthProvider = ({ children }: any) => {
     await SecureStore.deleteItemAsync(TOKEN_KEY);
     await SecureStore.deleteItemAsync(USERNAME);
     await SecureStore.deleteItemAsync(EMAIL);
+    await SecureStore.deleteItemAsync(CHILDREN_INFO);
     axios.defaults.headers.common['Authorization'] = '';
     setAuthState({
       token: null,
       authenticated: false,
     });
   };
+
+  useEffect(() => {
+    setupAxiosInterceptors(logout);
+  }, []);
+  
 
   const value = {
     onRegister: register,
@@ -259,5 +191,116 @@ export const getToken = async () => {
   } catch (error) {
     console.error('Error retrieving token:', error);
     return null;
+  }
+};
+
+// Fetch Children Count
+// export const fetchChildrenCount = async () => {
+//   const email = await SecureStore.getItemAsync(EMAIL);
+//   try {
+//     console.log('Fetching children count...');
+//     // Make POST request to fetch children data, with email in the request body
+//     const response = await axios.get(`${API_URL}/user/getAllLux/${email}`);
+
+//     // Extract data from the API response
+//     const childrenData = response.data as {
+//       [key: string]: {
+//         id: number;
+//         lux_value: number;
+//         date_time: string;
+//         sensorId: number;
+//       }[];
+//     };
+
+//     // Count the number of children
+//     const numberOfChildren = Object.keys(childrenData).length;
+
+//     // Prepare an array to hold child objects containing name and sensorId
+//     const childrenInfo: {childName: string; sensorId: number | null}[] = [];
+
+//     // Loop through each child's data to extract name and sensorId
+//     for (const [childName, childData] of Object.entries(childrenData)) {
+//       // Extracting the sensorId for each child, even if lux values are not present
+//       const sensorId = childData.length > 0 ? childData[0].sensorId : null;
+
+//       // Pushing child's name and sensorId to the array
+//       childrenInfo.push({ childName, sensorId });
+//     }
+
+//     console.log('Number of children:', numberOfChildren);
+//     console.log('Children info:', childrenInfo);
+
+//     return { numberOfChildren, childrenInfo };
+//   } catch (error) {
+//     console.error('Error fetching children count:', error);
+//     return { numberOfChildren: 0, childrenInfo: [] };
+//   }
+// };
+export const getChildrenInfo = async () => {
+  try {
+    let childrenInfo: { numberOfChildren: number; childrenInfo: { childName: string; sensorId: number | null }[] } = { numberOfChildren: 0, childrenInfo: [] };
+    console.log('Fetching children count...');
+
+    // Check if there is data stored in SecureStore
+    const storedChildrenInfo = await SecureStore.getItemAsync(CHILDREN_INFO);
+
+    if (storedChildrenInfo) {
+      // If there is stored data, parse it and return it
+      childrenInfo = JSON.parse(storedChildrenInfo);
+      console.log('Using stored children info:', childrenInfo);
+      } else {
+        console.log('No stored children info found.');
+          // If there is no stored data, fetch data from the API
+          const email = await SecureStore.getItemAsync(EMAIL);
+          // const response = await axios.get(`${API_URL}/child/getChildren/${email}`);
+          const response = {
+            data:
+              [
+                {
+                    "id": 18,
+                    "sensor_id": 6,
+                    "name": "jedd",
+                    "parent": 3
+                },
+                {
+                    "id": 23,
+                    "sensor_id": 1,
+                    "name": "test",
+                    "parent": 3
+                },
+                {
+                    "id": 24,
+                    "sensor_id": 5,
+                    "name": "test",
+                    "parent": 3
+                }
+            ]
+          }
+          const childrenData = response.data as {
+            id: number;
+            sensor_id: number;
+            name: string;
+            parent: number;
+          }[];
+          // Count the number of children
+          const numberOfChildren = childrenData.length;
+          // Prepare an array to hold child objects containing name and sensorId
+          const childrenInfo: {childName: string; sensorId: number | null}[] = [];
+          // Loop through each child's data to extract name and sensorId
+          childrenData.forEach(child => {
+            // Pushing child's name and sensorId to the array
+            childrenInfo.push({ childName: child.name, sensorId: child.sensor_id });
+          });
+          // children = { numberOfChildren, childrenInfo };
+          console.log('Fetched children info from API:', childrenInfo);
+
+          // Serialize and store the fetched data in SecureStore
+          await SecureStore.setItemAsync(CHILDREN_INFO, JSON.stringify(childrenInfo));
+    }
+    return childrenInfo ;
+    
+  } catch (error) {
+    console.error('Error fetching children count:', error);
+    return { numberOfChildren: 0, childrenInfo: [] };
   }
 };

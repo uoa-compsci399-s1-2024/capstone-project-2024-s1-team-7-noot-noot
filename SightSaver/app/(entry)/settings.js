@@ -8,7 +8,7 @@ import AccessibilityScreen from './settingsScreens/accessibility';
 import DataSafetyScreen from './settingsScreens/dataSafety';
 import ChildrenScreen from './settingsScreens/children';
 import CustomButton from '../../components/CustomButton';
-import { useAuth, fetchChildrenCount } from '../../ctx';
+import { useAuth, getChildrenInfo } from '../../ctx';
 import axios from 'axios';
 
 function Settings({navigation}) {
@@ -16,9 +16,9 @@ function Settings({navigation}) {
     const colorScheme = useColorScheme();
     const handlePress = async () => {
         console.log('Fetching children count...');
-        await fetchChildrenCount()
+        await getChildrenInfo()
       .then(count => {
-        console.log('Children count:', count.numberOfChildren);
+        console.log('Children count:', count, count.length);
       })
       .catch(error => console.error('Error fetching children count:', error));
     };

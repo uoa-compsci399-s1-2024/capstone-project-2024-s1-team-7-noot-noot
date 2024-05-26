@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { TouchableOpacity, Text, View, StyleSheet, ScrollView } from 'react-native';
-import { fetchChildrenCount, getUserDetails, fetchChildren } from '../ctx'; // Assuming these functions are asynchronous
+import { getChildrenInfo, getUserDetails } from '../ctx'; // Assuming these functions are asynchronous
 import Colors from '../constants/Colors'; // Assuming this is where the color scheme is defined
 import AddChildModal from './helpers/AddNewChild'; // Import the modal component
 import axios from 'axios';
@@ -17,10 +17,10 @@ const ChildrenButtons = ({ colorScheme }) => {
   useEffect(() => {
     console.log('Fetching children info...');
     // Fetch the children info
-    fetchChildrenCount()
+    getChildrenInfo()
       .then((childrenData) => {
         console.debug('Children info:', childrenData);
-        setChildrenInfo(childrenData.childrenInfo); // Update childrenInfo state with fetched data
+        setChildrenInfo(childrenData, childrenData.length); // Update childrenInfo state with fetched data
       })
       .catch((error) => console.error('Error fetching children info:', error));
   }, []);
@@ -75,7 +75,7 @@ const ChildrenButtons = ({ colorScheme }) => {
               {child.childName}
             </Text>
             <Text
-              style={[styles.buttonText, { fontSize: 10, backgroundColor: Colors[colorScheme ?? 'light'].buttonColor }]}
+              style={[styles.buttonText, { fontSize: 12, backgroundColor: Colors[colorScheme ?? 'light'].buttonColor }]}
             >
               Device: Sun Sensor {child.sensorId}
             </Text>
@@ -105,11 +105,11 @@ const styles = StyleSheet.create({
     justifyContent: 'center', // Align items to the center vertically
   },
   buttonText: {
-    fontSize: 16,
+    fontSize: 18,
   },
   button: {
     alignSelf: 'center', // Center the button horizontally
-    width: '75%', // Set the button width to 75% of the screen width
+    width: '85%', // Set the button width to 75% of the screen width
     flexDirection: 'row', // Set the button layout to row
     alignItems: 'center', // Center the text and circle within the button
     justifyContent: 'space-between', // Center the text and circle within the button

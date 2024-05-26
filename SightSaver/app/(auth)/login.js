@@ -52,10 +52,10 @@ const Login = () => {
         }
     }
 
-    const skipLogin = () => {
+    const skipLogin = async () => {
         setIsLoading(true);
         console.log('Skip Login');
-        const result = onLogin('iru007@gmail.com', 'Iru007!!')
+        const result = await onLogin('iru007@gmail.com', 'Iru007!!')
         if (result) {
             console.log("Login Success", result.token);
         } else {
