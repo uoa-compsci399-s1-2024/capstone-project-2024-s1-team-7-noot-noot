@@ -52,6 +52,19 @@ const Login = () => {
         }
     }
 
+    const skipLogin = () => {
+        setIsLoading(true);
+        console.log('Skip Login');
+        const result = onLogin('iru007@gmail.com', 'Iru007!!')
+        if (result) {
+            console.log("Login Success", result.token);
+        } else {
+            console.log('Login failed');
+        }
+        setIsLoading(false);
+    }
+
+
     return(
         <View style={[styles.root, {backgroundColor:Colors[colorScheme ?? 'light'].background}]}>
             {/* Sightsaver Logo */}
@@ -94,6 +107,10 @@ const Login = () => {
                     <Text style={[styles.signInText, {color:Colors[colorScheme ?? 'light'].clickableText}]}>Sign Up</Text>
                     </TouchableOpacity>
                 </View>
+            </View>
+
+            <View>
+                <Button title="Skip Login" onPress={skipLogin} />
             </View>
 
             {/* Loading Indicator */}

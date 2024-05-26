@@ -8,22 +8,19 @@ import AccessibilityScreen from './settingsScreens/accessibility';
 import DataSafetyScreen from './settingsScreens/dataSafety';
 import ChildrenScreen from './settingsScreens/children';
 import CustomButton from '../../components/CustomButton';
-import { useAuth, getUserDetails } from '../../ctx';
+import { useAuth, fetchChildrenCount } from '../../ctx';
 import axios from 'axios';
 
 function Settings({navigation}) {
     // const navigation = useNavigation();
     const colorScheme = useColorScheme();
     const handlePress = async () => {
-        try {
-            console.log('Attempting to get data');
-            await axios.get(`https://sightsaver-api.azurewebsites.net/api/sensor/exportToExcel`).then((res) => console.log(res.data));
-
-            // const token = await getUserDetails();
-            // console.log('Data:', token);
-        } catch (error) {
-            console.error('Error retrieving token:', error);
-        }
+        console.log('Fetching children count...');
+        await fetchChildrenCount()
+      .then(count => {
+        console.log('Children count:', count.numberOfChildren);
+      })
+      .catch(error => console.error('Error fetching children count:', error));
     };
 
     const { onLogout } = useAuth();

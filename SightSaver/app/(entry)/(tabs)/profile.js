@@ -273,12 +273,10 @@ export default function ProfileScreen() {
               </View>
           </View>
 
-      <ScrollView style={{ maxHeight: '60%' }}>
       {/* Children buttons */}
-      <View style={styles.childrenContainer}>
+      <View style={[styles.childrenContainer, {maxHeight: '60%'}]}>
         <ChildrenButtons />
       </View>
-      </ScrollView>
 
       {/* Sync Data Button */}
       <View style={{ width: '100%' }}>
@@ -290,7 +288,7 @@ export default function ProfileScreen() {
       </View>
 
       {/* Import Dummy Data Button */}
-      <View style={styles.import}>
+      {/* <View style={styles.import}>
         <Button title="Import Dummy Data (for testing only)" onPress={importData()}></Button>
       </View>
 
@@ -300,7 +298,7 @@ export default function ProfileScreen() {
 
       <View style={[styles.import, {marginTop: '5%'}]}>
         <Button title="Push Dummy Data to Database (for testing only)" onPress={pushData}></Button>
-      </View>
+      </View> */}
 
       {/* Device Modal */}
       <Modal

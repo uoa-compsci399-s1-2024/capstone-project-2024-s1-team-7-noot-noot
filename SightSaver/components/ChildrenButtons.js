@@ -1,86 +1,98 @@
-// Import necessary dependencies
 import React, { useEffect, useState } from 'react';
-import { TouchableOpacity, Text, View, StyleSheet, Button } from 'react-native';
-import { fetchChildrenCount } from '../ctx';
+import { TouchableOpacity, Text, View, StyleSheet, ScrollView } from 'react-native';
+import { fetchChildrenCount, getUserDetails, fetchChildren } from '../ctx'; // Assuming these functions are asynchronous
 import Colors from '../constants/Colors'; // Assuming this is where the color scheme is defined
 import AddChildModal from './helpers/AddNewChild'; // Import the modal component
 import axios from 'axios';
-import { getUserDetails } from '../ctx';
 
 // Define the component for rendering children buttons
 const ChildrenButtons = ({ colorScheme }) => {
-  // const { fetchChildrenCount } = fetchChildrenCount();
-  const userDetails =  getUserDetails();
-  const email = userDetails.email;
-
   // State to hold the count of children and the index of the selected child
-  const [childrenCount, setChildrenCount] = useState(0);
+  const [childrenInfo, setChildrenInfo] = useState([]);
   const [selectedChildIndex, setSelectedChildIndex] = useState(null);
   const [modalVisible, setModalVisible] = useState(false);
+  const [email, setEmail] = useState('');
 
   // Fetch the number of children when the component mounts
   useEffect(() => {
-    console.log('Fetching children count...');
-    // Fetch the number of children
+    console.log('Fetching children info...');
+    // Fetch the children info
     fetchChildrenCount()
-    // .then((res) => console.log("data:",res))
-      .then(count => setChildrenCount(count)) // Update childrenCount state with fetched count
-      .catch(error => console.error('Error fetching children count:', error));
-  }, [fetchChildrenCount]);
+      .then((childrenData) => {
+        console.debug('Children info:', childrenData);
+        setChildrenInfo(childrenData.childrenInfo); // Update childrenInfo state with fetched data
+      })
+      .catch((error) => console.error('Error fetching children info:', error));
+  }, []);
+  
+
+  // Fetch user details and set email
+  useEffect(() => {
+    getUserDetails()
+      .then((userDetails) => {
+        setEmail(userDetails.email);
+      })
+      .catch((error) => {
+        console.error('Error fetching user details:', error);
+      });
+  }, []);
 
   // Function to handle button press
-  const handleChildButtonPress = (childIndex) => {
-    console.log(`Child button ${childIndex + 1} pressed`);
+  const handleChildButtonPress = (childIndex, childName) => {
+    console.log(`Child button ${childName} pressed`);
     setSelectedChildIndex(childIndex); // Update the selected child index
     // Add your logic here for handling button press
   };
 
   // Function to handle adding a new child
   const handleAddChild = async (childName) => {
-    
     // Add your logic here for adding a new child
-    console.log('[On email]:', {email}, '[Adding new child]:', childName);
-    try{
-        await axios.post(`https://sightsaver-api.azurewebsites.net/api/child/addChild`, {
-            email: email,
-            name: "testChild",
-            sensor_id: 5,
-        }).then((res) => console.log(res.data));
+    console.log('[On email]:', email, '[Adding new child]:', childName);
+    try {
+      await axios.post(`https://sightsaver-api.azurewebsites.net/api/child/addChild`, {
+        email: email,
+        name: childName,
+        sensor_id: 5,
+      })
+      .then((response) => {console.log('Response:', response)})
     } catch (error) {
-        console.log('Error adding new child:', error);
+      console.log('Error adding new child:', error);
     }
   };
 
   return (
-    // Render the generated buttons
     <View style={styles.container}>
-      {/* Button to open the modal */}
+      {/* ScrollView for children buttons */}
+      <ScrollView style={styles.scrollView}>
+        {/* Render the children buttons */}
+        {childrenInfo.map((child, index) => (
+          <TouchableOpacity
+            key={index}
+            style={[styles.button, { backgroundColor: Colors[colorScheme ?? 'light'].buttonColor }]}
+            onPress={() => handleChildButtonPress(index, child.childName)}
+          >
+            <Text style={[styles.buttonText, { backgroundColor: Colors[colorScheme ?? 'light'].buttonColor }]}>
+              {child.childName}
+            </Text>
+            <Text
+              style={[styles.buttonText, { fontSize: 10, backgroundColor: Colors[colorScheme ?? 'light'].buttonColor }]}
+            >
+              Device: Sun Sensor {child.sensorId}
+            </Text>
+            <View style={[styles.circle, selectedChildIndex === index ? { backgroundColor: 'lightblue' } : null]} />
+          </TouchableOpacity>
+        ))}
+      </ScrollView>
+
+      {/* Add New Button */}
       <TouchableOpacity
-        style={[styles.button, { backgroundColor: Colors[colorScheme ?? 'light'].buttonColor }]}
-        onPress={() => setModalVisible(true)}
-      >
-        <Text style={[styles.buttonText, { backgroundColor: Colors[colorScheme ?? 'light'].buttonColor }]}>Add new...</Text>
+        style={[styles.addButton]} // Apply syncButton and addButton styles
+        onPress={() => setModalVisible(true)}>
+        <Text style={styles.syncButtonText}>Add New Sensor</Text>
       </TouchableOpacity>
 
-      {/* Render the children buttons */}
-      {childrenCount > 0 && Array.from({ length: childrenCount }).map((_, i) => (
-        <TouchableOpacity
-          key={i}
-          style={[styles.button, { backgroundColor: Colors[colorScheme ?? 'light'].buttonColor }]}
-          onPress={() => handleChildButtonPress(i)}
-        >
-          <Text style={[styles.buttonText, { backgroundColor: Colors[colorScheme ?? 'light'].buttonColor }]}>Child {i + 1}</Text>
-          <Text style={[styles.buttonText, { fontSize: 10, backgroundColor: Colors[colorScheme ?? 'light'].buttonColor }]}>Device: Sun Sensor {i + 1}</Text>
-          <View style={[styles.circle, selectedChildIndex === i ? { backgroundColor: 'lightblue' } : null]} />
-        </TouchableOpacity>
-      ))}
-
       {/* Modal for adding a new child */}
-      <AddChildModal
-        visible={modalVisible}
-        onClose={() => setModalVisible(false)}
-        onAdd={handleAddChild}
-      />
+      <AddChildModal visible={modalVisible} onClose={() => setModalVisible(false)} onAdd={handleAddChild} />
     </View>
   );
 };
@@ -89,13 +101,14 @@ const ChildrenButtons = ({ colorScheme }) => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    alignItems: 'center', // Align buttons to the center of the screen horizontally
+    alignItems: 'center', // Align items to the center horizontally
+    justifyContent: 'center', // Align items to the center vertically
   },
   buttonText: {
     fontSize: 16,
   },
   button: {
-    flex: 1,
+    alignSelf: 'center', // Center the button horizontally
     width: '75%', // Set the button width to 75% of the screen width
     flexDirection: 'row', // Set the button layout to row
     alignItems: 'center', // Center the text and circle within the button
@@ -114,7 +127,27 @@ const styles = StyleSheet.create({
     borderWidth: 1, // Border
     borderColor: 'lightgray', // Hollow circle color
     marginRight: 10, // Add margin between the circle and the text
-  }
+  },
+  scrollView: {
+    width: '100%',
+    marginBottom: 20, // Add marginBottom to create space between ScrollView and Add new button
+  },
+  syncButtonText: {
+    fontSize: 20,
+    color: 'white',
+    fontWeight: 'bold',
+  },
+  addButton: {
+    width: '85%',
+    marginVertical: 20,
+    justifyContent: 'center',
+    paddingVertical: 20,
+    borderWidth: 0,
+    alignItems: 'center',
+    borderRadius: 5,
+    alignSelf: 'center',
+    backgroundColor: '#1970B4',
+  },      
 });
 
 export default ChildrenButtons; // Export the component
