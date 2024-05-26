@@ -61,7 +61,9 @@ const Login = () => {
         } else {
             console.log('Login failed');
         }
-        setIsLoading(false);
+        setTimeout(() => {
+            setIsLoading(false);
+        }, 2000)
     }
 
 

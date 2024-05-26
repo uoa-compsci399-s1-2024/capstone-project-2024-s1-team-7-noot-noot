@@ -296,7 +296,9 @@ export const getChildrenInfo = async () => {
 
           // Serialize and store the fetched data in SecureStore
           await SecureStore.setItemAsync(CHILDREN_INFO, JSON.stringify(childrenInfo));
+          return  childrenInfo ;
     }
+
     return childrenInfo ;
     
   } catch (error) {

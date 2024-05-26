@@ -20,7 +20,7 @@ const ChildrenButtons = ({ colorScheme }) => {
     getChildrenInfo()
       .then((childrenData) => {
         console.debug('Children info:', childrenData);
-        setChildrenInfo(childrenData, childrenData.length); // Update childrenInfo state with fetched data
+        setChildrenInfo(childrenData); // Update childrenInfo state with fetched data
       })
       .catch((error) => console.error('Error fetching children info:', error));
   }, []);
