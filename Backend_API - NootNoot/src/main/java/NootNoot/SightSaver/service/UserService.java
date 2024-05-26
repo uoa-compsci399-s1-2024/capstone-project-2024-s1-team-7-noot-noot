@@ -44,4 +44,13 @@ public class UserService {
         }
         return null;
     }
+
+    public User getUserByEmail (String email) {
+        for (User user : getAllUsers()) {
+            if (user.getEmail().equals(email)) {
+                return user;
+            }
+        }
+        return null;
+    }
 }

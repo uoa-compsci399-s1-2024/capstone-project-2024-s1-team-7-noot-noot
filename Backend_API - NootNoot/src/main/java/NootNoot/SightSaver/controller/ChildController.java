@@ -38,9 +38,9 @@ public class ChildController {
         return new ResponseEntity<>(childService.getChildById(id), HttpStatus.OK);
     }
 
-    @GetMapping("/{parent_id}")
-    public ResponseEntity<List<Child>> getChildByParentId(@PathVariable Long parent_id) {
-        return new ResponseEntity<>(childService.getChildByParent(parent_id), HttpStatus.OK);
+    @GetMapping("/{email}")
+    public ResponseEntity<List<Child>> getChildByParentEmail(@PathVariable String email) {
+        return new ResponseEntity<>(childService.getChildByEmail(email), HttpStatus.OK);
     }
 
     @PostMapping
