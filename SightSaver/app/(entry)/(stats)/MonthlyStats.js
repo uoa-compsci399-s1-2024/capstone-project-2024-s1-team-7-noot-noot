@@ -1,41 +1,104 @@
-import React, {useState, useRef, useEffect} from 'react';
-import {StyleSheet, Animated } from 'react-native';
+import React, { useState, useRef, useEffect } from 'react';
+import { StyleSheet, Animated, ActivityIndicator } from 'react-native';
 import CalendarPicker from "react-native-calendar-picker";
 import Colors from '../../../constants/Colors';
 import { Text, View } from '../../../components/Themed';
 import { useColorScheme } from '../../../components/useColorScheme';
 import moment from 'moment';
-import { FA5Style } from '@expo/vector-icons/build/FontAwesome5';
-// import {*} from 'date-fns';
+import { getMonthData } from '../../../components/helpers/MonthlyData';
 
-export default function MonthlyScreen(props) {
+moment.locale('en-gb');
+
+export default function MonthlyScreen({ selectedDate, props }) {
+  const [isLoading, setIsLoading] = useState(true);
   const colorScheme = useColorScheme();
   const fadeAnim = useRef(new Animated.Value(0)).current;
+  const [datesStyles, setDatesStyles] = useState([]);
+  const [searchMonth, setSearchMonth] = useState(moment(selectedDate, "YYYY:MM:DD").add(1, 'days').utcOffset('+12:00'));
+  const currentYear = searchMonth.year();
+  const currentMonth = searchMonth.month();
+  
   const onDateChange = (date) => {
     const formattedDate = moment(date).format('YYYY:MM:DD');
     props.changeSelectedItem(props.dropdownData.find(item => item.label === 'Daily'), formattedDate);
   };
 
+  function getTotalDays(year, month) {
+    return new Date(year, month + 1, 0).getDate();
+  }
+
+  async function getCustomStyling(year, month) {
+    const customDatesStyles = [];
+    const totalDays = getTotalDays(year, month);
+    const monthArray = await getMonthData(searchMonth, totalDays);
+    for (let i = 0; i < totalDays; i++) {
+      const newDate = new Date(year, month, i + 1, 13);
+      if (monthArray[i] >= 2) {
+        customDatesStyles.push({
+          date: newDate,
+          style: { backgroundColor: '#FFBC1F' },
+          textStyle: { color: 'black' },
+          containerStyle: [],
+          allowDisabled: true,
+        });
+      } else {
+        customDatesStyles.push({
+          date: newDate,
+          style: { backgroundColor: '#F6D78D' },
+          textStyle: { color: 'black' },
+          containerStyle: [],
+          allowDisabled: true,
+        });
+      }
+    }
+    return customDatesStyles;
+  }
+
   useEffect(() => {
+    setIsLoading(true);
+    getCustomStyling(currentYear, currentMonth).then((customDatesStyles) => {
+      setDatesStyles(customDatesStyles);
+      setTimeout(() => {
+        setIsLoading(false);
+      }, 100);
+    });
+  }, [searchMonth]);
+
+  useEffect(() => {
+    if (!isLoading) {
+      Animated.timing(fadeAnim, {
+        toValue: 1,
+        duration: 300,
+        useNativeDriver: true,
+      }).start();
+    }
+  }, [isLoading]);
+
+  if (isLoading) {
     fadeAnim.stopAnimation();
     fadeAnim.setValue(0);
-    Animated.timing(fadeAnim, {
-      toValue: 1,
-      duration: 300,
-      useNativeDriver: true,
-    }).start();
-  });
+    return (
+      <View style={[styles.container, { justifyContent: 'center' }]}>
+        <ActivityIndicator size="large" color="#23A0FF" />
+      </View>
+    );
+  }
 
   return (
-    <Animated.View style={[styles.container, {opacity: fadeAnim}]}>
-      <View style={[styles.CalendarPicker, ]}>
+    <Animated.View style={[styles.container, { opacity: fadeAnim }]}>
+      <View style={[styles.CalendarPicker]}>
         <CalendarPicker
           onDateChange={onDateChange}
-          textStyle={{color: Colors[colorScheme].text}}
-          todayBackgroundColor='#f2e6ff'
-          dayTextStyle={{color: Colors[colorScheme].text}}
+          initialDate={searchMonth.toDate()}
+          textStyle={{ color: Colors[colorScheme].text }}
+          todayBackgroundColor='#FFBC1F'
+          dayTextStyle={{ color: 'black' }}
           borderColor={Colors[colorScheme].text}
-          selectedDayStyle={{backgroundColor: '#FFBD20'}}
+          customDatesStyles={datesStyles}
+          startFromMonday={true}
+          onMonthChange={(date) => {
+            setSearchMonth(moment(date));
+          }}
         />
       </View>
     </Animated.View>
@@ -53,7 +116,7 @@ const styles = StyleSheet.create({
   CalendarPicker: {
     width: '95%',
     opacity: 0.8,
-    flex:1,
+    flex: 1,
     marginTop: '10%',
   }
 });

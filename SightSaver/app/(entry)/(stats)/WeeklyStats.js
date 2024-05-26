@@ -110,8 +110,8 @@ export default function WeeklyScreen({selectedDate, changeSelectedItem, dropdown
         <Text style={{color:Colors[colorScheme ?? 'light'].text}}>{`Week ${week}, ${year}`}</Text>
       </View>
       <View style={{ flexDirection: 'row', justifyContent: 'space-between', top: '25%'}}>
-        <Ionicons style={{ left: '-2%', position: 'absolute', opacity: 0.4  }} name="chevron-back" size={50} color={Colors[colorScheme ?? 'light'].text} onPress={goToPreviousWeek} />
-        <Ionicons style={{ right: '-2%', position: 'absolute', opacity: 0.4 }} name="chevron-forward" size={50} color={Colors[colorScheme ?? 'light'].text} onPress={goToNextWeek} />
+        <Ionicons style={{ left: '-4%', position: 'absolute', opacity: 0.4  }} name="chevron-back" size={50} color={Colors[colorScheme ?? 'light'].text} onPress={goToPreviousWeek} />
+        <Ionicons style={{ right: '-4%', position: 'absolute', opacity: 0.4 }} name="chevron-forward" size={50} color={Colors[colorScheme ?? 'light'].text} onPress={goToNextWeek} />
       </View>
       <View style={styles.pieSpace}>
         <PieChart style= {styles.PieChart}

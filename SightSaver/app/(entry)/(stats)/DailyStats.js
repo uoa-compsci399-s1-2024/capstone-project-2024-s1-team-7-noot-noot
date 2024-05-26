@@ -81,8 +81,8 @@ export default function DailyScreen({selectedDate, dayDataInput, totalTimeInput,
         <Text style={[{color:Colors[colorScheme ?? 'light'].text}, {}]}>{date}</Text>
       </View>
       <View style={{ flexDirection: 'row', justifyContent: 'space-between', top: '25%'}}>
-        <Ionicons style={{ left: '-2%', position: 'absolute', opacity: 0.4  }} name="chevron-back" size={50} color={Colors[colorScheme ?? 'light'].text} onPress={goToPreviousDay} />
-        <Ionicons style={{ right: '-2%', position: 'absolute', opacity: 0.4 }} name="chevron-forward" size={50} color={Colors[colorScheme ?? 'light'].text} onPress={goToNextDay} />
+        <Ionicons style={{ left: '-1%', position: 'absolute', opacity: 0.4  }} name="chevron-back" size={50} color={Colors[colorScheme ?? 'light'].text} onPress={goToPreviousDay} />
+        <Ionicons style={{ right: '-1%', position: 'absolute', opacity: 0.4 }} name="chevron-forward" size={50} color={Colors[colorScheme ?? 'light'].text} onPress={goToNextDay} />
       </View>
       <View style={styles.pieSpace}>
         <PieChart style= {styles.PieChart}

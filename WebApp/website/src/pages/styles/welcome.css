@@ -1,0 +1,85 @@
+.Welcome {
+  display: flex;
+  flex-direction: column;
+  background-color: #4B4B4B;
+  align-items: center;
+  justify-content: center;
+  min-height: 100vh;
+}
+
+.Welcome-logo {
+  height: 5vmin;
+  pointer-events: none;
+  margin-top: 2vh;
+}
+
+.Welcome-header {
+  background-color: #404040;
+  font-size: calc(10px + 2vmin);
+  color: black;
+  border-radius: 2vw;
+  padding: 2vw;
+  height: 40vh;
+}
+
+.Welcome-title {
+  font-size: calc(2vmin);
+  color: white;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin: 0;
+}
+
+.header {
+  margin-top: 2vh;
+  margin-bottom: 0;
+}
+
+.text {
+  margin-top: 1vh;
+  margin-bottom: 0;
+}
+
+.Welcome-button {
+  margin-top: 12vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.Welcomes-button {
+  background-Color: #1970B4;
+  width: 12vw;
+  align-items: center;
+  border-radius: 1.5vw;
+  font-size: 2vmin;
+  color: white;
+  cursor: pointer;
+  border-width: 0;
+}
+
+.button-text {
+  margin: 0;
+  padding: 1.5vh;
+}
+
+.sign-up-text {
+  flex-direction: row;
+  display: flex;
+  color: white;
+  font-size: 1.5vmin;
+  align-items: center;
+  justify-content: center;
+  margin-top: 0vh;
+}
+
+.register {
+  color: #A4D0F3;
+  cursor: pointer;
+  font-size: 1.5vmin;
+  text-decoration: none;
+  margin-top: 0vh;
+  margin-left: 0.2vw;
+}
+

@@ -1,6 +1,8 @@
 package NootNoot.SightSaver.controller;
 
 import NootNoot.SightSaver.model.Child;
+import NootNoot.SightSaver.repository.ChildRepository;
+import NootNoot.SightSaver.request.AddChildRequest;
 import NootNoot.SightSaver.service.ChildService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -18,6 +20,8 @@ public class ChildController {
 
     @Autowired
     private ChildService childService;
+    @Autowired
+    private ChildRepository childRepository;
 
     @GetMapping
     public ResponseEntity<List<Child>> getAll() {
@@ -34,9 +38,19 @@ public class ChildController {
         return new ResponseEntity<>(childService.getChildById(id), HttpStatus.OK);
     }
 
+    @GetMapping("/{parent_id}")
+    public ResponseEntity<List<Child>> getChildByParentId(@PathVariable Long parent_id) {
+        return new ResponseEntity<>(childService.getChildByParent(parent_id), HttpStatus.OK);
+    }
+
     @PostMapping
     public ResponseEntity<Child> addChild(@RequestBody Child child) {
         return new ResponseEntity<>(childService.saveChild(child), HttpStatus.CREATED);
+    }
+
+    @PostMapping("/addChild")
+    public ResponseEntity<Child> addChild(@RequestBody AddChildRequest childRequest) {
+        return new ResponseEntity<>(childService.saveChild(childRequest.getEmail(), childRequest.getName(), childRequest.getSensor_id()), HttpStatus.CREATED);
     }
 
     @DeleteMapping("/{id}")

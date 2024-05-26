@@ -3,7 +3,10 @@ package NootNoot.SightSaver.service;
 import java.time.LocalDateTime;
 import java.util.List;
 
+import NootNoot.SightSaver.model.Sensor;
 import NootNoot.SightSaver.model.Uv;
+import NootNoot.SightSaver.repository.SensorRepository;
+import NootNoot.SightSaver.request.AddLuxRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -15,6 +18,8 @@ public class LuxService {
 
     @Autowired
     private LuxRepository luxRepository;
+    @Autowired
+    private SensorRepository sensorRepository;
 
     public List<Lux> getAllLuxValues() {
         return luxRepository.findAll();
@@ -28,8 +33,14 @@ public class LuxService {
         return luxRepository.count();
     }
 
-    public Lux saveLux(Lux lux) {
-        return luxRepository.save(lux);
+    public String saveLux(Lux lux) {
+        List<Sensor> sensors = sensorRepository.findAll();
+        for (Sensor sensor : sensors) {
+            if (sensor.getId().equals(lux.getSensorId())) {
+                luxRepository.save(lux);
+            }
+        }
+        return "Lux data successfully inserted";
     }
 
     public void deleteLux(Long id) {
@@ -52,6 +63,22 @@ public class LuxService {
             }
         }
         return null;
+    }
+
+    public List<Lux> findLuxByID(Long sensorId) {
+        return luxRepository.findBySensorId(sensorId);
+    }
+
+    public String saveLuxList(AddLuxRequest luxRequest) {
+        List<Sensor> sensors = sensorRepository.findAll();
+        for (Sensor sensor : sensors) {
+            for (Lux lux : luxRequest.getLuxList()) {
+                if (sensor.getId().equals(lux.getSensorId())) {
+                    luxRepository.save(lux);
+                }
+            }
+        }
+        return "Lux data successfully inserted";
     }
 
 }

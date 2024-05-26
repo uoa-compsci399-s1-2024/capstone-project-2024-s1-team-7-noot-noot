@@ -1,5 +1,6 @@
 package NootNoot.SightSaver.service;
 
+import NootNoot.SightSaver.model.Lux;
 import NootNoot.SightSaver.model.Sensor;
 import jakarta.servlet.ServletOutputStream;
 import jakarta.servlet.http.HttpServletResponse;
@@ -71,7 +72,7 @@ public class ExcelExportService {
         style.setFont(font);
         style.setAlignment(HorizontalAlignment.CENTER);
         createCell(headerRow, 0, "Sensor Information", style);
-        sheet.addMergedRegion(new CellRangeAddress(0, 0, 0 , 5));
+        sheet.addMergedRegion(new CellRangeAddress(0, 0, 0 , 4));
         font.setFontHeightInPoints((short) 10);
 
         headerRow = sheet.createRow(1);
@@ -79,10 +80,9 @@ public class ExcelExportService {
         font.setFontHeight(16);
         style.setFont(font);
         createCell(headerRow, 0, "Sensor ID", style);
-        createCell(headerRow, 1, "User ID", style);
-        createCell(headerRow, 2, "UV Value", style);
-        createCell(headerRow, 3, "Lux Value", style);
-        createCell(headerRow, 4, "DateTime", style);
+        createCell(headerRow, 1, "Child ID", style);
+        createCell(headerRow, 2, "Lux Value", style);
+        createCell(headerRow, 3, "Date/Time", style);
     }
     private void writeSensorData() throws IOException {
         int rowCount = 2;
@@ -93,14 +93,15 @@ public class ExcelExportService {
         SensorService sensorService = new SensorService();
 
         for (Sensor sensor : SensorList) {
-            if(uvService.findUVValueByID(sensor.getUvId()) != 0 && luxService.findLuxValueByID(sensor.getLuxId()) != 0) {
-                Row row = sheet.createRow(rowCount++);
-                int columnCount = 0;
-                createCell(row, columnCount++, sensor.getId(), style);
-                createCell(row, columnCount++, sensor.getUserId(), style);
-                createCell(row, columnCount++, uvService.findUVValueByID(sensor.getUvId()), style);
-                createCell(row, columnCount++, luxService.findLuxValueByID(sensor.getLuxId()), style);
-                createCell(row, columnCount++, uvService.findUVValueDateByID(sensor.getUvId()), style);
+            if(!luxService.findLuxByID(sensor.getId()).isEmpty()) {
+                for (Lux lux : luxService.findLuxByID(sensor.getId())) {
+                    Row row = sheet.createRow(rowCount++);
+                    int columnCount = 0;
+                    createCell(row, columnCount++, sensor.getId(), style);
+                    createCell(row, columnCount++, sensor.getChild_id(), style);
+                    createCell(row, columnCount++, luxService.findLuxValueByID(lux.getId()), style);
+                    createCell(row, columnCount++, luxService.findLuxValueDateByID(lux.getId()).toString(), style);
+                }
             }
         }
 
