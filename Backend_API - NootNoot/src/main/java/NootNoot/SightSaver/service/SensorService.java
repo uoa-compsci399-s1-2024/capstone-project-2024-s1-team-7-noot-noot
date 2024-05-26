@@ -43,16 +43,7 @@ public class SensorService {
         return sensorRepository.count();
     }
 
-    public Sensor saveSensor(Sensor sensor) {
-        List<User> users = userRepository.findAll();
-        for (User user : users) {
-            if (user.getId().equals(sensor.getChild_id())) {
-                return sensorRepository.save(sensor);
-            }
-        }
-        return null;
-
-    }
+    public Sensor saveSensor(Sensor sensor) {return sensorRepository.save(sensor);}
 
     public void deleteSensorById(Long id) {
         sensorRepository.deleteById(id);
