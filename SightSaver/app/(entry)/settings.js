@@ -6,13 +6,24 @@ import Colors from '../../constants/Colors';
 import { useColorScheme } from '../../components/useColorScheme';
 import AccessibilityScreen from './settingsScreens/accessibility';
 import DataSafetyScreen from './settingsScreens/dataSafety';
-import DeviceScreen from './settingsScreens/device';
-import AccountScreen from './settingsScreens/account';
+import ChildrenScreen from './settingsScreens/children';
+import CustomButton from '../../components/CustomButton';
+import { useAuth, getChildrenInfo } from '../../ctx';
+import axios from 'axios';
 
 function Settings({navigation}) {
     // const navigation = useNavigation();
     const colorScheme = useColorScheme();
-    
+    const handlePress = async () => {
+        console.log('Fetching children count...');
+        await getChildrenInfo()
+      .then(count => {
+        console.log('Children count:', count, count.length);
+      })
+      .catch(error => console.error('Error fetching children count:', error));
+    };
+
+    const { onLogout } = useAuth();
     return (
         <View style={[styles.container, {backgroundColor:Colors[colorScheme ?? 'light'].background}]}>
             <StatusBar barStyle={barStyle=Colors[colorScheme ?? 'light'].barStyle}/>
@@ -23,12 +34,26 @@ function Settings({navigation}) {
             <TouchableOpacity style={[styles.option, {borderBottomColor:Colors[colorScheme ?? 'light'].seperator}]} onPress={() => navigation.navigate('Data Safety')}>
                 <Text style={[styles.optionText, {color:Colors[colorScheme ?? 'light'].text}]}>Data Safety</Text>
             </TouchableOpacity>
-            <TouchableOpacity style={[styles.option, {borderBottomColor:Colors[colorScheme ?? 'light'].seperator}]} onPress={() => navigation.navigate('Device')}>
-                <Text style={[styles.optionText, {color:Colors[colorScheme ?? 'light'].text}]}>Device</Text>
+            <TouchableOpacity style={[styles.option, {borderBottomColor:Colors[colorScheme ?? 'light'].seperator}]} onPress={() => navigation.navigate('Children')}>
+                <Text style={[styles.optionText, {color:Colors[colorScheme ?? 'light'].text}]}>Children</Text>
             </TouchableOpacity>
-            <TouchableOpacity style={[styles.option, {borderBottomColor:Colors[colorScheme ?? 'light'].seperator}]} onPress={() => navigation.navigate('Account')}>
-                <Text style={[styles.optionText, {color:Colors[colorScheme ?? 'light'].text}]}>Account</Text>
-            </TouchableOpacity>
+            {/* <TouchableOpacity style={[styles.option, {borderBottomColor:Colors[colorScheme ?? 'light'].seperator}]} onPress={() => navigation.navigate('Notifications')}>
+                <Text style={[styles.optionText, {color:Colors[colorScheme ?? 'light'].text}]}>Notifications</Text>
+            </TouchableOpacity> */}
+            <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
+            <CustomButton
+                onPress={() => {
+                onLogout();
+                }}
+                    text={"Sign Out"}
+            />
+            <CustomButton
+                onPress={
+                    handlePress
+                }
+                    text={"test"}
+            />
+            </View>
         </View>
     );
 }
@@ -41,8 +66,7 @@ export default function SettingsScreens() {
             <Stack.Screen name="Settings" component={Settings} />
             <Stack.Screen name="Accessibility" component={AccessibilityScreen} />
             <Stack.Screen name="Data Safety" component={DataSafetyScreen} />
-            <Stack.Screen name="Device" component={DeviceScreen} />
-            <Stack.Screen name="Account" component={AccountScreen} options={{ headerShown: false }}/>
+            <Stack.Screen name="Children" component={ChildrenScreen} />
         </Stack.Navigator>
     );
 }
