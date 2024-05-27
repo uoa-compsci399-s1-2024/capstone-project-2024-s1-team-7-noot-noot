@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { Children, useEffect, useState } from 'react';
 import { TouchableOpacity, Text, View, StyleSheet, ScrollView } from 'react-native';
 import { getChildrenInfo, getUserDetails } from '../ctx'; // Assuming these functions are asynchronous
 import Colors from '../constants/Colors'; // Assuming this is where the color scheme is defined
@@ -48,6 +48,7 @@ const ChildrenButtons = ({ colorScheme }) => {
   const handleAddChild = async (childName) => {
     // Add your logic here for adding a new child
     // // console.log('[On email]:', email, '[Adding new child]:', childName);
+    
     try {
       await axios.post(`https://sightsaver-api.azurewebsites.net/api/child/addChild`, {
         email: email,
@@ -59,9 +60,7 @@ const ChildrenButtons = ({ colorScheme }) => {
       // // console.log('Error adding new child:', error);
     }
   };
-
-  return (
-    <View style={styles.container}>
+  if (childrenInfo.length > 0) {
       {/* ScrollView for children buttons */}
       <ScrollView style={styles.scrollView}>
         {/* Render the children buttons */}
@@ -83,12 +82,14 @@ const ChildrenButtons = ({ colorScheme }) => {
           </TouchableOpacity>
         ))}
       </ScrollView>
-
+  }
+  return (
+    <View style={styles.container}>
       {/* Add New Button */}
       <TouchableOpacity
         style={[styles.addButton]} // Apply syncButton and addButton styles
         onPress={() => setModalVisible(true)}>
-        <Text style={styles.syncButtonText}>Add New Sensor</Text>
+        <Text style={styles.syncButtonText}>Add New Child</Text>
       </TouchableOpacity>
 
       {/* Modal for adding a new child */}
@@ -102,7 +103,6 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     alignItems: 'center', // Align items to the center horizontally
-    justifyContent: 'center', // Align items to the center vertically
   },
   buttonText: {
     fontSize: 18,

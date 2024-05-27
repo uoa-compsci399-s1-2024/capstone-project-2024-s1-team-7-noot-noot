@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { View, Text, StyleSheet, Switch } from 'react-native';
 import { useColorScheme } from '../../../components/useColorScheme';
 import Colors from '../../../constants/Colors';
+import { Slider } from '@rneui/themed';
 
 export default function NotificationSettings() {
     const [pushNotifications, setPushNotifications] = useState(false);
@@ -35,6 +36,25 @@ export default function NotificationSettings() {
                 <Text style={{color:Colors[colorScheme ?? 'light'].text}}>{notificationFrequency}</Text>
                 {/* Replace the text with a dropdown or other input component for selecting frequency */}
             </View>
+            <Slider
+                animateTransitions
+                animationType="timing"
+                maximumTrackTintColor="#ccc"
+                maximumValue={12}
+                minimumTrackTintColor="#1970B4"
+                minimumValue={2}
+                onValueChange={value =>
+                    console.log("onValueChange()", value)
+                }
+                orientation="horizontal"
+                step={1}
+                style={{ width: "80%", height: 200 }}
+                thumbStyle={{ height: 20, width: 20 }}
+                thumbTintColor="#1970B4"
+                thumbTouchSize={{ width: 40, height: 40 }}
+                trackStyle={{ height: 10, borderRadius: 20 }}
+                value={50}
+        />
         </View>
     );
 }

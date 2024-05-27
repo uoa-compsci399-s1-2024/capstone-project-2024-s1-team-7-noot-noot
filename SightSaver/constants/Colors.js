@@ -18,7 +18,7 @@ export default {
     tabIconDefault: '#BFC9D9',
     tabIconSelected: '#539DF3',
     seperator: '#BFC9D9',
-    image: require("../assets/images/logo-light.png"),
+    image: require("../assets/images/logo-dark.png"),
     buttonColor: "#5E5E5E",
     subTitle: "#1970B4",
     barStyle: 'light-content',
