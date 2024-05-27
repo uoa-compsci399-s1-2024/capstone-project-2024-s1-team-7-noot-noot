@@ -27,6 +27,6 @@ export const JSONToEncoded = async () => {
     // Format the data
     const formattedData = `${date} ${time} ${timeInMinutes.toFixed(2)}`;
 
-    console.log(formattedData);
+    // // console.log(formattedData);
   }
 };

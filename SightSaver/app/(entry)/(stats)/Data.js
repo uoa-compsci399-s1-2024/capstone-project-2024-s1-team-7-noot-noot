@@ -19,7 +19,7 @@ export default function DataScreen() {
         setData(lines);
       })
       .catch(error => {
-        console.error('Failed to read data from file', error);
+        // console.error('Failed to read data from file', error);
       });
   }, []);
 

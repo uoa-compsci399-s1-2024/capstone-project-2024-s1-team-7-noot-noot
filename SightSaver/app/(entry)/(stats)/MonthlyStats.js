@@ -7,9 +7,11 @@ import { useColorScheme } from '../../../components/useColorScheme';
 import moment from 'moment';
 import { getMonthData } from '../../../components/helpers/MonthlyData';
 
+const goal = 2;
+
 moment.locale('en-gb');
 
-export default function MonthlyScreen({ selectedDate, props }) {
+export default function MonthlyScreen({ selectedDate, changeSelectedItem, dropdownData }) {
   const [isLoading, setIsLoading] = useState(true);
   const colorScheme = useColorScheme();
   const fadeAnim = useRef(new Animated.Value(0)).current;
@@ -20,7 +22,7 @@ export default function MonthlyScreen({ selectedDate, props }) {
   
   const onDateChange = (date) => {
     const formattedDate = moment(date).format('YYYY:MM:DD');
-    props.changeSelectedItem(props.dropdownData.find(item => item.label === 'Daily'), formattedDate);
+    changeSelectedItem(dropdownData.find(item => item.label === 'Daily'), formattedDate);
   };
 
   function getTotalDays(year, month) {
@@ -33,10 +35,34 @@ export default function MonthlyScreen({ selectedDate, props }) {
     const monthArray = await getMonthData(searchMonth, totalDays);
     for (let i = 0; i < totalDays; i++) {
       const newDate = new Date(year, month, i + 1, 13);
-      if (monthArray[i] >= 2) {
+      if (monthArray[i] >= goal) {
         customDatesStyles.push({
           date: newDate,
-          style: { backgroundColor: '#FFBC1F' },
+          style: { backgroundColor: '#efa800' },
+          textStyle: { color: 'black' },
+          containerStyle: [],
+          allowDisabled: true,
+        });
+      } else if (monthArray[i] >= (goal / 3) * 2 && monthArray[i] < goal) {
+        customDatesStyles.push({
+          date: newDate,
+          style: { backgroundColor: '#ffba17' },
+          textStyle: { color: 'black' },
+          containerStyle: [],
+          allowDisabled: true,
+        });
+      } else if (monthArray[i] >= (goal / 3) && monthArray[i] < (goal / 3) * 2) {
+        customDatesStyles.push({
+          date: newDate,
+          style: { backgroundColor: '#ffcc55' },
+          textStyle: { color: 'black' },
+          containerStyle: [],
+          allowDisabled: true,
+        });
+      } else if (monthArray[i] < (goal / 3 && monthArray[i] > 0)) {
+        customDatesStyles.push({
+          date: newDate,
+          style: { backgroundColor: '#ffe9b7' },
           textStyle: { color: 'black' },
           containerStyle: [],
           allowDisabled: true,
@@ -44,7 +70,7 @@ export default function MonthlyScreen({ selectedDate, props }) {
       } else {
         customDatesStyles.push({
           date: newDate,
-          style: { backgroundColor: '#F6D78D' },
+          style: { backgroundColor: '#fff5dd' },
           textStyle: { color: 'black' },
           containerStyle: [],
           allowDisabled: true,

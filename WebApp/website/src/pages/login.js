@@ -13,7 +13,7 @@ export const getToken = async () => {
 }
 
 const onLogin = async (email, password) => {
-  console.log("login", email, password);
+  // // console.log("login", email, password);
   try { 
     const result = await axios.post(`${API_URL}/auth/authenticate`, {
       email, 
@@ -24,12 +24,12 @@ const onLogin = async (email, password) => {
 
     localStorage.setItem(EMAIL, email);
     localStorage.setItem(TOKEN_KEY, result.data.token);
-    console.log(result.data.token);
-    console.log(localStorage.getItem(TOKEN_KEY));
+    // // console.log(result.data.token);
+    // // console.log(localStorage.getItem(TOKEN_KEY));
 
     return result;
   } catch (error) {
-    console.log(error);
+    // // console.log(error);
   }
 };
 
@@ -54,7 +54,7 @@ function Login() {
     const result = await onLogin(email, password);
 
     if (result) {
-      console.log("Login Success");
+      // // console.log("Login Success");
       navigate('/home');
 
     } else {

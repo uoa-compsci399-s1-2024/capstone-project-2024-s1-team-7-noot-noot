@@ -24,7 +24,7 @@ export const updateWeekData = async (searchWeek) => {
 
       // Parse the date string into a moment object
       const date = moment(dateStr, "YYYY:MM:DD");
-      // console.log(date);
+      // // // console.log(date);
 
       // Check if the date is within the same week as the search date
       if (date.isoWeek() === searchDate.isoWeek()) {

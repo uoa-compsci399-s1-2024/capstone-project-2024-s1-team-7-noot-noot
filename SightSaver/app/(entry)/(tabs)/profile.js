@@ -26,14 +26,12 @@ var data = `
 2024:05:01 10:23:06 45\n
 2024:05:01 13:02:45 61\n
 2024:05:01 15:45:03 40\n
-2024:05:02 11:03:23 42\n
 2024:05:02 13:56:32 31\n
 2024:05:02 16:12:05 38\n
 2024:05:03 09:12:44 63\n
 2024:05:03 12:53:22 42\n
 2024:05:03 15:32:04 15\n
 2024:05:03 16:21:03 23\n
-2024:05:04 10:47:32 63\n
 2024:05:04 14:21:21 42\n
 2024:05:04 15:32:04 15\n
 2024:05:05 09:24:32 41\n
@@ -45,19 +43,13 @@ var data = `
 2024:05:07 09:43:40 45\n
 2024:05:07 12:19:22 35\n
 2024:05:07 15:27:19 42\n
-2024:05:08 09:39:56 50\n
-2024:05:08 12:24:44 38\n
-2024:05:08 15:46:58 43\n
 2024:05:09 09:52:12 36\n
 2024:05:09 12:42:01 47\n
 2024:05:09 15:29:35 41\n
-2024:05:10 09:55:46 42\n
-2024:05:10 12:04:39 34\n
 2024:05:10 15:30:15 49\n
 2024:05:11 09:42:54 44\n
 2024:05:11 12:27:26 33\n
 2024:05:11 15:35:57 40\n
-2024:05:12 09:48:03 38\n
 2024:05:12 12:52:14 52\n
 2024:05:12 15:26:48 37\n
 2024:05:13 09:57:22 40\n
@@ -66,7 +58,6 @@ var data = `
 2024:05:14 09:57:50 36\n
 2024:05:14 12:20:15 39\n
 2024:05:14 15:54:39 41\n
-2024:05:15 09:53:48 43\n
 2024:05:15 12:38:09 35\n
 2024:05:15 15:47:34 43\n
 2024:05:16 09:56:07 39\n
@@ -75,48 +66,30 @@ var data = `
 2024:05:17 09:59:25 38\n
 2024:05:17 12:52:59 45\n
 2024:05:17 15:56:10 38\n
-2024:05:18 09:48:16 47\n
-2024:05:18 12:49:11 51\n
-2024:05:18 15:53:39 44\n
+2024:05:18 09:48:16 31\n
 2024:05:19 09:57:55 40\n
 2024:05:19 12:33:07 41\n
 2024:05:19 15:42:21 38\n
-2024:05:20 09:51:32 43\n
-2024:05:20 12:45:48 36\n
 2024:05:20 15:40:13 45\n
 2024:05:21 09:44:14 36\n
-2024:05:21 12:50:19 42\n
 2024:05:21 15:53:23 39\n
-2024:05:22 09:41:51 44\n
 2024:05:22 12:49:37 39\n
 2024:05:22 15:53:14 45\n
-2024:05:23 09:48:18 39\n
 2024:05:23 12:58:43 37\n
 2024:05:23 15:56:55 42\n
-2024:05:24 09:57:47 35\n
-2024:05:24 12:57:50 42\n
 2024:05:24 15:42:25 38\n
 2024:05:25 09:58:28 41\n
 2024:05:25 12:52:04 39\n
-2024:05:25 15:53:30 41\n
 2024:05:26 09:54:16 37\n
 2024:05:26 12:50:55 36\n
 2024:05:26 15:45:18 40\n
-2024:05:27 09:55:47 35\n
-2024:05:27 12:56:20 39\n
 2024:05:27 15:44:53 38\n
-2024:05:28 09:42:38 46\n
-2024:05:28 12:57:13 40\n
 2024:05:28 15:59:39 44\n
 2024:05:29 09:41:59 37\n
-2024:05:29 12:48:07 40\n
 2024:05:29 15:41:45 39\n
 2024:05:30 09:42:17 45\n
 2024:05:30 12:53:32 38\n
-2024:05:30 15:58:59 45\n
 2024:05:31 09:47:12 38\n
-2024:05:31 12:42:44 42\n
-2024:05:31 15:32:03 40\n
 `;
 
 async function importData () {
@@ -129,14 +102,14 @@ function convertData() {
     const lines = data.trim().split('\n');
     // rest of your code...
   } else {
-    console.error('Data is not defined or not a string:', data);
+    // console.error('Data is not defined or not a string:', data);
   }  
   
   const lines = [];
   const result = [];
 
   for (const line of lines) {
-    console.log(line);
+    // // console.log(line);
     const [date, time, minutes] = line.trim().split(' ');
     const [year, month, day] = date.split(':');
     const [hour, minute, second] = time.split(':');
@@ -162,15 +135,15 @@ function deleteData () {
 
 function pushData () {
   const convertedData = convertData();
-  console.log(convertedData);
+  // // console.log(convertedData);
   axios.post('https://sightsaver-api.azurewebsites.net/api/lux', convertedData)
   .then(response => {
     // Handle success, log the response
-    console.log('Response data:', response.data.token);
+    // // console.log('Response data:', response.data.token);
   })
   .catch(error => {
     // Handle error, log the error message
-    console.error('Error posting data:', error);
+    // console.error('Error posting data:', error);
   });
 }
 
@@ -188,7 +161,7 @@ export default function ProfileScreen() {
   useEffect(() => {
     const fetchUserDetails = async () =>{
       const userDetails = await getUserDetails();
-      // console.log("lkog", userDetails);
+      // // // console.log("lkog", userDetails);
       setUsername(userDetails.username);
       setEmail(userDetails.email);
     };
@@ -288,15 +261,15 @@ export default function ProfileScreen() {
       </View>
 
       {/* Import Dummy Data Button */}
-      {/* <View style={styles.import}>
-        <Button title="Import Dummy Data (for testing only)" onPress={importData()}></Button>
+      <View style={styles.import}>
+        <Button title="Import Dummy Data (for testing only)" onPress={importData}></Button>
       </View>
 
       <View style={[styles.import, {marginTop: '5%'}]}>
         <Button title="Delete Dummy Data (for testing only)" onPress={deleteData}></Button>
       </View>
 
-      <View style={[styles.import, {marginTop: '5%'}]}>
+      {/* <View style={[styles.import, {marginTop: '5%'}]}>
         <Button title="Push Dummy Data to Database (for testing only)" onPress={pushData}></Button>
       </View> */}
 

@@ -40,7 +40,7 @@ export const setupAxiosInterceptors = (onLogout: () => void) => {
       if (error.response && error.response.status === 403) {
         alert('Sorry, the session has expired. Please login again.');
         onLogout(); // Logout user on 403 error
-        console.log('Axios 403 error intercepted.');
+        // // console.log('Axios 403 error intercepted.');
       }
       return Promise.reject(error);
     }
@@ -64,7 +64,7 @@ export const AuthProvider = ({ children }: any) => {
       //If token is stored, login the user and set authenticated to true
       if (token) {
         axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;
-        console.log('Stored: ', token);
+        // // console.log('Stored: ', token);
 
         setAuthState({
           token,
@@ -77,7 +77,7 @@ export const AuthProvider = ({ children }: any) => {
 
   //Register User
   const register = async (email: string, password: string, username: string) => {
-    console.log('register', email, password, username);
+    // // console.log('register', email, password, username);
     try {
       const result = await axios.post(`${API_URL}/auth/register`, {
         username: username,
@@ -96,13 +96,13 @@ export const AuthProvider = ({ children }: any) => {
       await SecureStore.setItemAsync(EMAIL, email);
       return result;
     } catch (error: any) {
-      console.log(error);
+      // // console.log(error);
     }
   };
 
   //Login User
   const login = async (email: string, password: string) => {
-    console.log('login', email, password);
+    // // console.log('login', email, password);
     try {
       const result = await axios.post(`${API_URL}/auth/authenticate`, {
         email: email,
@@ -119,7 +119,7 @@ export const AuthProvider = ({ children }: any) => {
       await SecureStore.setItemAsync(EMAIL, email);
       return result;
     } catch (error: any) {
-      console.log('error in loading:', error);
+      // // console.log('error in loading:', error);
     }
   };
 
@@ -153,7 +153,7 @@ export const AuthProvider = ({ children }: any) => {
 // Get User Details
 export const getUserDetails = async () => {
   try {
-    console.log('getting user details');
+    // // console.log('getting user details');
     let email = await SecureStore.getItemAsync(EMAIL);
     let username = await SecureStore.getItemAsync(USERNAME);
 
@@ -164,10 +164,10 @@ export const getUserDetails = async () => {
         .get(`${API_URL}/user/email/${email}`)
         .then((res) => res.data);
     }
-    console.log('Get User details:', { username, email });
+    // // console.log('Get User details:', { username, email });
     return { username, email };
   } catch (error) {
-    console.error('Error retrieving user details:', error);
+    // console.error('Error retrieving user details:', error);
     return null;
   }
 };
@@ -178,7 +178,7 @@ export const setUserDetails = async (username: string, email: string) => {
     await SecureStore.setItemAsync(USERNAME, username);
     await SecureStore.setItemAsync(EMAIL, email);
   } catch (error) {
-    console.error('Error setting user details:', error);
+    // console.error('Error setting user details:', error);
   }
 };
 
@@ -186,10 +186,10 @@ export const setUserDetails = async (username: string, email: string) => {
 export const getToken = async () => {
   try {
     const token = await SecureStore.getItemAsync(TOKEN_KEY);
-    console.log(token);
+    // // console.log(token);
     return token;
   } catch (error) {
-    console.error('Error retrieving token:', error);
+    // console.error('Error retrieving token:', error);
     return null;
   }
 };
@@ -198,7 +198,7 @@ export const getToken = async () => {
 // export const fetchChildrenCount = async () => {
 //   const email = await SecureStore.getItemAsync(EMAIL);
 //   try {
-//     console.log('Fetching children count...');
+//     // // console.log('Fetching children count...');
 //     // Make POST request to fetch children data, with email in the request body
 //     const response = await axios.get(`${API_URL}/user/getAllLux/${email}`);
 
@@ -227,19 +227,19 @@ export const getToken = async () => {
 //       childrenInfo.push({ childName, sensorId });
 //     }
 
-//     console.log('Number of children:', numberOfChildren);
-//     console.log('Children info:', childrenInfo);
+//     // // console.log('Number of children:', numberOfChildren);
+//     // // console.log('Children info:', childrenInfo);
 
 //     return { numberOfChildren, childrenInfo };
 //   } catch (error) {
-//     console.error('Error fetching children count:', error);
+//     // console.error('Error fetching children count:', error);
 //     return { numberOfChildren: 0, childrenInfo: [] };
 //   }
 // };
 export const getChildrenInfo = async () => {
   try {
     let childrenInfo: { numberOfChildren: number; childrenInfo: { childName: string; sensorId: number | null }[] } = { numberOfChildren: 0, childrenInfo: [] };
-    console.log('Fetching children count...');
+    // // console.log('Fetching children count...');
 
     // Check if there is data stored in SecureStore
     const storedChildrenInfo = await SecureStore.getItemAsync(CHILDREN_INFO);
@@ -247,35 +247,35 @@ export const getChildrenInfo = async () => {
     if (storedChildrenInfo) {
       // If there is stored data, parse it and return it
       childrenInfo = JSON.parse(storedChildrenInfo);
-      console.log('Using stored children info:', childrenInfo);
+      // // console.log('Using stored children info:', childrenInfo);
       } else {
-        console.log('No stored children info found.');
+        // // console.log('No stored children info found.');
           // If there is no stored data, fetch data from the API
           const email = await SecureStore.getItemAsync(EMAIL);
-          // const response = await axios.get(`${API_URL}/child/getChildren/${email}`);
-          const response = {
-            data:
-              [
-                {
-                    "id": 18,
-                    "sensor_id": 6,
-                    "name": "jedd",
-                    "parent": 3
-                },
-                {
-                    "id": 23,
-                    "sensor_id": 1,
-                    "name": "test",
-                    "parent": 3
-                },
-                {
-                    "id": 24,
-                    "sensor_id": 5,
-                    "name": "test",
-                    "parent": 3
-                }
-            ]
-          }
+          const response = await axios.get(`${API_URL}/child/getChildren/${email}`);
+          // const response = {
+          //   data:
+          //     [
+          //       {
+          //           "id": 18,
+          //           "sensor_id": 6,
+          //           "name": "jedd",
+          //           "parent": 3
+          //       },
+          //       {
+          //           "id": 23,
+          //           "sensor_id": 1,
+          //           "name": "test",
+          //           "parent": 3
+          //       },
+          //       {
+          //           "id": 24,
+          //           "sensor_id": 5,
+          //           "name": "test",
+          //           "parent": 3
+          //       }
+          //   ]
+          // }
           const childrenData = response.data as {
             id: number;
             sensor_id: number;
@@ -292,7 +292,7 @@ export const getChildrenInfo = async () => {
             childrenInfo.push({ childName: child.name, sensorId: child.sensor_id });
           });
           // children = { numberOfChildren, childrenInfo };
-          console.log('Fetched children info from API:', childrenInfo);
+          // // console.log('Fetched children info from API:', childrenInfo);
 
           // Serialize and store the fetched data in SecureStore
           await SecureStore.setItemAsync(CHILDREN_INFO, JSON.stringify(childrenInfo));
@@ -302,7 +302,22 @@ export const getChildrenInfo = async () => {
     return childrenInfo ;
     
   } catch (error) {
-    console.error('Error fetching children count:', error);
+    // console.error('Error fetching children count:', error);
     return { numberOfChildren: 0, childrenInfo: [] };
   }
 };
+
+export const newChildAdded = async (childName: string) => {
+  try {
+    const email = await SecureStore.getItemAsync(EMAIL);
+    const response = await axios.post(`${API_URL}/child/addChild`, {
+      name: childName,
+      parent: email,
+    });
+    // // console.log('Added new child:', response.data);
+    return response.data;
+  } catch (error) {
+    // console.error('Error adding new child:', error);
+    return null;
+  }
+}
