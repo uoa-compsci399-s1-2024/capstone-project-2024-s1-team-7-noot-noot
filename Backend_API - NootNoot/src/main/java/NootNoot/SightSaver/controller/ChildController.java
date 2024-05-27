@@ -43,6 +43,11 @@ public class ChildController {
         return new ResponseEntity<>(childService.getChildByParent(parent_id), HttpStatus.OK);
     }
 
+    @GetMapping("/{email}")
+    public ResponseEntity<List<Child>> getChildByParentEmail(@PathVariable String email) {
+        return new ResponseEntity<>(childService.getChildByEmail(email), HttpStatus.OK);
+    }
+
     @PostMapping
     public ResponseEntity<Child> addChild(@RequestBody Child child) {
         return new ResponseEntity<>(childService.saveChild(child), HttpStatus.CREATED);
