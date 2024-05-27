@@ -43,7 +43,7 @@ public class ChildController {
         return new ResponseEntity<>(childService.getChildByParent(parent_id), HttpStatus.OK);
     }
 
-    @GetMapping("/{email}")
+    @GetMapping("/getChildren/{email}")
     public ResponseEntity<List<Child>> getChildByParentEmail(@PathVariable String email) {
         return new ResponseEntity<>(childService.getChildByEmail(email), HttpStatus.OK);
     }
