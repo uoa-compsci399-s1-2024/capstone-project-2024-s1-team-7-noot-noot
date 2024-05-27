@@ -1,5 +1,6 @@
 package NootNoot.SightSaver.service;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import NootNoot.SightSaver.model.User;
@@ -54,6 +55,16 @@ public class ChildService {
         return childRepository.findAllByParentId(id);
     }
 
-
+    public List<Child> getChildByEmail(String email) {
+        List<Child> children = getAllChildren();
+        List<Child> childList = new ArrayList<>();
+        User parent = userService.getUserByEmail(email);
+        for (Child child : children) {
+            if (child.getParent() == parent.getId()){
+                childList.add(child);
+            }
+        }
+        return childList;
+    }
 
 }
