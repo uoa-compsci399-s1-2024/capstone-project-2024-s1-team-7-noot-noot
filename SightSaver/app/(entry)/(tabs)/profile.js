@@ -20,6 +20,7 @@ import {
   Button
 } from 'react-native';
 import { getUserDetails } from '../../../ctx';
+import ChildrenButtons from '../../../components/ChildrenButtons';
 
 var data = `
 2024:05:01 10:23:06 45\n
@@ -185,21 +186,16 @@ export default function ProfileScreen() {
   const [email, setEmail] = useState('');
   
   useEffect(() => {
-    // Fetch user details when component mounts
+    const fetchUserDetails = async () =>{
+      const userDetails = await getUserDetails();
+      // console.log("lkog", userDetails);
+      setUsername(userDetails.username);
+      setEmail(userDetails.email);
+    };
+
     fetchUserDetails();
   }, []);
 
-  const fetchUserDetails = async () => {
-    try {
-      const userDetails = await getUserDetails();
-      if (userDetails) {
-        setUsername(userDetails.username || 'USERNAME');
-        setEmail(userDetails.email || '');
-      }
-    } catch (error) {
-      console.error('Error fetching user details:', error);
-    }
-  };
   const {
     requestPermissions,
     scanForPeripherals,
@@ -278,57 +274,21 @@ export default function ProfileScreen() {
           </View>
 
       {/* Children buttons */}
-      <View style={{justifyContent:"center", alignItems:"center", marginTop:20}}>
-        <Text style={[styles.title,{fontWeight:"bold",fontSize:20}]}>Display Data for:</Text>
-
-        {/* Child 1 Button */}
-        <TouchableOpacity
-            style={[styles.button, {backgroundColor:Colors[colorScheme ?? 'light'].buttonColor}]}
-            onPress={() => handlePress(1)} // Pass index 1
-        >
-          <View style={{flexDirection: 'column', justifyContent: 'center', alignItems:'left'}}>
-            <Text style={[styles.buttonText, {backgroundColor:Colors[colorScheme ?? 'light'].buttonColor}]}>Child 1</Text>
-            <Text style={[styles.buttonText, {fontSize: 10, backgroundColor:Colors[colorScheme ?? 'light'].buttonColor}]}>Device: Sun Sensor 1</Text>
-          </View>             
-          <View
-              style={[
-                  styles.circle,
-                  {backgroundColor:Colors[colorScheme ?? 'light'].buttonColor},
-                  activeButton === 1 && styles.circlePressed, // Apply style when button 1 is active
-              ]}
-          />
-        </TouchableOpacity>
-
-        {/* Child 2 Button */}
-        <TouchableOpacity
-          style={[styles.button, {backgroundColor:Colors[colorScheme ?? 'light'].buttonColor}]}
-          onPress={() => handlePress(2)} // Pass index 2
-        >
-        <View style={{flexDirection: 'column', justifyContent: 'center', alignItems:'left'}}>
-          <Text style={[styles.buttonText, {backgroundColor:Colors[colorScheme ?? 'light'].buttonColor}]}>Child 2</Text>
-          <Text style={[styles.buttonText, {fontSize: 10, backgroundColor:Colors[colorScheme ?? 'light'].buttonColor}]}>Device: Sun Sensor 2</Text>
-        </View>      
-          <View
-            style={[
-              styles.circle,
-              {backgroundColor:Colors[colorScheme ?? 'light'].buttonColor},
-              activeButton === 2 && styles.circlePressed, // Apply style when button 1 is active
-          ]}
-          />
-        </TouchableOpacity>
+      <View style={[styles.childrenContainer, {maxHeight: '60%'}]}>
+        <ChildrenButtons />
       </View>
 
       {/* Sync Data Button */}
-      <View>
+      <View style={{ width: '100%' }}>
         <TouchableOpacity
-          style={[styles.syncButton, {backgroundColor:Colors[colorScheme ?? 'light'].buttonColor}]}
+          style={[styles.syncButton]}
           onPress={() => setModalVisible(true)}>
           <Text style={styles.syncButtonText}>Sync Data</Text>
         </TouchableOpacity>
       </View>
 
       {/* Import Dummy Data Button */}
-      <View style={styles.import}>
+      {/* <View style={styles.import}>
         <Button title="Import Dummy Data (for testing only)" onPress={importData()}></Button>
       </View>
 
@@ -338,7 +298,7 @@ export default function ProfileScreen() {
 
       <View style={[styles.import, {marginTop: '5%'}]}>
         <Button title="Push Dummy Data to Database (for testing only)" onPress={pushData}></Button>
-      </View>
+      </View> */}
 
       {/* Device Modal */}
       <Modal
@@ -423,15 +383,12 @@ export default function ProfileScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    alignItems: 'center',
-    justifyContent: 'center',
+    // alignItems: 'center',
+    // justifyContent: 'center',
   },
   title: {
     fontSize: 20,
     fontWeight: 'bold',
-  },
-  container: {
-    flex: 1,
   },
   headerContent: {
     marginHorizontal: 20,
@@ -458,13 +415,16 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     borderRadius: 5,
     alignSelf: 'center',
+    backgroundColor: '#1970B4',
   },
   import: {
     width: '85%',
     alignSelf: 'center',
   },
   syncButtonText: {
-    fontSize: 18,
+    fontSize: 20,
+    color: 'white',
+    fontWeight: 'bold',
   },
   title: {
     fontSize: 18,
@@ -548,5 +508,12 @@ const styles = StyleSheet.create({
   },
   deviceButtonText: {
     fontSize: 18,
+  },
+
+  childrenContainer: {
+    flex: 1,
+    flexDirection: 'row',
+    justifyContent: 'center',
+    marginTop: 20,
   }
 });

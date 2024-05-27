@@ -13,50 +13,7 @@ export default function WelcomeScreen({ navigation }) {
     console.log('Welcome Screen');
     const colorScheme = useColorScheme();
     const { height } = useWindowDimensions();
-    // const { signIn } = useSession();
-
-    const checkLogin = () => {
-    };
-
-    const postData = {
-        "email": "test_user_1@gmail.com", 
-        "password": "test_user_1"
-    }
-    const fetchData = () => {
-        console.log('Fetching data...');
-        axios.post('https://sightsaver-api.azurewebsites.net/api/auth/authenticate', postData)
-        .then(response => {
-        // Handle success, log the response
-        console.log('Response data:', response.data.token);
-        authToken = response.data.token;
-        console.log(authToken);
-        getUserData(authToken);
-        })
-        .catch(error => {
-        // Handle error, log the error message
-        console.error('Error posting data:', error);
-        });
-        // checkLogin()
-        };
-    
-    const getUserData = (authToken) => {
-        console.log('authtoken is',authToken)
-        const config = {
-            headers: {
-              Authorization: `Bearer ${authToken}`
-            }
-          };
-        axios.get('https://sightsaver-api.azurewebsites.net/api/user', config)
-        .then(response => {
-            console.log('User data:', response.data);
-        })
-    };
-
-    const handleLogin = () => {
-        signIn();
-        router.replace('/');
-        };
-
+ 
     return (
         <View style={[styles.root, {backgroundColor:Colors[colorScheme ?? 'light'].background}]}>
             {/* Sightsaver Logo */}
@@ -67,11 +24,7 @@ export default function WelcomeScreen({ navigation }) {
                     resizeMode='contain'
                 />
             </View>
-            {/* Buttons for testing */}
-            <Button title="Skip Login (for testing only)" onPress={handleLogin}></Button>
-            <View style={{margin:10}}></View>
-            <Button title="Test API" onPress={(fetchData)}></Button>
-            <View style={styles.container}>    
+             <View style={styles.container}>    
                 {/* Signup button */}
                 <CustomButton style={[styles.signUpButton]}onPress={() => router.replace('/(auth)/signup')} text={"Sign up"} />
                 {/* Signin text */}
