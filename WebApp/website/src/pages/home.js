@@ -8,7 +8,7 @@ export const API_URL = 'https://sightsaver-api.azurewebsites.net/api';
 
 const setupAxiosInterceptors = async () => {
     const TOKEN_KEY = await getToken();
-    console.log(`Token set: ${TOKEN_KEY}`);
+    // // console.log(`Token set: ${TOKEN_KEY}`);
     const config = {
         headers: {
             Authorization: `Bearer ${TOKEN_KEY}`
@@ -36,7 +36,7 @@ const onExport = async () => {
 
         return result;
     } catch (error) {
-        console.error(error);
+        // console.error(error);
         return null;
     }
 }
@@ -57,7 +57,7 @@ function Home() {
         const result = await onExport();
         if (result) {
             alert("Export Success");
-            console.log(result.data);
+            // // console.log(result.data);
         } else {
             alert('Export failed');
         }

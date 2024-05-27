@@ -15,7 +15,7 @@ function Settings({navigation}) {
     // const navigation = useNavigation();
     const colorScheme = useColorScheme();
     const handlePress = async () => {
-        console.log('Fetching children count...');
+        // // console.log('Fetching children count...');
         await getChildrenInfo()
       .then(count => {
         console.log('Children count:', count, count.length);

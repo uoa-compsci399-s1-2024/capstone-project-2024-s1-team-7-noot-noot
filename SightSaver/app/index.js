@@ -10,7 +10,7 @@ import { TextInput, Button, StyleSheet, useWindowDimensions, Image, TouchableOpa
 import axios from 'axios';
 
 export default function WelcomeScreen({ navigation }) {
-    console.log('Welcome Screen');
+    // // console.log('Welcome Screen');
     const colorScheme = useColorScheme();
     const { height } = useWindowDimensions();
  

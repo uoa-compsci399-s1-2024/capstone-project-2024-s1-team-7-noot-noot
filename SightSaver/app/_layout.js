@@ -13,12 +13,12 @@ const StackLayout = () => {
 		try {
 		  const userDetails = await getUserDetails();
 		  if (userDetails) {
-			console.log('User details:', userDetails);
+			// // console.log('User details:', userDetails);
 			await setUserDetails(userDetails.username, userDetails.email);
 
 		  }
 		} catch (error) {
-		  console.error('Error fetching user details:', error);
+		  // console.error('Error fetching user details:', error);
 		}
 	  };
 
@@ -27,12 +27,12 @@ const StackLayout = () => {
 
 		if (!authState?.authenticated && inAuthGroup) {
 			router.replace('/');
-			console.log('replacing')
+			// // console.log('replacing')
 		} else if (authState?.authenticated === true) {
-			console.log("Loading User Details")
+			// // console.log("Loading User Details")
 			fetchUserDetails().then(() => {
 				router.replace('/(entry)');
-				console.log('replacing index')
+				// // console.log('replacing index')
 			});
 		}
 	}, [authState]);

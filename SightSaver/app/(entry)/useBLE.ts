@@ -96,7 +96,7 @@ function useBLE(): BluetoothLowEnergyApi {
   const scanForPeripherals = () =>
     bleManager.startDeviceScan(null, null, (error, device) => {
       if (error) {
-        console.log(error);
+        // // console.log(error);
       }
       if (device?.name == 'SightSaver') {
         setAllDevices((prevState: Device[]) => {
@@ -113,7 +113,7 @@ function useBLE(): BluetoothLowEnergyApi {
     setConnectedDevice(deviceConnection);
     await deviceConnection.discoverAllServicesAndCharacteristics();
     bleManager.stopDeviceScan();
-    console.log("Connected to Device", deviceConnection.id);
+    // // console.log("Connected to Device", deviceConnection.id);
     startStreamingData(deviceConnection);
   };
 
@@ -131,11 +131,11 @@ function useBLE(): BluetoothLowEnergyApi {
     characteristic: Characteristic | null
   ) => {
     if (error) {
-      console.log("Deviced Disconnected");
+      // // console.log("Deviced Disconnected");
       onDeviceDisconnect();
       return -1;
     } else if (!characteristic?.value) {
-      console.log("No Data was recieved");
+      // // console.log("No Data was recieved");
       return -1;
     }
 
@@ -177,7 +177,7 @@ function useBLE(): BluetoothLowEnergyApi {
       formattedData += JSON.stringify(dataObject) + '\n';
     }
   
-    console.log('JSON data written to file');
+    // // console.log('JSON data written to file');
     setDataSyncCompleted(true);
     await FileSystem.writeAsStringAsync(fileUri, formattedData);
     JSONToEncoded();
@@ -185,7 +185,7 @@ function useBLE(): BluetoothLowEnergyApi {
 
   const startStreamingData = async (device: Device) => {
     if (device) {
-      console.log("Starting to Stream Data");
+      // // console.log("Starting to Stream Data");
       device.monitorCharacteristicForService(
         Sensor_RATE_UUID,
         Sensor_RATE_CHARACTERISTIC,

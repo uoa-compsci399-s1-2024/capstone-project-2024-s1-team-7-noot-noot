@@ -35,15 +35,15 @@ const Login = () => {
         try {
             Keyboard.dismiss();
             setIsLoading(true); // Start loading
-            console.log('Login');
+            // // console.log('Login');
             const result = await onLogin(email, password);
             if (result) {
-                console.log("Login Success", result.data);
+                // // console.log("Login Success", result.data);
             } else {
-                console.log('Login failed');
+                // // console.log('Login failed');
             }
         } catch (error) {
-            console.error('Login error:', error);
+            // console.error('Login error:', error);
         } finally {
             setTimeout(() => {
                 setIsLoading(false); // Stop loading
@@ -54,12 +54,12 @@ const Login = () => {
 
     const skipLogin = async () => {
         setIsLoading(true);
-        console.log('Skip Login');
+        // // console.log('Skip Login');
         const result = await onLogin('iru007@gmail.com', 'Iru007!!')
         if (result) {
-            console.log("Login Success", result.token);
+            // // console.log("Login Success", result.token);
         } else {
-            console.log('Login failed');
+            // // console.log('Login failed');
         }
         setTimeout(() => {
             setIsLoading(false);

@@ -33,13 +33,13 @@ export default function SignupScreen() {
         const passwordRegex = /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{8,}$/;
         if (!passwordRegex.test(password)) {
             alert('Password does not meet constraints. Password must be at least 8 characters long and contain at least one uppercase letter, one lowercase letter, and one number.');
-            console.log('Password does not meet constraints');
+            // // console.log('Password does not meet constraints');
             return; // Exit the function if password doesn't meet constraints
         }
 
         // Check if the new passwords match
         if (password !== confirmPassword) {
-            console.log('Passwords do not match');
+            // // console.log('Passwords do not match');
             return; // Exit the function if passwords don't match
         }
         
@@ -48,15 +48,15 @@ export default function SignupScreen() {
         try {
             Keyboard.dismiss();
             setIsLoading(true); // Start loading
-            console.log('Register');
+            // // console.log('Register');
             const result = await onRegister(email, password, username);
             if (result) {
-                console.log('Registration successful', result.data);
+                // // console.log('Registration successful', result.data);
             } else {
-                console.log('Login failed');
+                // // console.log('Login failed');
             }
         } catch (error) {
-            console.log('Registration failed', error);
+            // // console.log('Registration failed', error);
         } finally {
             setTimeout(() => {
                 setIsLoading(false); // Stop loading

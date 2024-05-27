@@ -15,11 +15,11 @@ const ChildrenButtons = ({ colorScheme }) => {
 
   // Fetch the number of children when the component mounts
   useEffect(() => {
-    console.log('Fetching children info...');
+    // // console.log('Fetching children info...');
     // Fetch the children info
     getChildrenInfo()
       .then((childrenData) => {
-        console.debug('Children info:', childrenData);
+        // console.debug('Children info:', childrenData);
         setChildrenInfo(childrenData); // Update childrenInfo state with fetched data
       })
       .catch((error) => console.error('Error fetching children info:', error));
@@ -33,13 +33,13 @@ const ChildrenButtons = ({ colorScheme }) => {
         setEmail(userDetails.email);
       })
       .catch((error) => {
-        console.error('Error fetching user details:', error);
+        // console.error('Error fetching user details:', error);
       });
   }, []);
 
   // Function to handle button press
   const handleChildButtonPress = (childIndex, childName) => {
-    console.log(`Child button ${childName} pressed`);
+    // // console.log(`Child button ${childName} pressed`);
     setSelectedChildIndex(childIndex); // Update the selected child index
     // Add your logic here for handling button press
   };
@@ -47,7 +47,7 @@ const ChildrenButtons = ({ colorScheme }) => {
   // Function to handle adding a new child
   const handleAddChild = async (childName) => {
     // Add your logic here for adding a new child
-    console.log('[On email]:', email, '[Adding new child]:', childName);
+    // // console.log('[On email]:', email, '[Adding new child]:', childName);
     try {
       await axios.post(`https://sightsaver-api.azurewebsites.net/api/child/addChild`, {
         email: email,
@@ -56,7 +56,7 @@ const ChildrenButtons = ({ colorScheme }) => {
       })
       .then((response) => {console.log('Response:', response)})
     } catch (error) {
-      console.log('Error adding new child:', error);
+      // // console.log('Error adding new child:', error);
     }
   };
 
