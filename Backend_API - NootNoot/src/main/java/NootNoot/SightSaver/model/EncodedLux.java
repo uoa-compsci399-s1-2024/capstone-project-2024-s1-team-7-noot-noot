@@ -25,6 +25,7 @@ public class EncodedLux {
     public String getDateTime() {
         return this.date_time;
     }
+    public String getSensor_id() {return this.sensor_id;}
 
 
     public void setDate_time(String date_time) {this.date_time = date_time;}
