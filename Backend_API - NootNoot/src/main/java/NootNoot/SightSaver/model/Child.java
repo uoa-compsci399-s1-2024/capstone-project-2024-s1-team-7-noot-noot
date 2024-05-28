@@ -9,7 +9,7 @@ public class Child {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private Long parent_id;
-    private Long sensor_id;
+    private String sensor_id;
     private String name;
 
     public Child() {
@@ -25,7 +25,7 @@ public class Child {
         return this.parent_id;
     }
 
-    public long getSensor_id() {
+    public String getSensor_id() {
         return this.sensor_id;
     }
 
@@ -34,7 +34,7 @@ public class Child {
         this.name = newName;
     }
     public void setParent(long newParent_id) {this.parent_id = newParent_id;}
-    public void setSensor_id(long newSensor_id) {this.sensor_id = newSensor_id;}
+    public void setSensor_id(String newSensor_id) {this.sensor_id = newSensor_id;}
 
 
 }

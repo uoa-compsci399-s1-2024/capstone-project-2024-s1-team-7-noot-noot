@@ -93,12 +93,13 @@ function useBLE(): BluetoothLowEnergyApi {
   const isDuplicateDevice = (devices: Device[], nextDevice: Device) =>
     devices.findIndex((device) => nextDevice.id === device.id) > -1;
 
-  const scanForPeripherals = () =>
-    bleManager.startDeviceScan(null, null, (error, device) => {
+  const scanForPeripherals = () => {
+    const uuids = [Sensor_RATE_UUID, Sensor_RATE_CHARACTERISTIC]; // replace with your UUIDs
+    bleManager.startDeviceScan(uuids, null, (error, device) => {
       if (error) {
-        // // console.log(error);
+        // handle error
       }
-      if (device?.name == 'SightSaver') {
+      if (device?.name) {
         setAllDevices((prevState: Device[]) => {
           if (!isDuplicateDevice(prevState, device)) {
             return [...prevState, device];
@@ -107,13 +108,17 @@ function useBLE(): BluetoothLowEnergyApi {
         });
       }
     });
+  };
 
   const connectToDevice = async (device: Device) => {
     const deviceConnection = await bleManager.connectToDevice(device.id);
     setConnectedDevice(deviceConnection);
+    // Store the MAC address
+    const macAddress = device.id;
+    console.log(macAddress);
+    // You can now use the macAddress variable to store the MAC address as needed
     await deviceConnection.discoverAllServicesAndCharacteristics();
     bleManager.stopDeviceScan();
-    // // console.log("Connected to Device", deviceConnection.id);
     startStreamingData(deviceConnection);
   };
 

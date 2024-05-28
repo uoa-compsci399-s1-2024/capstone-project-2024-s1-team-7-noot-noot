@@ -7,7 +7,7 @@ public class Sensor {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    private String id;
     private Long child_id;
 
     public Sensor() {
@@ -18,7 +18,7 @@ public class Sensor {
     }
 
 
-    public Long getId() {return this.id;}
+    public String getId() {return this.id;}
     public Long getChild_id() {return this.child_id;}
 
     public String toString() {

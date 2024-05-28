@@ -3,7 +3,7 @@ import { Modal, View, Text, TextInput, Button, StyleSheet } from 'react-native';
 
 const AddChildModal = ({ visible, onClose, onAdd }) => {
   const [childName, setChildName] = useState('');
-//   const [deviceName, setDeviceName] = useState('');
+  const [deviceName, setDeviceName] = useState('');
 
   const handleAdd = () => {
     // Validate input

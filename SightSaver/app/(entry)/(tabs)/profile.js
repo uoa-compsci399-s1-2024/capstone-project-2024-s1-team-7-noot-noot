@@ -227,12 +227,6 @@ export default function ProfileScreen() {
     }
   };
 
-  const handlePress = (index) => {
-      setActiveButton(index);
-      AsyncStorage.setItem('activeButton', index.toString());
-  };
-
-
   return (
     <View style={[styles.container]}>
       <StatusBar barStyle={barStyle=Colors[colorScheme ?? 'light'].barStyle}/>
@@ -261,13 +255,13 @@ export default function ProfileScreen() {
       </View>
 
       {/* Import Dummy Data Button */}
-      <View style={styles.import}>
+      {/* <View style={styles.import}>
         <Button title="Import Dummy Data (for testing only)" onPress={importData}></Button>
       </View>
 
       <View style={[styles.import, {marginTop: '5%'}]}>
         <Button title="Delete Dummy Data (for testing only)" onPress={deleteData}></Button>
-      </View>
+      </View> */}
 
       {/* <View style={[styles.import, {marginTop: '5%'}]}>
         <Button title="Push Dummy Data to Database (for testing only)" onPress={pushData}></Button>

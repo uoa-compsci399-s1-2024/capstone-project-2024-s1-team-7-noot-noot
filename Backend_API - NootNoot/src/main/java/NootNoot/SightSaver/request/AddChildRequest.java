@@ -12,5 +12,5 @@ import lombok.NoArgsConstructor;
 public class AddChildRequest {
     private String email;
     private String name ;
-    private long sensor_id;
+    private String sensor_id;
 }

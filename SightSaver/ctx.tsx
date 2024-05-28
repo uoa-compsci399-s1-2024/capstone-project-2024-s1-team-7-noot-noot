@@ -278,14 +278,14 @@ export const getChildrenInfo = async () => {
           // }
           const childrenData = response.data as {
             id: number;
-            sensor_id: number;
+            sensor_id: string;
             name: string;
             parent: number;
           }[];
           // Count the number of children
           const numberOfChildren = childrenData.length;
           // Prepare an array to hold child objects containing name and sensorId
-          const childrenInfo: {childName: string; sensorId: number | null}[] = [];
+          const childrenInfo: {childName: string; sensorId: string | null}[] = [];
           // Loop through each child's data to extract name and sensorId
           childrenData.forEach(child => {
             // Pushing child's name and sensorId to the array

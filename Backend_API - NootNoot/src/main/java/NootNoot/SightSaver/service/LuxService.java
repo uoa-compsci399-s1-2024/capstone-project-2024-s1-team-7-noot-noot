@@ -65,7 +65,7 @@ public class LuxService {
         return null;
     }
 
-    public List<Lux> findLuxByID(Long sensorId) {
+    public List<Lux> findLuxByID(String sensorId) {
         return luxRepository.findBySensorId(sensorId);
     }
 
