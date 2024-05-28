@@ -10,6 +10,7 @@ public class EncodedLux {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+    private String sensor_id;
     private String date_time;
 
     public EncodedLux() {
