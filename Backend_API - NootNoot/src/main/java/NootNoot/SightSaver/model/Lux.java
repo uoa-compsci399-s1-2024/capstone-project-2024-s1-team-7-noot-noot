@@ -12,7 +12,7 @@ public class Lux{
     private Long id;
     private float lux_value;
     private LocalDateTime date_time;
-    private Long sensorId;
+    private String sensorId;
 
 
     public Lux() {
@@ -20,7 +20,7 @@ public class Lux{
 
 
 
-    public Lux(float lux_value, String date_time, Long sensorId) {
+    public Lux(float lux_value, String date_time, String sensorId) {
         this.date_time = LocalDateTime.parse(date_time, DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
         this.lux_value = lux_value;
         this.sensorId = sensorId;
@@ -30,7 +30,7 @@ public class Lux{
     public Long getId() {return this.id;}
     public float getLux_value(){return this.lux_value;}
     public LocalDateTime getDate_time(){return this.date_time;}
-    public Long getSensorId(){return this.sensorId;}
+    public String getSensorId(){return this.sensorId;}
 
     @Override
     public String toString() {

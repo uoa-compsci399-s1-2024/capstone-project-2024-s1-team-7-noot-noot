@@ -34,7 +34,7 @@ public class ChildService {
         return childRepository.save(child);
     }
 
-    public Child saveChild(String email, String name, long sensorid) {
+    public Child saveChild(String email, String name, String sensorid) {
         Child child = new Child();
         child.setName(name);
         List<User> users = userService.getAllUsers();

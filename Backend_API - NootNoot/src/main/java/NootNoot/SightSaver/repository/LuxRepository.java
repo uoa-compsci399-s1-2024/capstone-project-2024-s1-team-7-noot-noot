@@ -14,6 +14,6 @@ public interface LuxRepository extends JpaRepository<Lux, Long> {
     // Add additional queries as necessary
 
     @Query("SELECT lux FROM Lux lux WHERE lux.sensorId = :sensorId")
-    List<Lux> findBySensorId(@Param("sensorId") Long sensorId);
+    List<Lux> findBySensorId(@Param("sensorId") String sensorId);
 
 }
