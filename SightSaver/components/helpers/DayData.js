@@ -124,7 +124,7 @@ export const updateDayData = async (searchDate) => {
     {value: 0, }, //5.55
     ];
     // Read the file
-    const fileUri = FileSystem.documentDirectory + 'dummyData.txt';
+    const fileUri = FileSystem.documentDirectory + 'data.txt';
     const data = await FileSystem.readAsStringAsync(fileUri);
     const lines = data.split('\n');
     for (const line of lines) {

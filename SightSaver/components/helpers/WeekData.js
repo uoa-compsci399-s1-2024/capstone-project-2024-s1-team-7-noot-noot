@@ -10,7 +10,7 @@ export const updateWeekData = async (searchWeek) => {
   const searchDate = moment(searchWeek, "YY:WW");
 
   // Read the file
-  const fileUri = FileSystem.documentDirectory + 'dummyData.txt';
+  const fileUri = FileSystem.documentDirectory + 'data.txt';
   const data = await FileSystem.readAsStringAsync(fileUri);
   const lines = data.split('\n');
   
