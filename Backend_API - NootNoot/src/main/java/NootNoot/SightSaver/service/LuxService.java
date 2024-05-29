@@ -38,9 +38,10 @@ public class LuxService {
         for (Sensor sensor : sensors) {
             if (sensor.getId().equals(lux.getSensorId())) {
                 luxRepository.save(lux);
+                return "Lux data successfully inserted";
             }
         }
-        return "Lux data successfully inserted";
+        return "Sensor does not exist!";
     }
 
     public void deleteLux(Long id) {
