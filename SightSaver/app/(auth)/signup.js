@@ -85,12 +85,14 @@ export default function SignupScreen() {
                 value={email}
                 setValue={setEmail}
                 autoCapitalize="none"
+                keyboardType="email-address"
             />
             <CustomInput
                 style={styles.input}
                 placeholder="Username"
                 value={username}
                 setValue={setUsername}
+                keyboardType="default"
             />
             <CustomInput
                 style={styles.input}
@@ -98,6 +100,7 @@ export default function SignupScreen() {
                 value={password}
                 setValue={setPassword}
                 secureTextEntry={!showPassword}
+                keyboardType="default"
             />
             <CustomInput
                 style={styles.input}
@@ -105,6 +108,7 @@ export default function SignupScreen() {
                 value={confirmPassword}
                 setValue={setConfirmPassword}
                 secureTextEntry={!showPassword}
+                keyboardType="default"
             />
              
             {/* Terms of serivce*/}

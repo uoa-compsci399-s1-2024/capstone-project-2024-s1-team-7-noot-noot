@@ -53,6 +53,7 @@ const Login = () => {
     }
 
     const skipLogin = async () => {
+        Keyboard.dismiss();
         setIsLoading(true);
         // // console.log('Skip Login');
         const result = await onLogin('iru007@gmail.com', 'Iru007!!')
@@ -83,7 +84,7 @@ const Login = () => {
                 placeholder="Email"
                 value={email}
                 setValue={setEmail}
-                autoCapitalize="none"
+                keyboardType={"email-address"}
             />
             {/* <CustomInput
                 style={styles.input}
@@ -97,6 +98,7 @@ const Login = () => {
                 value={password}
                 setValue={setPassword}
                 secureTextEntry={!showPassword}
+                keyboardType={"default"}
             />
 
             <View style={styles.container}>

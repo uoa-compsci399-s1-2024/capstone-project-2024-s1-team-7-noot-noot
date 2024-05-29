@@ -1,7 +1,6 @@
 import Colors from '../constants/Colors';
 import { View, Text } from '../components/Themed';
 import CustomButton from '../components/CustomButton';
-import CustomInput from '../components/CustomInput';
 import { useColorScheme } from '../components/useColorScheme';
 import { router } from 'expo-router';
 import {useAuth} from '../ctx';

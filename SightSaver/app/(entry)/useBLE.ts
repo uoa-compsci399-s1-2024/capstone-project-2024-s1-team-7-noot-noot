@@ -18,7 +18,7 @@ const Sensor_RATE_CHARACTERISTIC = "51FF12BB-3ED8-46E5-B4F9-D64E2FEC021B";
 interface BluetoothLowEnergyApi {
   requestPermissions(): Promise<boolean>;
   scanForPeripherals(): void;
-  connectToDevice: (deviceId: Device) => Promise<void>;
+  connectToDevice: (device: Device, connecting: Boolean) => Promise<string>;  
   setAllDevices: React.Dispatch<React.SetStateAction<Device[]>>;
   disconnectFromDevice: () => void;
   connectedDevice: Device | null;
@@ -110,16 +110,20 @@ function useBLE(): BluetoothLowEnergyApi {
     });
   };
 
-  const connectToDevice = async (device: Device) => {
+  const connectToDevice = async (device: Device, connecting: Boolean): Promise<string> => {
     const deviceConnection = await bleManager.connectToDevice(device.id);
     setConnectedDevice(deviceConnection);
     // Store the MAC address
     const macAddress = device.id;
-    console.log(macAddress);
     // You can now use the macAddress variable to store the MAC address as needed
     await deviceConnection.discoverAllServicesAndCharacteristics();
     bleManager.stopDeviceScan();
-    startStreamingData(deviceConnection);
+    
+    if (connecting) {
+      startStreamingData(deviceConnection);
+    }
+
+    return macAddress;
   };
 
   const disconnectFromDevice = () => {
@@ -136,11 +140,9 @@ function useBLE(): BluetoothLowEnergyApi {
     characteristic: Characteristic | null
   ) => {
     if (error) {
-      // // console.log("Deviced Disconnected");
       onDeviceDisconnect();
       return -1;
     } else if (!characteristic?.value) {
-      // // console.log("No Data was recieved");
       return -1;
     }
 
@@ -148,10 +150,12 @@ function useBLE(): BluetoothLowEnergyApi {
   };
 
   let formattedData = "";
+  let sensor_id = "";
   const onDeviceDisconnect = async () => {
     const decodedData = base64.decode(rawData);
   
     const fileUri = FileSystem.documentDirectory + 'tempData.json';
+    const outputUri = FileSystem.documentDirectory + 'data.txt';
   
     // Delete the previous file
     await FileSystem.deleteAsync(fileUri, { idempotent: true });
@@ -168,29 +172,32 @@ function useBLE(): BluetoothLowEnergyApi {
       let minute = chunk.slice(10, 12);
       let second = chunk.slice(12, 14);
   
-      let time = year + ':' + month + ':' + day + ' ' + hour + ':' + minute + ':' + second;
+      let time = year + '-' + month + '-' + day + 'T' + hour + ':' + minute + ':' + second;
   
-      let light = chunk.slice(14, 20);
+      let light = chunk.slice(14, 19);
   
       // Create a JSON object
       let dataObject = {
-        time: time,
-        light: light
+        lux_value: light,
+        date_time: time,
+        sensor_id: sensor_id,
       };
   
       // Convert the JSON object to a string and append it to formattedData
       formattedData += JSON.stringify(dataObject) + '\n';
     }
   
-    // // console.log('JSON data written to file');
+    console.log('JSON data written to file');
     setDataSyncCompleted(true);
-    await FileSystem.writeAsStringAsync(fileUri, formattedData);
-    JSONToEncoded();
+    await FileSystem.writeAsStringAsync(fileUri, formattedData).then(() => {
+      JSONToEncoded(fileUri, outputUri);
+    });
   };
 
   const startStreamingData = async (device: Device) => {
     if (device) {
       // // console.log("Starting to Stream Data");
+      sensor_id = `${device.id}`;
       device.monitorCharacteristicForService(
         Sensor_RATE_UUID,
         Sensor_RATE_CHARACTERISTIC,

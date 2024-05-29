@@ -1,41 +1,43 @@
-import React, { Children, useEffect, useState } from 'react';
-import { TouchableOpacity, Text, View, StyleSheet, ScrollView } from 'react-native';
-import { getChildrenInfo, getUserDetails } from '../ctx'; // Assuming these functions are asynchronous
-import Colors from '../constants/Colors'; // Assuming this is where the color scheme is defined
-import AddChildModal from './helpers/AddNewChild'; // Import the modal component
-import axios from 'axios';
+import React, { Children, useEffect, useState, useRef } from 'react';
+import { TouchableOpacity, Text, View, StyleSheet, ScrollView, Animated, ActivityIndicator } from 'react-native';
+import { getUserDetails, getChildrenInfo } from '../ctx';
+import Colors from '../constants/Colors'; 
+import AddChildModal from './helpers/AddNewChild'; 
+import { useColorScheme } from './useColorScheme';
+import BluetoothSync from './BluetoothSync';
 
 // Define the component for rendering children buttons
-const ChildrenButtons = ({ colorScheme }) => {
+export const ChildrenButtons = ({ childrenInfo, handleAddChild }) => {
   // State to hold the count of children and the index of the selected child
-  const [childrenInfo, setChildrenInfo] = useState([]);
-  const [selectedChildIndex, setSelectedChildIndex] = useState(null);
+  const [selectedChildIndex, setSelectedChildIndex] = useState(0);
   const [modalVisible, setModalVisible] = useState(false);
+  const [syncVisible, setSyncVisible] = useState(false);
   const [email, setEmail] = useState('');
+  const [isLoading, setIsLoading] = useState(false);
+  const colorScheme = useColorScheme();
+  const fadeAnim = useRef(new Animated.Value(0)).current;
 
-  // Fetch the number of children when the component mounts
   useEffect(() => {
-    // // console.log('Fetching children info...');
-    // Fetch the children info
-    getChildrenInfo()
-      .then((childrenData) => {
-        // console.debug('Children info:', childrenData);
-        setChildrenInfo(childrenData); // Update childrenInfo state with fetched data
-      })
-      .catch((error) => console.error('Error fetching children info:', error));
-  }, []);
-  
+    if (!isLoading) {
+      Animated.timing(fadeAnim, {
+        toValue: 1,
+        duration: 300,
+        useNativeDriver: true,
+      }).start();
+    }
+  }, [isLoading]);
 
   // Fetch user details and set email
   useEffect(() => {
     getUserDetails()
       .then((userDetails) => {
         setEmail(userDetails.email);
+        // setIsLoading(false);
       })
       .catch((error) => {
         // console.error('Error fetching user details:', error);
       });
-  }, []);
+  });
 
   // Function to handle button press
   const handleChildButtonPress = (childIndex, childName) => {
@@ -44,57 +46,63 @@ const ChildrenButtons = ({ colorScheme }) => {
     // Add your logic here for handling button press
   };
 
-  // Function to handle adding a new child
-  const handleAddChild = async (childName) => {
-    // Add your logic here for adding a new child
-    // // console.log('[On email]:', email, '[Adding new child]:', childName);
-    
-    try {
-      await axios.post(`https://sightsaver-api.azurewebsites.net/api/child/addChild`, {
-        email: email,
-        name: childName,
-        sensor_id: 5,
-      })
-      .then((response) => {console.log('Response:', response)})
-    } catch (error) {
-      // // console.log('Error adding new child:', error);
-    }
-  };
-  if (childrenInfo.length > 0) {
-      {/* ScrollView for children buttons */}
-      <ScrollView style={styles.scrollView}>
-        {/* Render the children buttons */}
-        {childrenInfo.map((child, index) => (
-          <TouchableOpacity
-            key={index}
-            style={[styles.button, { backgroundColor: Colors[colorScheme ?? 'light'].buttonColor }]}
-            onPress={() => handleChildButtonPress(index, child.childName)}
-          >
-            <Text style={[styles.buttonText, { backgroundColor: Colors[colorScheme ?? 'light'].buttonColor }]}>
-              {child.childName}
-            </Text>
-            <Text
-              style={[styles.buttonText, { fontSize: 12, backgroundColor: Colors[colorScheme ?? 'light'].buttonColor }]}
-            >
-              Device: Sun Sensor {child.sensorId}
-            </Text>
-            <View style={[styles.circle, selectedChildIndex === index ? { backgroundColor: 'lightblue' } : null]} />
-          </TouchableOpacity>
-        ))}
-      </ScrollView>
+  if (isLoading) {
+    fadeAnim.stopAnimation();
+    fadeAnim.setValue(0);
+    return (
+      <View style={[styles.container, {justifyContent: 'center'}]}>
+        <ActivityIndicator size="large" color="#23A0FF" />
+      </View>
+    );
   }
+
   return (
-    <View style={styles.container}>
+    <Animated.View style={[styles.container, {opacity: fadeAnim}]}>
+      {childrenInfo.length > 0 && (
+        <ScrollView style={[styles.scrollView, {minHeight: '60%', maxHeight: '60%'}]}>
+          {/* Render the children buttons */}
+          {childrenInfo.map((child, index) => (
+            <TouchableOpacity
+              key={index}
+              style={[styles.button, { backgroundColor: Colors[colorScheme ?? 'light'].buttonColor }]}
+              onPress={() => handleChildButtonPress(index, child.childName)}
+            >
+              <Text style={[styles.buttonText, { color: Colors[colorScheme ?? 'light'].text }]}>
+                {child.childName}
+              </Text>
+              <Text
+                style={[styles.buttonText, { fontSize: 12, color: Colors[colorScheme ?? 'light'].text }]}
+              >
+                Sensor: {child.sensorId}
+              </Text>
+              <View style={[styles.circle, selectedChildIndex === index ? { backgroundColor: 'lightblue' } : null]} />
+            </TouchableOpacity>
+          ))}
+        </ScrollView>
+      )}
+      {childrenInfo.length > 0 && (
+        <View style={styles.syncContainer}>
+          <TouchableOpacity
+            style={[styles.syncDataButton]} // Apply syncButton and addButton styles
+            onPress={() => setSyncVisible(true)}
+          >
+            <Text style={styles.syncButtonText}>Sync Data</Text>
+          </TouchableOpacity>
+        </View>
+      )}
+  
       {/* Add New Button */}
       <TouchableOpacity
         style={[styles.addButton]} // Apply syncButton and addButton styles
-        onPress={() => setModalVisible(true)}>
+        onPress={() => setModalVisible(true)}
+      >
         <Text style={styles.syncButtonText}>Add New Child</Text>
       </TouchableOpacity>
-
+  
       {/* Modal for adding a new child */}
-      <AddChildModal visible={modalVisible} onClose={() => setModalVisible(false)} onAdd={handleAddChild} />
-    </View>
+      <AddChildModal childrenInfo={childrenInfo} visible={modalVisible} onClose={() => setModalVisible(false)} onAdd={handleAddChild} />
+      <BluetoothSync childrenInfo={childrenInfo} visible={syncVisible} onClose={() => setSyncVisible(false)} selectedChildIndex={selectedChildIndex}/>
+    </Animated.View>
   );
 };
 
@@ -103,6 +111,12 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     alignItems: 'center', // Align items to the center horizontally
+  },
+  syncContainer: {
+    width: '100%',
+    alignItems: 'center',
+    justifyContent: 'center',
+    marginTop: '30%',
   },
   buttonText: {
     fontSize: 18,
@@ -130,7 +144,8 @@ const styles = StyleSheet.create({
   },
   scrollView: {
     width: '100%',
-    marginBottom: 20, // Add marginBottom to create space between ScrollView and Add new button
+    marginTop: 0, // Add marginTop to create space between ScrollView and the title
+    marginBottom: 10, // Add marginBottom to create space between ScrollView and Add new button
   },
   syncButtonText: {
     fontSize: 20,
@@ -139,15 +154,22 @@ const styles = StyleSheet.create({
   },
   addButton: {
     width: '85%',
-    marginVertical: 20,
-    justifyContent: 'center',
     paddingVertical: 20,
     borderWidth: 0,
     alignItems: 'center',
     borderRadius: 5,
-    alignSelf: 'center',
     backgroundColor: '#1970B4',
-  },      
+    bottom: '5%',
+    position: 'absolute',
+  },    
+  syncDataButton: {
+    width: '85%',
+    paddingVertical: 20,
+    borderWidth: 0,
+    alignItems: 'center',
+    borderRadius: 5,
+    backgroundColor: '#1970B4',
+    bottom: '18%',
+    position: 'absolute',
+  },  
 });
-
-export default ChildrenButtons; // Export the component

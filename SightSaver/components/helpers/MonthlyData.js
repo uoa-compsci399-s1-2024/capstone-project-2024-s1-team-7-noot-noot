@@ -6,7 +6,7 @@ export const getMonthData = async (searchMonth, daysInMonth) => {
   const monthData = new Array(daysInMonth).fill(0);
   const searchDate = moment(searchMonth, "YYYY:MM");
 
-  const fileUri = FileSystem.documentDirectory + 'dummyData.txt';
+  const fileUri = FileSystem.documentDirectory + 'data.txt';
   const data = await FileSystem.readAsStringAsync(fileUri);
   const lines = data.split('\n');
   

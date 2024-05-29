@@ -2,13 +2,8 @@ import React from 'react';
 import { Pressable } from 'react-native';
 import { View, Text } from '../components/Themed';
 import { StyleSheet, Image, Button, useWindowDimensions } from 'react-native';
-import Colors from '../constants/Colors';
-import { useColorScheme } from '../components/useColorScheme';
-import CustomInput from '../components/CustomInput';
-import { useState } from 'react';
 
 export default function CustomButton({ onPress, text }) {
-    const colorScheme = useColorScheme();
     return (
     <Pressable onPress={onPress} style={styles.container}>
         <Text style={styles.text}>{text}</Text>

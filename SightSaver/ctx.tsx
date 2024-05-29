@@ -32,19 +32,19 @@ export const useAuth = () => {
 
 
 export const setupAxiosInterceptors = (onLogout: () => void) => {
-  axios.interceptors.response.use(
-    (response) => {
-      return response;
-    },
-    (error) => {
-      if (error.response && error.response.status === 403) {
-        alert('Sorry, the session has expired. Please login again.');
-        onLogout(); // Logout user on 403 error
-        // // console.log('Axios 403 error intercepted.');
-      }
-      return Promise.reject(error);
-    }
-  );
+  // axios.interceptors.response.use(
+  //   (response) => {
+  //     return response;
+  //   },
+  //   (error) => {
+  //     if (error.response && error.response.status === 403) {
+  //       alert('Sorry, the session has expired. Please login again.');
+  //       onLogout(); // Logout user on 403 error
+  //       console.log('Axios 403 error intercepted.');
+  //     }
+  //     return Promise.reject(error);
+  //   }
+  // );
 };
 
 
@@ -119,7 +119,7 @@ export const AuthProvider = ({ children }: any) => {
       await SecureStore.setItemAsync(EMAIL, email);
       return result;
     } catch (error: any) {
-      // // console.log('error in loading:', error);
+      alert('Invalid email or password');
     }
   };
 
@@ -167,7 +167,7 @@ export const getUserDetails = async () => {
     // // console.log('Get User details:', { username, email });
     return { username, email };
   } catch (error) {
-    // console.error('Error retrieving user details:', error);
+    //console.error('Error retrieving user details:', error);
     return null;
   }
 };
