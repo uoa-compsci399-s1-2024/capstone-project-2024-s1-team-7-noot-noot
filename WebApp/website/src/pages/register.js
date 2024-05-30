@@ -9,7 +9,7 @@ const TOKEN_KEY = 'token';
 export const API_URL = 'https://sightsaver-api.azurewebsites.net/api';
 
 const onRegister = async (email, password, username) => {
-  // // console.log("register", email, password, username);
+  // console.log("register", email, password, username);
   try { 
     const result = await axios.post(`${API_URL}/auth/register`, {
       username,
@@ -25,7 +25,7 @@ const onRegister = async (email, password, username) => {
 
     return result;
   } catch (error) {
-    // // console.log(error);
+    // console.log(error);
   }
 };
 
@@ -39,12 +39,12 @@ function Register() {
     const passwordRegex = /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{8,}$/;
     if (!passwordRegex.test(password)) {
         alert('Password does not meet constraints. Password must be at least 8 characters long and contain at least one uppercase letter, one lowercase letter, and one number.');
-        // // console.log('Password does not meet constraints');
+        // console.log('Password does not meet constraints');
         return; 
     }
   
     if (password !== confirmPassword) {
-        // // console.log('Passwords do not match');
+        // console.log('Passwords do not match');
         return; 
     }
       

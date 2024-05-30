@@ -26,7 +26,11 @@ export default function BluetoothSync( { childrenInfo, visible, onClose, selecte
         }
       };
       requestAndScan();
-      handleSync(childrenInfo[selectedChildIndex].sensorId);
+      try {
+        handleSync(childrenInfo[selectedChildIndex].sensorId);
+      } catch (error) {
+        console.log('Error Loading Details:', error);
+      }
   }, [visible]);
 
   useEffect(() => {
@@ -37,48 +41,42 @@ export default function BluetoothSync( { childrenInfo, visible, onClose, selecte
   }, [dataSyncCompleted]);
 
   const handleSync = async (sensorId) => {
-    if (!sensorId) {
-      setAlertMessage('No device selected');
-      return;
-    }
-  
     setAlertMessage('Searching for Device...');
-    
-    // Clear previous devices
     setAllDevices([]);
-  
-    // Start scanning for peripherals
     scanForPeripherals();
   
-    // Stop scanning after 30 seconds
-    const stopScanTimeout = setTimeout(() => {
-      if (!deviceFound) {
-        setAlertMessage('Device not found');
-      }
-    }, 10000);
-  
-    // Check for the device every second
-    const checkDeviceInterval = setInterval(() => {
+    const checkDevicesInterval = setInterval(() => {
       for (let i = 0; i < allDevices.length; i++) {
         if (allDevices[i].id === sensorId) {
+          setAlertMessage('Device found');
           setSelectedDevice(allDevices[i]);
-          setDeviceFound(true);
-          clearInterval(checkDeviceInterval);
-          clearTimeout(stopScanTimeout);
-          (async () => {
-            setAlertMessage('Connecting...');
-            try {
-              const macAddress = await connectToDevice(allDevices[i], true);
-              setAlertMessage('Connected. Syncing...');
-              await new Promise((resolve) => setTimeout(resolve, 2000));
-            } catch (error) {
-              setAlertMessage('Device Connecting Failed');
-            }
-          })();
+          clearInterval(checkDevicesInterval);
+          handleDeviceConnection(allDevices[i]);
           break;
         }
       }
     }, 1000);
+  
+    setTimeout(() => {
+      clearInterval(checkDevicesInterval);
+      if (!selectedDevice) {
+        setAlertMessage('Device not found');
+      }
+    }, 30000);
+  };
+  
+  const handleDeviceConnection = async (device) => {
+    const connected = await connectToDevice(device);
+    if (connected) {
+      if (dataSyncCompleted) {
+        setAlertMessage('Data Synced');
+        setDeviceFound(false);
+      } else {
+        setAlertMessage('Device Connecting Failed');
+      }
+    } else {
+      setAlertMessage('Device Connecting Failed');
+    }
   };
 
   return (
