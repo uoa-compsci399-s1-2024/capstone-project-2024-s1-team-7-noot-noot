@@ -44,7 +44,6 @@ export default function NotificationSettings() {
 
     return (
         <View style={[styles.container, { backgroundColor: Colors[colorScheme ?? 'light'].background }]}>
-        <View style={[styles.container, { backgroundColor: Colors[colorScheme ?? 'light'].background }]}>
             <View style={styles.textArea}>
                 <Text style={[styles.title, { color: Colors[colorScheme ?? 'light'].text }]}>Daily Goal:</Text>
                 <Text style={[styles.text, { color: Colors[colorScheme ?? 'light'].text, marginLeft: '5%' }]}>{dailyGoal} Hours</Text>
