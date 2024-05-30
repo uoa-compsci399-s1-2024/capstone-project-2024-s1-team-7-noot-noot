@@ -1,6 +1,6 @@
-#Running the JAVA springboot back end file#
+# Running the JAVA springboot back end file #
 
-Windows Set Up:
+## Windows Set Up ##
 
 1. Ensure java JDK 17 is installed (Visit link to download)
 	- https://www.oracle.com/nz/java/technologies/downloads/#java17
