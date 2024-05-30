@@ -196,7 +196,7 @@ function useBLE(): BluetoothLowEnergyApi {
 
   const startStreamingData = async (device: Device) => {
     if (device) {
-      // // console.log("Starting to Stream Data");
+      // console.log("Starting to Stream Data");
       sensor_id = `${device.id}`;
       device.monitorCharacteristicForService(
         Sensor_RATE_UUID,

@@ -23,49 +23,33 @@ export default function SignupScreen() {
 
     const register = async () => {
 
-        // Check if the terms of service and privacy policy have been accepted
         if (!termsAccepted && !privacyAccepted) {
             alert('Please accept the Terms of Service and Privacy Policy.');
             return; 
         }
 
-        // Check password constraints (e.g., minimum length)
         const passwordRegex = /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{8,}$/;
         if (!passwordRegex.test(password)) {
             alert('Password does not meet constraints. Password must be at least 8 characters long and contain at least one uppercase letter, one lowercase letter, and one number.');
-            // // console.log('Password does not meet constraints');
-            return; // Exit the function if password doesn't meet constraints
+            return; 
         }
 
-        // Check if the new passwords match
         if (password !== confirmPassword) {
-            // // console.log('Passwords do not match');
-            return; // Exit the function if passwords don't match
+            alert('Passwords do not match.');
+            return; 
         }
         
-        setIsLoading(true); // Start loading
-        // Call register function
         try {
             Keyboard.dismiss();
-            setIsLoading(true); // Start loading
-            // // console.log('Register');
-            const result = await onRegister(email, password, username);
-            if (result) {
-                // // console.log('Registration successful', result.data);
-            } else {
-                // // console.log('Login failed');
-            }
+            setIsLoading(true); 
+            await onRegister(email, password, username);
         } catch (error) {
-            // // console.log('Registration failed', error);
+            console.log('Registration failed', error);
         } finally {
             setTimeout(() => {
-                setIsLoading(false); // Stop loading
-            },1000)
+                setIsLoading(false); 
+            }, 1000)
         }
-    }
-
-    const toggleShowPassword = () => {
-        setShowPassword(!showPassword);
     }
 
     return (
@@ -145,7 +129,7 @@ export default function SignupScreen() {
             {/* Loading Indicator */}
             {isLoading && (
                 <View style={[styles.loadingContainer]}>
-                    <ActivityIndicator size="large" color="#fff" />
+                    <ActivityIndicator size="large" color="#23A0FF" />
                 </View>
             )}
 
@@ -179,12 +163,9 @@ export default function SignupScreen() {
         },
         //Welcome Screen
         root: {
+            paddingTop: '10%',
             flex: 1,
             flexDirection: 'column',
-            minHeight: "600",
-            // minHeight: '100%',
-            // alignItems: 'center',
-            // justifyContent: 'space-between',
             paddingHorizontal: '10%',
             paddingBottom: '10%',
         },

@@ -123,35 +123,40 @@ export const updateDayData = async (searchDate) => {
     {value: 0, }, //5.50
     {value: 0, }, //5.55
     ];
-    // Read the file
-    const fileUri = FileSystem.documentDirectory + 'data.txt';
-    const data = await FileSystem.readAsStringAsync(fileUri);
-    const lines = data.split('\n');
-    for (const line of lines) {
-      const trimmedLine = line.trim(); // Remove leading and trailing spaces
-  
-      if (trimmedLine.length > 1) {
-        const parts = trimmedLine.split(' ');
-        const dateStr = parts[0];
-        const timeStr = parts[1];
-        const minutes = parts[2];
-  
-        if (dateStr == searchDate) {
-          totalTime += parseInt(minutes);
-  
-          const startTime = moment(timeStr, "HH:mm:ss");
-          const endTime = moment(timeStr, "HH:mm:ss").add(minutes, 'minutes');
-          
-          const startIndex = Math.floor(((startTime.hours() - 8) * 60 + startTime.minutes()) / 5);
-          const endIndex = Math.ceil(((endTime.hours() - 8) * 60 + endTime.minutes()) / 5);
-          
-          for (let index = startIndex; index < endIndex; index++) {
-            if (index >= 0 && index < dayData.length) {
-              dayData[index].value = 1;
+
+    try {
+      const fileUri = FileSystem.documentDirectory + 'data.txt';
+      const data = await FileSystem.readAsStringAsync(fileUri);
+      const lines = data.split('\n');
+      for (const line of lines) {
+        const trimmedLine = line.trim(); // Remove leading and trailing spaces
+    
+        if (trimmedLine.length > 1) {
+          const parts = trimmedLine.split(' ');
+          const dateStr = parts[0];
+          const timeStr = parts[1];
+          const minutes = parts[2];
+    
+          if (dateStr == searchDate) {
+            totalTime += parseInt(minutes);
+    
+            const startTime = moment(timeStr, "HH:mm:ss");
+            const endTime = moment(timeStr, "HH:mm:ss").add(minutes, 'minutes');
+            
+            const startIndex = Math.floor(((startTime.hours() - 8) * 60 + startTime.minutes()) / 5);
+            const endIndex = Math.ceil(((endTime.hours() - 8) * 60 + endTime.minutes()) / 5);
+            
+            for (let index = startIndex; index < endIndex; index++) {
+              if (index >= 0 && index < dayData.length) {
+                dayData[index].value = 1;
+              }
             }
           }
         }
       }
+    } catch (error) {
+      totalTime = 0;
     }
+
     return [dayData, totalTime];
   }

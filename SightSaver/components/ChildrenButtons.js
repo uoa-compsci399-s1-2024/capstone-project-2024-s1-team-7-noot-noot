@@ -1,6 +1,5 @@
 import React, { Children, useEffect, useState, useRef } from 'react';
 import { TouchableOpacity, Text, View, StyleSheet, ScrollView, Animated, ActivityIndicator } from 'react-native';
-import { getUserDetails, getChildrenInfo } from '../ctx';
 import Colors from '../constants/Colors'; 
 import AddChildModal from './helpers/AddNewChild'; 
 import { useColorScheme } from './useColorScheme';
@@ -12,52 +11,15 @@ export const ChildrenButtons = ({ childrenInfo, handleAddChild }) => {
   const [selectedChildIndex, setSelectedChildIndex] = useState(0);
   const [modalVisible, setModalVisible] = useState(false);
   const [syncVisible, setSyncVisible] = useState(false);
-  const [email, setEmail] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const colorScheme = useColorScheme();
-  const fadeAnim = useRef(new Animated.Value(0)).current;
 
-  useEffect(() => {
-    if (!isLoading) {
-      Animated.timing(fadeAnim, {
-        toValue: 1,
-        duration: 300,
-        useNativeDriver: true,
-      }).start();
-    }
-  }, [isLoading]);
-
-  // Fetch user details and set email
-  useEffect(() => {
-    getUserDetails()
-      .then((userDetails) => {
-        setEmail(userDetails.email);
-        // setIsLoading(false);
-      })
-      .catch((error) => {
-        // console.error('Error fetching user details:', error);
-      });
-  });
-
-  // Function to handle button press
-  const handleChildButtonPress = (childIndex, childName) => {
-    // // console.log(`Child button ${childName} pressed`);
-    setSelectedChildIndex(childIndex); // Update the selected child index
-    // Add your logic here for handling button press
+  const handleChildButtonPress = (childIndex) => {
+    setSelectedChildIndex(childIndex);
   };
 
-  if (isLoading) {
-    fadeAnim.stopAnimation();
-    fadeAnim.setValue(0);
-    return (
-      <View style={[styles.container, {justifyContent: 'center'}]}>
-        <ActivityIndicator size="large" color="#23A0FF" />
-      </View>
-    );
-  }
-
   return (
-    <Animated.View style={[styles.container, {opacity: fadeAnim}]}>
+    <View style={[styles.container]}>
       {childrenInfo.length > 0 && (
         <ScrollView style={[styles.scrollView, {minHeight: '60%', maxHeight: '60%'}]}>
           {/* Render the children buttons */}
@@ -75,7 +37,7 @@ export const ChildrenButtons = ({ childrenInfo, handleAddChild }) => {
               >
                 Sensor: {child.sensorId}
               </Text>
-              <View style={[styles.circle, selectedChildIndex === index ? { backgroundColor: 'lightblue' } : null]} />
+              <View style={[styles.circle, selectedChildIndex === index ? { backgroundColor: '#1970B4', borderColor: Colors[colorScheme ?? 'light'].borderColor } : null]} />
             </TouchableOpacity>
           ))}
         </ScrollView>
@@ -102,7 +64,7 @@ export const ChildrenButtons = ({ childrenInfo, handleAddChild }) => {
       {/* Modal for adding a new child */}
       <AddChildModal childrenInfo={childrenInfo} visible={modalVisible} onClose={() => setModalVisible(false)} onAdd={handleAddChild} />
       <BluetoothSync childrenInfo={childrenInfo} visible={syncVisible} onClose={() => setSyncVisible(false)} selectedChildIndex={selectedChildIndex}/>
-    </Animated.View>
+    </View>
   );
 };
 
@@ -139,7 +101,6 @@ const styles = StyleSheet.create({
     borderRadius: 10, // Full circle
     backgroundColor: 'transparent', // Transparent background
     borderWidth: 1, // Border
-    borderColor: 'lightgray', // Hollow circle color
     marginRight: 10, // Add margin between the circle and the text
   },
   scrollView: {

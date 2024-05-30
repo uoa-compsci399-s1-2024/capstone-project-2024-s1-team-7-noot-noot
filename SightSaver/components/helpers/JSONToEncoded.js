@@ -51,6 +51,6 @@ export const JSONToEncoded = async (inputFilePath, outputFilePath) => {
 
     console.log(`Data has been converted and written to ${outputFilePath}`);
   } catch (error) {
-    console.error('Error converting data:', error);
+    console.log('Error converting data:', error);
   }
 };

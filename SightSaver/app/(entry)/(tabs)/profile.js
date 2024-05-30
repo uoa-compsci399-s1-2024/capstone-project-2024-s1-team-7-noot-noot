@@ -12,72 +12,50 @@ import * as SecureStore from 'expo-secure-store';
 
 export default function ProfileScreen() {
   const colorScheme = useColorScheme();
-  const [username, setUsername] = useState('');
-  const [email, setEmail] = useState('');
   const [childrenInfo, setChildrenInfo] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
-  const fadeAnim = useRef(new Animated.Value(0)).current;
+  const [email, setEmail] = useState('');
+  const [username, setUsername] = useState('');
 
   const addChild = async (childName, sensorId) => {
     setIsLoading(true);
-    console.log('[Email]:', email, '[Child Name]:', childName, '[Sensor ID]:', sensorId);
+    // console.log('[Email]:', email, '[Child Name]:', childName, '[Sensor ID]:', sensorId);
     await axios.post(`https://sightsaver-api.azurewebsites.net/api/child/addChild`, {
       email: email,
       name: childName,
       sensor_id: sensorId,
     }).catch((error) => {
       alert('Failed to add child, Try Again.');
-      console.log('Failed to add child:', error)
     });
     await SecureStore.deleteItemAsync('childrenInfo');
     await getChildrenInfo().then((childrenData) => {
       setChildrenInfo(childrenData);
       setTimeout (() => {
         setIsLoading(false);
-      }, 1500);
+      }, 1000);
     }).catch((error) => {
-      console.error('Failed to get children info:', error);
+      console.log('Failed to get children info:', error);
     });
   };
   
   useEffect(() => {
-    getUserDetails().then((userDetails) => {
-      if (userDetails) {
-        setUsername(userDetails.username);
-        setEmail(userDetails.email);
-        setTimeout (() => {
-          setIsLoading(false);
-        }, 1500);
-      } else {
-        //console.error('User details is null');
-      }
-    }).catch((error) => {
-      console.error('Failed to get user details:', error);
+    SecureStore.getItemAsync('email').then((email) => {
+      setEmail(email);
     });
-  
+    SecureStore.getItemAsync('username').then((username) => {
+      setUsername(username);
+    });
     getChildrenInfo().then((childrenData) => {
       setChildrenInfo(childrenData);
       setTimeout (() => {
         setIsLoading(false);
-      }, 1500);
+      }, 1000);
     }).catch((error) => {
-      console.error('Failed to get children info:', error);
+      console.log('Failed to get children info:', error);
     });
   });
 
-  useEffect(() => {
-    if (!isLoading) {
-      Animated.timing(fadeAnim, {
-        toValue: 1,
-        duration: 300,
-        useNativeDriver: true,
-      }).start();
-    }
-  }, [isLoading]);
-
   if (isLoading) {
-    fadeAnim.stopAnimation();
-    fadeAnim.setValue(0);
     return (
       <View style={[styles.container, {justifyContent: 'center'}]}>
         <ActivityIndicator size="large" color="#23A0FF" />
@@ -86,7 +64,7 @@ export default function ProfileScreen() {
   }
 
   return (
-    <Animated.View style={[styles.container, {opacity: fadeAnim}, {backgroundColor: Colors[colorScheme ?? 'light'].background}]}>
+    <Animated.View style={[styles.container, {backgroundColor: Colors[colorScheme ?? 'light'].background}]}>
       <StatusBar barStyle={barStyle=Colors[colorScheme ?? 'light'].barStyle}/>
 
       {/* Parent Profile */}
