@@ -1,4 +1,4 @@
-*Running the JAVA springboot back end file*
+#Running the JAVA springboot back end file#
 
 Windows Set Up:
 
@@ -9,7 +9,7 @@ Windows Set Up:
 	- From desktop open Windows Start Menu
 	- Search Environment Variables
 	- On system variables, click New
-	- In the variable name field enter JAVA_HOME
+	- In the variable name field enter `JAVA_HOME`
 	- In the variable value field enter the installation path of your JDK (eg: C:\Program Files\...)
 	- Click OK and Apply changes
 
@@ -21,12 +21,12 @@ Windows Set Up:
 	- From desktop open Windows Start Menu
 	- Search Environment Variables
 	- On system variables, click New
-	- In the variable name field enter MAVEN_HOME
+	- In the variable name field enter `MAVEN_HOME`
 	- In the variable value field enter the installation path of your mvn folder (eg: C:\Program\Files\Maven\...)
 	- Click OK
 	- Under system variables, click on the `Path` variable and edit it
 	- Click New
-	- Enter %MAVEN_HOME%\bin in the new field
+	- Enter `%MAVEN_HOME%\bin` in the new field
 	- Click OK and Apply changes
 
 4. Verify mvn version and installation on windows PC
