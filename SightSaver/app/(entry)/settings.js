@@ -9,6 +9,7 @@ import DataSafetyScreen from './settingsScreens/dataSafety';
 import ChildrenScreen from './settingsScreens/children';
 import CustomButton from '../../components/CustomButton';
 import { useAuth, getChildrenInfo } from '../../ctx';
+import SupportScreen from './settingsScreens/support';
 import axios from 'axios';
 
 function Settings({navigation}) {
@@ -37,16 +38,22 @@ function Settings({navigation}) {
             <TouchableOpacity style={[styles.option, {borderBottomColor:Colors[colorScheme ?? 'light'].seperator}]} onPress={() => navigation.navigate('Children')}>
                 <Text style={[styles.optionText, {color:Colors[colorScheme ?? 'light'].text}]}>Children</Text>
             </TouchableOpacity>
-            {/* <TouchableOpacity style={[styles.option, {borderBottomColor:Colors[colorScheme ?? 'light'].seperator}]} onPress={() => navigation.navigate('Notifications')}>
-                <Text style={[styles.optionText, {color:Colors[colorScheme ?? 'light'].text}]}>Notifications</Text>
-            </TouchableOpacity> */}
-            <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center', marginTop: '100%' }}>
-                <CustomButton
-                    onPress={() => {
-                    onLogout();
-                    }}
-                        text={"Sign Out"}
-                />
+            <TouchableOpacity style={[styles.option, {borderBottomColor:Colors[colorScheme ?? 'light'].seperator}]} onPress={() => navigation.navigate('Support')}>
+                <Text style={[styles.optionText, {color:Colors[colorScheme ?? 'light'].text}]}>Support</Text>
+            </TouchableOpacity>
+            <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
+            <CustomButton
+                onPress={() => {
+                onLogout();
+                }}
+                    text={"Sign Out"}
+            />
+            <CustomButton
+                onPress={
+                    handlePress
+                }
+                    text={"test"}
+            />
             </View>
         </View>
     );
@@ -61,6 +68,7 @@ export default function SettingsScreens() {
             <Stack.Screen name="Accessibility" component={AccessibilityScreen} />
             <Stack.Screen name="Data Safety" component={DataSafetyScreen} />
             <Stack.Screen name="Children" component={ChildrenScreen} />
+            <Stack.Screen name="Support" component={SupportScreen} />
         </Stack.Navigator>
     );
 }

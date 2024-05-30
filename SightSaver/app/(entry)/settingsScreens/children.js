@@ -34,7 +34,16 @@ export default function NotificationSettings() {
         loadDailyGoal();
     }, []);
 
+    const incrementGoal = () => {
+        setDailyGoal((prevGoal) => Math.min(prevGoal + 1, 12));
+    };
+
+    const decrementGoal = () => {
+        setDailyGoal((prevGoal) => Math.max(prevGoal - 1, 1));
+    };
+
     return (
+        <View style={[styles.container, { backgroundColor: Colors[colorScheme ?? 'light'].background }]}>
         <View style={[styles.container, { backgroundColor: Colors[colorScheme ?? 'light'].background }]}>
             <View style={styles.textArea}>
                 <Text style={[styles.title, { color: Colors[colorScheme ?? 'light'].text }]}>Daily Goal:</Text>
@@ -80,6 +89,10 @@ const styles = StyleSheet.create({
         fontSize: 24,
         fontWeight: 'bold',
     },
+    goalContainer: {
+        flexDirection: 'row',
+        alignItems: 'center',
+    },
     section: {
         alignItems: 'center',
         minWidth: '80%',
@@ -93,9 +106,8 @@ const styles = StyleSheet.create({
         marginBottom: '5%',
     },
     saveButton: {
-        marginTop: '20%',
+        marginTop: 20,
         backgroundColor: '#1970B4',
-        color: 'white',
         width: '85%',
         alignSelf: 'center',
         borderRadius: 5,

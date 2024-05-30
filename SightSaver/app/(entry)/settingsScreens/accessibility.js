@@ -1,27 +1,41 @@
-import React, { useState } from 'react';
-import { View, Text, StyleSheet, Switch } from 'react-native';
+import React from 'react';
+import { View, Text, StyleSheet } from 'react-native';
 import { useColorScheme } from '../../../components/useColorScheme';
 import Colors from '../../../constants/Colors';
 
 export default function AccessibilityScreen() {
     const colorScheme = useColorScheme();
-    const [highContrastMode, setHighContrastMode] = useState(false);
-
-    const toggleHighContrastMode = () => {
-        setHighContrastMode((prevMode) => !prevMode);
-    };
 
     return (
         <View style={[styles.container, { backgroundColor: Colors[colorScheme ?? 'light'].background }]}>
-            <Text style={{ color: Colors[colorScheme ?? 'light'].text }}>Accessibility Settings</Text>
-            <View style={styles.option}>
-                <Text style={[styles.optionText, {color: Colors[colorScheme ?? 'light'].text}]}>High Contrast Mode</Text>
-                <Switch
-                    value={highContrastMode}
-                    onValueChange={toggleHighContrastMode}
-                />
+            <Text style={{ color: Colors[colorScheme ?? 'light'].text, fontSize: 24, fontWeight: 'bold' }}>
+                Dark Mode
+            </Text>
+            
+            <View style={styles.instructionsContainer}>
+                <Text style={[styles.instructionsText, { color: Colors[colorScheme ?? 'light'].text }]}>
+                    To change the system from light mode to dark mode, follow these steps:
+                </Text>
+                <Text style={[styles.instructionsText, { color: Colors[colorScheme ?? 'light'].text }]}>
+                    1. Open the Settings app on your device.
+                </Text>
+                <Text style={[styles.instructionsText, { color: Colors[colorScheme ?? 'light'].text }]}>
+                    2. Navigate to Display & Brightness.
+                </Text>
+                <Text style={[styles.instructionsText, { color: Colors[colorScheme ?? 'light'].text }]}>
+                    3. Select the "Dark" option to switch to dark mode.
+                </Text>
+                <Text style={[styles.instructionsText, { color: Colors[colorScheme ?? 'light'].text }]}>
+                    4. You can switch back to light mode by selecting the "Light" option.
+                </Text>
             </View>
-            {/* Add more accessibility options here */}
+
+            <Text style={{ color: Colors[colorScheme ?? 'light'].text, marginTop: 20 }}>Accessibility Settings</Text>
+            <View style={styles.option}>
+                <Text style={[styles.optionText, { color: Colors[colorScheme ?? 'light'].text }]}>
+                    More Accessibility Settings Soon...
+                </Text>
+            </View>
         </View>
     );
 }
@@ -42,5 +56,15 @@ const styles = StyleSheet.create({
     },
     optionText: {
         fontSize: 18,
+    },
+    instructionsContainer: {
+        marginTop: 20,
+        padding: 10,
+        backgroundColor: 'rgba(0, 0, 0, 0.05)',
+        borderRadius: 5,
+    },
+    instructionsText: {
+        fontSize: 16,
+        marginVertical: 4,
     },
 });
