@@ -41,14 +41,14 @@ export default function AddChildModal({ childrenInfo, visible, onClose, onAdd })
       if (childName === '') {
         alert('Please enter a child name');
       } else if (childrenInfo.length > 0) {
-        if (childrenInfo.some(child => child.sensorId == selectedDevice.id)) {
-          alert('This device is already assigned to a child');
-        } else {
-          onAdd(childName, selectedDevice.id);
-          setCurrentPage(1);
-          onClose();
-        }
-      } else {
+        // if (childrenInfo.some(child => child.sensorId == selectedDevice.id)) {
+        //   alert('This device is already assigned to a child');
+        // } else {
+        //   onAdd(childName, selectedDevice.id);
+        //   setCurrentPage(1);
+        //   onClose();
+        // }
+      // } else {
         onAdd(childName, selectedDevice.id);
         setCurrentPage(1);
         onClose();

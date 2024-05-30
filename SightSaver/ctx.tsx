@@ -42,6 +42,7 @@ export const AuthProvider = ({ children }: any) => {
 
   //Check if token is stored
   useEffect(() => {
+    SecureStore.setItemAsync(DAILY_GOAL, '2');
     const loadToken = async () => {
       const token = await SecureStore.getItemAsync(TOKEN_KEY);
       if (token) {
@@ -170,41 +171,48 @@ export const getToken = async () => {
 
 export const getChildrenInfo = async () => {
   type ChildJson = {childName: string; sensorId: string};
-
   let childrenInfo: ChildJson[] = [];
   const storedChildrenInfo = await SecureStore.getItemAsync(CHILDREN_INFO);
 
-  if (storedChildrenInfo) {
-    childrenInfo = JSON.parse(storedChildrenInfo);
-  } else {
-      const email = await SecureStore.getItemAsync(EMAIL);
-      const response = await axios.get(`${API_URL}/child/getChildren/${email}`);
-      const childrenData = response.data as {
-        id: number;
-        sensor_id: string;
-        name: string;
-        parent: number;
-      }[];
-      childrenData.forEach(child => {
-        childrenInfo.push({ childName: child.name, sensorId: child.sensor_id });
-      });
+  if (!storedChildrenInfo) {
+    const email = await SecureStore.getItemAsync(EMAIL);
+    const response = await axios.get(`${API_URL}/child/getChildren/${email}`);
+    const childrenData = response.data as {
+      id: number;
+      sensor_id: string;
+      name: string;
+      parent: number;
+    }[];
+    childrenData.forEach(child => {
+      childrenInfo.push({ childName: child.name, sensorId: child.sensor_id });
+    });
 
-      await SecureStore.setItemAsync(CHILDREN_INFO, JSON.stringify(childrenInfo));
+    await SecureStore.setItemAsync(CHILDREN_INFO, JSON.stringify(childrenInfo));
   }
-  return childrenInfo ;
 };
 
-export const newChildAdded = async (childName: string) => {
+export const newChildAdded = async (childName: string, sensorId: string) => {
+  const email = await SecureStore.getItemAsync('email');
   try {
-    const email = await SecureStore.getItemAsync(EMAIL);
-    const response = await axios.post(`${API_URL}/child/addChild`, {
+    await axios.post(`https://sightsaver-api.azurewebsites.net/api/child/addChild`, {
+      email: email,
       name: childName,
-      parent: email,
+      sensor_id: sensorId,
     });
-    // console.log('Added new child:', response.data);
-    return response.data;
-  } catch (error) {
-    // console.error('Error adding new child:', error);
-    return null;
+   } catch(error) {
+    console.log('Failed to add child:', error);
+  } finally {
+      type ChildJson = {childName: string; sensorId: string};
+      let childrenInfo: ChildJson[] = [];
+      const storedChildrenInfo = await SecureStore.getItemAsync(CHILDREN_INFO);
+
+      if (storedChildrenInfo) {
+        childrenInfo = JSON.parse(storedChildrenInfo);
+        childrenInfo.push({ childName: childName, sensorId: sensorId });
+      } else {
+          childrenInfo.push({ childName: childName, sensorId: sensorId });
+      }
+      await SecureStore.setItemAsync(CHILDREN_INFO, JSON.stringify(childrenInfo));
+      console.log('New child added:', childrenInfo);
   }
-}
+};

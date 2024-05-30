@@ -62,19 +62,25 @@ export default function YearlyScreen({selectedDate, changeSelectedItem, dropdown
 
   const goToNextYear = () => {
     setSearchYear(moment(searchYear, "YYYY").add(1, 'years').format("YYYY"));
+    fadeAnim.stopAnimation();
+    fadeAnim.setValue(0);
     setIsLoading(true);
   };
   
   const goToPreviousYear = () => {
     setSearchYear(moment(searchYear, "YYYY").subtract(1, 'years').format("YYYY"));
+    fadeAnim.stopAnimation();
+    fadeAnim.setValue(0);
     setIsLoading(true);
   };
 
   useEffect(() => {
+    fadeAnim.stopAnimation();
+    fadeAnim.setValue(0);
     if (!isLoading) {
       Animated.timing(fadeAnim, {
         toValue: 1,
-        duration: 300,
+        duration: 500,
         useNativeDriver: true,
       }).start();
     }
@@ -95,9 +101,7 @@ export default function YearlyScreen({selectedDate, changeSelectedItem, dropdown
       setNovember((yearData[10]));
       setDecember((yearData[11]));
 
-      setTimeout(() => {
-        setIsLoading(false);
-      }, 100);
+      setIsLoading(false);
     });
   }, [searchYear]);
 

@@ -5,7 +5,7 @@ import React, { useState, useEffect, useContext, useRef } from 'react';
 import { Ionicons } from '@expo/vector-icons';
 import useBLE from "../useBLE";
 import { StyleSheet, TouchableOpacity, StatusBar, Modal, ScrollView, ActivityIndicator, Animated } from 'react-native';
-import { getChildrenInfo, getUserDetails } from '../../../ctx';
+import { getChildrenInfo, newChildAdded } from '../../../ctx';
 import { ChildrenButtons } from '../../../components/ChildrenButtons';
 import axios from 'axios';
 import * as SecureStore from 'expo-secure-store';
@@ -18,42 +18,28 @@ export default function ProfileScreen() {
   const [username, setUsername] = useState('');
 
   const addChild = async (childName, sensorId) => {
-    setIsLoading(true);
-    // console.log('[Email]:', email, '[Child Name]:', childName, '[Sensor ID]:', sensorId);
-    await axios.post(`https://sightsaver-api.azurewebsites.net/api/child/addChild`, {
-      email: email,
-      name: childName,
-      sensor_id: sensorId,
-    }).catch((error) => {
-      alert('Failed to add child, Try Again.');
-    });
-    await SecureStore.deleteItemAsync('childrenInfo');
-    await getChildrenInfo().then((childrenData) => {
-      setChildrenInfo(childrenData);
-      setTimeout (() => {
-        setIsLoading(false);
-      }, 1000);
-    }).catch((error) => {
-      console.log('Failed to get children info:', error);
+    setIsLoading(true).then(() => {
+      newChildAdded(childName, sensorId).then(() => {
+        const newChild = { childName, sensorId };
+        setChildrenInfo([...childrenInfo, newChild]);
+      });
     });
   };
   
   useEffect(() => {
     SecureStore.getItemAsync('email').then((email) => {
-      setEmail(email);
+        setEmail(email);
     });
     SecureStore.getItemAsync('username').then((username) => {
-      setUsername(username);
+        setUsername(username);
     });
-    getChildrenInfo().then((childrenData) => {
-      setChildrenInfo(childrenData);
-      setTimeout (() => {
+    SecureStore.getItemAsync('childrenInfo').then((children) => {
+        if (children) {
+            setChildrenInfo(JSON.parse(children));
+        }
         setIsLoading(false);
-      }, 1000);
-    }).catch((error) => {
-      console.log('Failed to get children info:', error);
     });
-  });
+}, [childrenInfo]);
 
   if (isLoading) {
     return (

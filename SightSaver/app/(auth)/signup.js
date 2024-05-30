@@ -46,9 +46,7 @@ export default function SignupScreen() {
         } catch (error) {
             console.log('Registration failed', error);
         } finally {
-            setTimeout(() => {
-                setIsLoading(false); 
-            }, 1000)
+            setIsLoading(false); 
         }
     }
 

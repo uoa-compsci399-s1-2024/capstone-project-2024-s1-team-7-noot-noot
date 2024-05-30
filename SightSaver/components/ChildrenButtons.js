@@ -11,7 +11,6 @@ export const ChildrenButtons = ({ childrenInfo, handleAddChild }) => {
   const [selectedChildIndex, setSelectedChildIndex] = useState(0);
   const [modalVisible, setModalVisible] = useState(false);
   const [syncVisible, setSyncVisible] = useState(false);
-  const [isLoading, setIsLoading] = useState(false);
   const colorScheme = useColorScheme();
 
   const handleChildButtonPress = (childIndex) => {

@@ -39,9 +39,7 @@ const Login = () => {
         } catch (error) {
             console.error('Login error:', error);
         } finally {
-            setTimeout(() => {
-                setIsLoading(false);
-            }, 1000)
+            setIsLoading(false);
         }
     }
 
@@ -53,9 +51,7 @@ const Login = () => {
         } catch (error) {
             console.error('Login error:', error);
         } finally {
-            setTimeout(() => {
-                setIsLoading(false);
-            }, 1000)
+            setIsLoading(false);
         }
     }
 

@@ -1,7 +1,7 @@
 import {AuthProvider, useAuth } from '../ctx';
 import {Stack ,useRouter, useSegments } from 'expo-router';
 import React, { useEffect, useState } from 'react';
-import { getUserDetails, setUserDetails } from '../ctx';
+import { getUserDetails, setUserDetails, getChildrenInfo } from '../ctx';
 
 const StackLayout = () => {
 	const { authState } = useAuth();
@@ -12,13 +12,16 @@ const StackLayout = () => {
 	const fetchUserDetails = async () => {
 		try {
 		  const userDetails = await getUserDetails();
+		  await getChildrenInfo();
 		  if (userDetails) {
 			await setUserDetails(userDetails.username, userDetails.email);
 		  }
 		} catch (error) {
 		  console.error('Error fetching user details:', error);
 		}
-	  };
+	};
+
+
 
 	useEffect(() => {
 		const inAuthGroup = segments[0] === '(entry)';
@@ -27,7 +30,7 @@ const StackLayout = () => {
 			// console.log('Not authenticated')
 			router.replace('/');
 		} else if (authState?.authenticated === true) {
-			// console.log('Authenticated')
+			console.log('Authenticated')
 			fetchUserDetails().then(() => {
 				router.replace('/(entry)');
 			});

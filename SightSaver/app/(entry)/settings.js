@@ -40,19 +40,13 @@ function Settings({navigation}) {
             {/* <TouchableOpacity style={[styles.option, {borderBottomColor:Colors[colorScheme ?? 'light'].seperator}]} onPress={() => navigation.navigate('Notifications')}>
                 <Text style={[styles.optionText, {color:Colors[colorScheme ?? 'light'].text}]}>Notifications</Text>
             </TouchableOpacity> */}
-            <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
-            <CustomButton
-                onPress={() => {
-                onLogout();
-                }}
-                    text={"Sign Out"}
-            />
-            <CustomButton
-                onPress={
-                    handlePress
-                }
-                    text={"test"}
-            />
+            <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center', marginTop: '100%' }}>
+                <CustomButton
+                    onPress={() => {
+                    onLogout();
+                    }}
+                        text={"Sign Out"}
+                />
             </View>
         </View>
     );

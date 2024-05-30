@@ -84,17 +84,17 @@ export default function MonthlyScreen({ selectedDate, changeSelectedItem, dropdo
     setIsLoading(true);
     getCustomStyling(currentYear, currentMonth).then((customDatesStyles) => {
       setDatesStyles(customDatesStyles);
-      setTimeout(() => {
-        setIsLoading(false);
-      }, 100);
+      setIsLoading(false);
     });
   }, [searchMonth]);
 
   useEffect(() => {
+    fadeAnim.stopAnimation();
+    fadeAnim.setValue(0);
     if (!isLoading) {
       Animated.timing(fadeAnim, {
         toValue: 1,
-        duration: 300,
+        duration: 500,
         useNativeDriver: true,
       }).start();
     }
