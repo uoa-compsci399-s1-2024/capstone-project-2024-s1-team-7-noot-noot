@@ -15,28 +15,36 @@ export default function NotificationSettings() {
 
     useEffect(() => {
         SecureStore.getItemAsync('dailyGoal').then((goal) => {
-            setDailyGoal(parseInt(goal, 10));
+            if (goal) {
+                setDailyGoal(parseInt(goal, 10));
+            }
         });
     }, []);
 
     return (
-        <View style={[styles.container, {backgroundColor:Colors[colorScheme ?? 'light'].background}]}>
+        <View style={[styles.container, { backgroundColor: Colors[colorScheme ?? 'light'].background }]}>
             <View style={styles.textArea}>
-                <Text style={[styles.title, {color:Colors[colorScheme ?? 'light'].text}]}>Daily Goal:</Text>
-                <Text style={[styles.text, {color:Colors[colorScheme ?? 'light'].text}, {marginLeft: '5%'}]}>{dailyGoal} Hours</Text>
+                <Text style={[styles.title, { color: Colors[colorScheme ?? 'light'].text }]}>Daily Goal:</Text>
+                <Text style={[styles.text, { color: Colors[colorScheme ?? 'light'].text, marginLeft: '5%' }]}>
+                    {dailyGoal} {dailyGoal === 1 ? 'Hour' : 'Hours'}
+                </Text>
             </View>
             <View style={styles.section}>
                 {/* <Slider
-                    style={{width: 200, height: 40}}
-                    minimumValue={0}
-                    maximumValue={1}
-                    minimumTrackTintColor="#FFFFFF"
+                    style={{ width: 200, height: 40 }}
+                    minimumValue={1}
+                    maximumValue={12}
+                    step={1}
+                    value={dailyGoal}
+                    onValueChange={(value) => setDailyGoal(value)}
+                    minimumTrackTintColor="#1970B4"
                     maximumTrackTintColor="#000000"
+                    thumbTintColor="#1970B4"
                 /> */}
             </View>
             <TouchableOpacity
-                style={[styles.saveButton]} // Apply syncButton and addButton styles
-                onPress={() => saveDailyGoal()}
+                style={styles.saveButton}
+                onPress={saveDailyGoal}
             >
                 <Text style={styles.saveButtonText}>Save Data</Text>
             </TouchableOpacity>
@@ -55,19 +63,19 @@ const styles = StyleSheet.create({
     },
     section: {
         alignItems: 'center',
+        marginVertical: 20,
     },
     text: {
         fontSize: 24,
     },
     textArea: {
         flexDirection: 'row',
-        verticalAlign: 'center',
-        marginBottom: '5%',
+        alignItems: 'center',
+        marginBottom: 20,
     },
     saveButton: {
-        marginTop: '20%',
+        marginTop: 20,
         backgroundColor: '#1970B4',
-        color: 'white',
         width: '85%',
         alignSelf: 'center',
         borderRadius: 5,
