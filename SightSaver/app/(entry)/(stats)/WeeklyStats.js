@@ -145,7 +145,7 @@ export default function WeeklyScreen({selectedDate, changeSelectedItem, dropdown
           <View style={styles.barSpace}>
             <BarChart 
               barWidth={22}
-              noOfSections={3}
+              noOfSections={4}
               height={100}
               barBorderRadius={8}
               yAxisTextStyle={{color:Colors[colorScheme ?? 'light'].text}}
