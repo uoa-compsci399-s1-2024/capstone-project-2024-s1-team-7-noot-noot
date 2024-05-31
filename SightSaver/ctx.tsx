@@ -23,8 +23,10 @@ const USERNAME = 'username';
 const EMAIL = 'email';
 const CHILDREN_INFO = 'childrenInfo';
 const DAILY_GOAL = 'dailyGoal';
+const SENSOR_ID = 'sensorId';
 
-export const API_URL = 'http://192.168.1.74:8080/api';
+export const API_URL = 'https://sightsaver-api.azurewebsites.net/api';
+//export const API_URL = 'http://192.168.1.74:8080/api';
 const AuthContext = createContext<Partial<AuthProps>>({});
 
 export const useAuth = () => {
@@ -101,6 +103,7 @@ export const AuthProvider = ({ children }: any) => {
     await SecureStore.deleteItemAsync(EMAIL);
     await SecureStore.deleteItemAsync(CHILDREN_INFO);
     await SecureStore.deleteItemAsync(DAILY_GOAL);
+    await SecureStore.deleteItemAsync(SENSOR_ID);
     axios.defaults.headers.common['Authorization'] = '';
     setAuthState({
       token: null,
@@ -192,7 +195,7 @@ export const newChildAdded = async (childName: string, sensorId: string) => {
       sensor_id: sensorId,
     });
    } catch(error) {
-    console.log('Failed to add child:', error);
+    //console.log('Failed to add child:', error);
   } finally {
       type ChildJson = {childName: string; sensorId: string};
       let childrenInfo: ChildJson[] = [];
@@ -205,6 +208,22 @@ export const newChildAdded = async (childName: string, sensorId: string) => {
           childrenInfo.push({ childName: childName, sensorId: sensorId });
       }
       await SecureStore.setItemAsync(CHILDREN_INFO, JSON.stringify(childrenInfo));
-      console.log('New child added:', childrenInfo);
   }
 };
+
+export const pushData = async (data: Array<JSON>) => {
+  const email = await SecureStore.getItemAsync(EMAIL);
+  console.log(data);
+  try {
+    await axios.post(`${API_URL}/lux`, {
+      email: email,
+      data: data,
+    });
+  } catch (error) {
+    console.log('Failed to push data:', error);
+    return false;
+  } finally {
+    console.log('Data pushed');
+    return true;
+  }
+}

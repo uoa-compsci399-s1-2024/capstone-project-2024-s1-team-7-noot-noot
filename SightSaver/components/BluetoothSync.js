@@ -2,7 +2,7 @@ import { View, Text } from './Themed';
 import { useColorScheme } from './useColorScheme';
 import React, { useState, useEffect } from 'react';
 import useBLE from "../app/(entry)/useBLE.ts";
-import { StyleSheet, TouchableOpacity, StatusBar, Modal, ScrollView, } from 'react-native';
+import { StyleSheet, TouchableOpacity, StatusBar, Modal, ScrollView } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import Colors from '../constants/Colors';
@@ -23,7 +23,8 @@ export default function BluetoothSync({ childrenInfo, visible, onClose, selected
     connectedDevice,
     SensorData,
     disconnectFromDevice,
-    setAllDevices
+    setAllDevices,
+    dataSyncCompleted,
   } = useBLE();
 
   const [triggerSync, setTriggerSync] = useState(false);
@@ -46,17 +47,19 @@ export default function BluetoothSync({ childrenInfo, visible, onClose, selected
     requestAndScan();
   }, []);
 
+  useEffect(() => {
+    if (dataSyncCompleted) {
+      setAlertMessage('Data Synced');
+    }
+  }, [dataSyncCompleted]);
+
   const handleSync = async () => {
     if (selectedDevice) {
       setAlertMessage('Connecting...');
       setAlertVisible(true);
       try {
-        await connectToDevice(selectedDevice);
         setAlertMessage('Connected. Syncing...');
-        // Wait for data to sync. You might need to implement this part based on your requirements.
-        await new Promise((resolve) => setTimeout(resolve, 2000));
-        setAlertMessage('Data Synced');
-        disconnectFromDevice();
+        await connectToDevice(selectedDevice, true);
       } catch (error) {
         setAlertMessage('Device Connecting Failed');
       } finally {
@@ -69,9 +72,13 @@ export default function BluetoothSync({ childrenInfo, visible, onClose, selected
     }
   };
 
-  const handlePress = (index) => {
-      setActiveButton(index);
-      AsyncStorage.setItem('activeButton', index.toString());
+  const getChildNameBySensorId = (sensorId) => {
+    if (childrenInfo.length > 0) {
+      const child = childrenInfo.find(child => child.sensorId === sensorId);
+      return child ? child.childName : '';
+    } else {
+      return '';
+    }
   };
 
   return (
@@ -87,10 +94,10 @@ export default function BluetoothSync({ childrenInfo, visible, onClose, selected
         >
         <View style={styles.overlay}>
           <View style={styles.deviceModal}>
-            <TouchableOpacity style={styles.closeButton} onPress={() => {setAllDevices([]), onClose();}}>
+            <TouchableOpacity style={styles.closeButton} onPress={() => { setAllDevices([]); onClose(); scanForPeripherals(); }}>
               <Ionicons name="close" size={22} color={Colors[colorScheme ?? 'light'].text} />
             </TouchableOpacity>
-            <Text style={[styles.title,{color:Colors[colorScheme ?? 'light'].text}, {alignSelf:'center', marginBottom:10}, {fontSize: 21, fontWeight: 'bold'}]}>Searching for devices...</Text>
+            <Text style={[styles.title, { color: Colors[colorScheme ?? 'light'].text }, { alignSelf: 'center', marginBottom: 10 }, { fontSize: 21, fontWeight: 'bold' }]}>Searching for devices...</Text>
             <ScrollView>
               {allDevices.map((device) => (
                 <TouchableOpacity
@@ -103,7 +110,7 @@ export default function BluetoothSync({ childrenInfo, visible, onClose, selected
                   }}
                   style={styles.deviceButton}
                 >
-                  <Text style={styles.deviceButtonText}>{device.name}</Text>
+                  <Text style={styles.deviceButtonText}>{getChildNameBySensorId(device?.id)} - {device?.id}</Text>
                 </TouchableOpacity>
               ))}
             </ScrollView>
@@ -111,7 +118,7 @@ export default function BluetoothSync({ childrenInfo, visible, onClose, selected
         </View>
       </Modal>
 
-      {/* Alert Modal */ }
+      {/* Alert Modal */}
       <Modal
         animationType="fade"
         transparent={true}
@@ -120,16 +127,16 @@ export default function BluetoothSync({ childrenInfo, visible, onClose, selected
           setAlertVisible(!alertVisible);
         }}
       >
-        <TouchableOpacity 
-          style={styles.overlay} 
-          activeOpacity={1} 
-          onPressOut={() => {setAlertVisible(false)}}
+        <TouchableOpacity
+          style={styles.overlay}
+          activeOpacity={1}
+          onPressOut={() => { setAlertVisible(false); }}
         >
           <View style={styles.alertModal}>
             <Text style={styles.alertMessage}>{alertMessage}</Text>
             {(alertMessage === 'Data Synced' || alertMessage === 'Device Connecting Failed' || alertMessage === 'No device selected') && (
               <TouchableOpacity
-                onPress={() => {setAlertVisible(false), setAllDevices([])}}
+                onPress={() => { setAlertVisible(false); setAllDevices([]); }}
               >
               </TouchableOpacity>
             )}
@@ -137,7 +144,7 @@ export default function BluetoothSync({ childrenInfo, visible, onClose, selected
         </TouchableOpacity>
       </Modal>
     </View>
-);
+  );
 }
 
 const styles = StyleSheet.create({
@@ -145,10 +152,6 @@ const styles = StyleSheet.create({
     flex: 1,
     alignItems: 'center',
     justifyContent: 'center',
-  },
-  title: {
-    fontSize: 20,
-    fontWeight: 'bold',
   },
   syncButton: {
     width: '85%',

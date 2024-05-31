@@ -8,6 +8,7 @@ import { useColorScheme } from '../../../components/useColorScheme';
 import { updateWeekData } from '../../../components/helpers/WeekData';
 import { BarChart, LineChart, PieChart, PopulationPyramid } from 'react-native-gifted-charts';
 import { Ionicons } from '@expo/vector-icons';
+import * as SecureStore from 'expo-secure-store';
 
 export default function WeeklyScreen({selectedDate, changeSelectedItem, dropdownData}) {
   const colorScheme = useColorScheme();
@@ -23,6 +24,7 @@ export default function WeeklyScreen({selectedDate, changeSelectedItem, dropdown
   const [totalHours, setTotalHours] = useState(0);
   const [completedPercentage, setCompletedPercentage] = useState(0);
   const [notCompletedPercentage, setNotCompletedPercentage] = useState(100);
+  const [sensorId, setSensorId] = useState('');
   const fadeAnim = useRef(new Animated.Value(0)).current;
 
   const onDateChange = (date) => {
@@ -63,25 +65,28 @@ export default function WeeklyScreen({selectedDate, changeSelectedItem, dropdown
   }, [isLoading]);
 
   useEffect(() => {
-    updateWeekData(searchWeek).then((weekData) => {
-      setMonday((weekData[0]));
-      setTuesday((weekData[1]));
-      setWednesday((weekData[2]));
-      setThursday((weekData[3]));
-      setFriday((weekData[4]));
-      setSaturday((weekData[5]));
-      setSunday((weekData[6]));
-
-      const newTotalTime = (weekData[0] + weekData[1] + weekData[2] + weekData[3] + weekData[4] + weekData[5] + weekData[6]).toFixed(1);
-      const newCompletedPercentage = Math.floor(Math.min(newTotalTime / 14 * 100, 100));
-      const newNotCompletedPercentage = 100 - newCompletedPercentage;
-
-      setTotalHours(newTotalTime);
-      setCompletedPercentage(newCompletedPercentage);
-      setNotCompletedPercentage(newNotCompletedPercentage);
-      
-      setIsLoading(false);
-      
+    SecureStore.getItemAsync('sensorId').then((sensorId) => {
+      setSensorId(sensorId);
+      updateWeekData(searchWeek, sensorId).then((weekData) => {
+        setMonday((weekData[0]));
+        setTuesday((weekData[1]));
+        setWednesday((weekData[2]));
+        setThursday((weekData[3]));
+        setFriday((weekData[4]));
+        setSaturday((weekData[5]));
+        setSunday((weekData[6]));
+  
+        const newTotalTime = (weekData[0] + weekData[1] + weekData[2] + weekData[3] + weekData[4] + weekData[5] + weekData[6]).toFixed(1);
+        const newCompletedPercentage = Math.floor(Math.min(newTotalTime / 14 * 100, 100));
+        const newNotCompletedPercentage = 100 - newCompletedPercentage;
+  
+        setTotalHours(newTotalTime);
+        setCompletedPercentage(newCompletedPercentage);
+        setNotCompletedPercentage(newNotCompletedPercentage);
+        
+        setIsLoading(false);
+        
+      });
     });
   }, [searchWeek]);
 

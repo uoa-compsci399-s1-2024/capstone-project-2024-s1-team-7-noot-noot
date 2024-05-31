@@ -17,7 +17,7 @@ const StackLayout = () => {
 			await setUserDetails(userDetails.username, userDetails.email);
 		  }
 		} catch (error) {
-		  console.log('Error fetching user details:', error);
+		  // console.log('Error fetching user details:', error);
 		}
 	};
 

@@ -8,6 +8,7 @@ import { Ionicons } from '@expo/vector-icons';
 import moment from "moment";
 moment.locale('en-gb'); 
 import { updateDayData } from '../../../components/helpers/DayData'
+import * as SecureStore from 'expo-secure-store';
       
 export default function DailyScreen({selectedDate, dayDataInput, totalTimeInput, completedPercentageInput, notCompletedPercentageInput}) {
   const colorScheme = useColorScheme();
@@ -18,6 +19,7 @@ export default function DailyScreen({selectedDate, dayDataInput, totalTimeInput,
   const [notCompletedPercentage, setNotCompletedPercentage] = useState(notCompletedPercentageInput);
   const [dayData, setDayData] = useState(dayDataInput);
   const [totalTime, setTotalTime] = useState(totalTimeInput);
+  const [sensorId, setSensorId] = useState('');
   const fadeAnim = useRef(new Animated.Value(0)).current;
 
   const goToNextDay = () => {
@@ -49,7 +51,10 @@ export default function DailyScreen({selectedDate, dayDataInput, totalTimeInput,
   }, [isLoading]);
 
   useEffect(() => {
-    updateDayData(searchDate).then((values) => {
+    SecureStore.getItemAsync('sensorId').then((sensorId) => {
+      setSensorId(sensorId);
+    });
+    updateDayData(searchDate, sensorId).then((values) => {
       const newDayData = values[0];
       const newTotalTime = values[1];
       const newCompletedPercentage = Math.floor(Math.min(newTotalTime / 120 * 100, 100));
