@@ -1,5 +1,5 @@
 import { StyleSheet, Animated, ActivityIndicator } from 'react-native';
-import React, {useState, useEffect, useRef} from 'react';
+import React, {useState, useEffect, useRef, useCallback} from 'react';
 import { Text, View } from '../../../components/Themed';
 import moment from "moment";
 moment.locale('en-gb'); 
@@ -8,6 +8,8 @@ import { useColorScheme } from '../../../components/useColorScheme';
 import { updateWeekData } from '../../../components/helpers/WeekData';
 import { BarChart, LineChart, PieChart, PopulationPyramid } from 'react-native-gifted-charts';
 import { Ionicons } from '@expo/vector-icons';
+import * as SecureStore from 'expo-secure-store';
+import { useFocusEffect } from '@react-navigation/native';
 
 export default function WeeklyScreen({selectedDate, changeSelectedItem, dropdownData}) {
   const colorScheme = useColorScheme();
@@ -24,6 +26,7 @@ export default function WeeklyScreen({selectedDate, changeSelectedItem, dropdown
   const [completedPercentage, setCompletedPercentage] = useState(0);
   const [notCompletedPercentage, setNotCompletedPercentage] = useState(100);
   const fadeAnim = useRef(new Animated.Value(0)).current;
+  const [dailyGoal, setDailyGoal] = useState(2);
 
   const onDateChange = (date) => {
     changeSelectedItem(dropdownData.find(item => item.label === 'Daily'), date);
@@ -46,6 +49,7 @@ export default function WeeklyScreen({selectedDate, changeSelectedItem, dropdown
     setIsLoading(true);
   };
 
+  
   useEffect(() => {
     if (!isLoading) {
       Animated.timing(fadeAnim, {
@@ -56,7 +60,15 @@ export default function WeeklyScreen({selectedDate, changeSelectedItem, dropdown
     }
   }, [isLoading]);
 
-  useEffect(() => {
+  useFocusEffect(
+    useCallback(() => {
+      setIsLoading(true);
+      const fetchDailyGoal = async () => {
+        const goal = await SecureStore.getItemAsync('dailyGoal');
+        setDailyGoal(parseInt(goal, 10));
+      };
+      fetchDailyGoal();
+
     updateWeekData(searchWeek).then((weekData) => {
       setMonday((weekData[0]));
       setTuesday((weekData[1]));
@@ -77,7 +89,8 @@ export default function WeeklyScreen({selectedDate, changeSelectedItem, dropdown
         setIsLoading(false);
       }, 100);
     });
-  }, [searchWeek]);
+  }, [searchWeek])
+);
 
   if (isLoading) {
     fadeAnim.stopAnimation();
@@ -150,7 +163,7 @@ export default function WeeklyScreen({selectedDate, changeSelectedItem, dropdown
           yAxisThickness={0}
           xAxisThickness={0}
           showReferenceLine1={true}
-          referenceLine1Position={2}
+          referenceLine1Position={dailyGoal}
           referenceLine1Config={{
             color: '#23A0FF',
           }}

@@ -3,6 +3,7 @@ import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
 import { useColorScheme } from '../../../components/useColorScheme';
 import Colors from '../../../constants/Colors';
 import * as SecureStore from 'expo-secure-store';
+import { getDailyGoal, updateDailyGoal } from '../../../ctx';
 
 export default function NotificationSettings() {
     const colorScheme = useColorScheme();
@@ -10,7 +11,8 @@ export default function NotificationSettings() {
     const [confirmationMessage, setConfirmationMessage] = useState('');
 
     const saveDailyGoal = async () => {
-        await SecureStore.setItemAsync('dailyGoal', dailyGoal.toString());
+    await updateDailyGoal(dailyGoal.toString());
+        // await SecureStore.setItemAsync('dailyGoal', dailyGoal.toString());
         setConfirmationMessage('Daily goal saved successfully!');
         setTimeout(() => {
             setConfirmationMessage('');
@@ -18,7 +20,7 @@ export default function NotificationSettings() {
     };
 
     useEffect(() => {
-        SecureStore.getItemAsync('dailyGoal').then((goal) => {
+        getDailyGoal().then((goal) => {
             if (goal) {
                 setDailyGoal(parseInt(goal, 10));
             }
@@ -26,7 +28,7 @@ export default function NotificationSettings() {
     }, []);
 
     const incrementGoal = () => {
-        setDailyGoal((prevGoal) => Math.min(prevGoal + 1, 12));
+        setDailyGoal((prevGoal) => Math.min(prevGoal + 1, 4));
     };
 
     const decrementGoal = () => {
