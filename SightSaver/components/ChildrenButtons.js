@@ -4,6 +4,8 @@ import Colors from '../constants/Colors';
 import AddChildModal from './helpers/AddNewChild'; 
 import { useColorScheme } from './useColorScheme';
 import BluetoothSync from './BluetoothSync';
+import CustomButton from './CustomButton';
+import useBLE from '../app/(entry)/useBLE.ts';
 
 // Define the component for rendering children buttons
 export const ChildrenButtons = ({ childrenInfo, handleAddChild }) => {
@@ -12,6 +14,9 @@ export const ChildrenButtons = ({ childrenInfo, handleAddChild }) => {
   const [modalVisible, setModalVisible] = useState(false);
   const [syncVisible, setSyncVisible] = useState(false);
   const colorScheme = useColorScheme();
+  const {
+    setAllDevices,
+  } = useBLE();
 
   const handleChildButtonPress = (childIndex) => {
     setSelectedChildIndex(childIndex);
@@ -43,22 +48,18 @@ export const ChildrenButtons = ({ childrenInfo, handleAddChild }) => {
       )}
       {childrenInfo.length > 0 && (
         <View style={styles.syncContainer}>
-          <TouchableOpacity
-            style={[styles.syncDataButton]} // Apply syncButton and addButton styles
-            onPress={() => setSyncVisible(true)}
-          >
-            <Text style={styles.syncButtonText}>Sync Data</Text>
-          </TouchableOpacity>
+          <CustomButton
+            onPress={() => [setSyncVisible(true), setAllDevices([])]}
+            text="Sync Data"
+          />
         </View>
       )}
-  
-      {/* Add New Button */}
-      <TouchableOpacity
-        style={[styles.addButton]} // Apply syncButton and addButton styles
-        onPress={() => setModalVisible(true)}
-      >
-        <Text style={styles.syncButtonText}>Add New Child</Text>
-      </TouchableOpacity>
+      <View style={styles.addChildContainer}>
+        <CustomButton
+          onPress={() => [setModalVisible(true), setAllDevices([])]}
+          text="Add New Child"
+        />
+      </View>
   
       {/* Modal for adding a new child */}
       <AddChildModal childrenInfo={childrenInfo} visible={modalVisible} onClose={() => setModalVisible(false)} onAdd={handleAddChild} />
@@ -74,10 +75,9 @@ const styles = StyleSheet.create({
     alignItems: 'center', // Align items to the center horizontally
   },
   syncContainer: {
-    width: '100%',
+    width: '85%',
     alignItems: 'center',
-    justifyContent: 'center',
-    marginTop: '30%',
+    marginTop: '5%',
   },
   buttonText: {
     fontSize: 18,
@@ -107,29 +107,15 @@ const styles = StyleSheet.create({
     marginTop: 0, // Add marginTop to create space between ScrollView and the title
     marginBottom: 10, // Add marginBottom to create space between ScrollView and Add new button
   },
-  syncButtonText: {
-    fontSize: 20,
-    color: 'white',
-    fontWeight: 'bold',
-  },
   addButton: {
+    justifyContent: 'center',
+    position: 'absolute',
+    bottom: 20,
+  },    
+  addChildContainer: {
     width: '85%',
-    paddingVertical: 20,
-    borderWidth: 0,
     alignItems: 'center',
-    borderRadius: 5,
-    backgroundColor: '#1970B4',
     bottom: '5%',
     position: 'absolute',
-  },    
-  syncDataButton: {
-    width: '85%',
-    paddingVertical: 20,
-    borderWidth: 0,
-    alignItems: 'center',
-    borderRadius: 5,
-    backgroundColor: '#1970B4',
-    bottom: '18%',
-    position: 'absolute',
-  },  
+  },
 });

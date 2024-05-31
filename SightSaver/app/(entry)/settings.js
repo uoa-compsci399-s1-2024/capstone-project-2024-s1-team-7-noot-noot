@@ -15,15 +15,6 @@ import axios from 'axios';
 function Settings({navigation}) {
     // const navigation = useNavigation();
     const colorScheme = useColorScheme();
-    const handlePress = async () => {
-        // console.log('Fetching children count...');
-        await getChildrenInfo()
-      .then(count => {
-        // console.log('Children count:', count, count.length);
-      })
-      .catch(error => console.log('Error fetching children count:', error));
-    };
-
     const { onLogout } = useAuth();
     return (
         <View style={[styles.container, {backgroundColor:Colors[colorScheme ?? 'light'].background}]}>
@@ -41,19 +32,13 @@ function Settings({navigation}) {
             <TouchableOpacity style={[styles.option, {borderBottomColor:Colors[colorScheme ?? 'light'].seperator}]} onPress={() => navigation.navigate('Support')}>
                 <Text style={[styles.optionText, {color:Colors[colorScheme ?? 'light'].text}]}>Support</Text>
             </TouchableOpacity>
-            <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
-            <CustomButton
-                onPress={() => {
-                onLogout();
-                }}
-                    text={"Sign Out"}
-            />
-            <CustomButton
-                onPress={
-                    handlePress
-                }
-                    text={"test"}
-            />
+            <View style={styles.signout}>
+                <CustomButton
+                    onPress={() => {
+                    onLogout();
+                    }}
+                        text={"Sign Out"}
+                />
             </View>
         </View>
     );
@@ -87,4 +72,10 @@ const styles = StyleSheet.create({
     optionText: {
         fontSize: 18,
     },
+    signout: {
+        position: 'absolute',
+        bottom: '5%',
+        width: '100%',
+        alignSelf: 'center',
+    }
 });

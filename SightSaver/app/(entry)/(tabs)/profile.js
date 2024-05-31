@@ -3,7 +3,7 @@ import Colors from '../../../constants/Colors';
 import { useColorScheme } from '../../../components/useColorScheme';
 import React, { useState, useEffect, useContext, useRef } from 'react';
 import { Ionicons } from '@expo/vector-icons';
-import useBLE from "../useBLE";
+import useBLE from "../useBLE.ts";
 import { StyleSheet, TouchableOpacity, StatusBar, Modal, ScrollView, ActivityIndicator, Animated } from 'react-native';
 import { getChildrenInfo, newChildAdded } from '../../../ctx';
 import { ChildrenButtons } from '../../../components/ChildrenButtons';
@@ -18,11 +18,9 @@ export default function ProfileScreen() {
   const [username, setUsername] = useState('');
 
   const addChild = async (childName, sensorId) => {
-    setIsLoading(true).then(() => {
-      newChildAdded(childName, sensorId).then(() => {
-        const newChild = { childName, sensorId };
-        setChildrenInfo([...childrenInfo, newChild]);
-      });
+    newChildAdded(childName, sensorId).then(() => {
+      const newChild = { childName, sensorId };
+      setChildrenInfo([...childrenInfo, newChild]);
     });
   };
   

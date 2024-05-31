@@ -56,7 +56,7 @@ export default function WeeklyScreen({selectedDate, changeSelectedItem, dropdown
     if (!isLoading) {
       Animated.timing(fadeAnim, {
         toValue: 1,
-        duration: 500,
+        duration: 1000,
         useNativeDriver: true,
       }).start();
     }

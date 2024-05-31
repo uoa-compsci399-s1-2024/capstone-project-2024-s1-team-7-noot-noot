@@ -3,6 +3,7 @@ import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
 import { useColorScheme } from '../../../components/useColorScheme';
 import Colors from '../../../constants/Colors';
 import * as SecureStore from 'expo-secure-store';
+import CustomButton from '../../../components/CustomButton';
 
 export default function NotificationSettings() {
     const colorScheme = useColorScheme();
@@ -16,11 +17,14 @@ export default function NotificationSettings() {
                 <Text style={[styles.text, { color: Colors[colorScheme ?? 'light'].text, marginLeft: '5%' }]}>{dailyGoal} Hours</Text>
             </View>
             <View>
-                <TouchableOpacity
+                <CustomButton 
                     style={styles.saveButton}
+                    onPress={() => {
+                        //SecureStore.setItemAsync('dailyGoal', dailyGoal.toString());
+                    }}
+                    text="Save Daily Goal"
                 >
-                    <Text style={styles.saveButtonText}>Save Data</Text>
-                </TouchableOpacity>
+                </CustomButton>
             </View>
         </View>
     );
@@ -57,13 +61,6 @@ const styles = StyleSheet.create({
         width: '85%',
         alignSelf: 'center',
         borderRadius: 5,
-    },
-    saveButtonText: {
-        color: 'white',
-        fontSize: 20,
-        fontWeight: 'bold',
-        padding: 10,
-        textAlign: 'center',
     },
     slider: {
         minWidth: '85%',
