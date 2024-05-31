@@ -207,24 +207,4 @@ export const newChildAdded = async (childName: string) => {
     // console.error('Error adding new child:', error);
     return null;
   }
-}
-
-export const updateDailyGoal = async (dailyGoal: string) => {
-  try {
-    await SecureStore.setItemAsync(DAILY_GOAL, dailyGoal);
-    console.log('Setting daily goal:', dailyGoal);
-  } catch (error) {
-      console.error('Error setting daily goal:', error);
-  }
 };
-
-export const getDailyGoal = async () => {
-  try {
-      const dailyGoal = await SecureStore.getItemAsync(DAILY_GOAL);
-      console.log("daily Goal:", dailyGoal);
-      return dailyGoal;
-  } catch (error) {
-      console.error('Error retrieving daily goal:', error);
-      return null;
-  }
-}
