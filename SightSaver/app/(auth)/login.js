@@ -24,11 +24,13 @@ const Login = () => {
         const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
         if (!emailRegex.test(email)) {
             alert('Please enter a valid email address.');
+            setIsLoading(false);
             return;
         }
 
         if (!email || !password) {
             alert("Please fill in all fields. If you don't have an account, please sign up.");
+            setIsLoading(false);
             return;
         }
 
@@ -37,8 +39,7 @@ const Login = () => {
             setIsLoading(true);
             await onLogin(email, password);
         } catch (error) {
-            console.error('Login error:', error);
-        } finally {
+            alert('Invalid email or password. Please try again.');
             setIsLoading(false);
         }
     }
@@ -49,10 +50,9 @@ const Login = () => {
             setIsLoading(true);
             await onLogin('iru007@gmail.com', 'Iru007!!')
         } catch (error) {
-            console.error('Login error:', error);
-        } finally {
+            alert('Invalid email or password. Please try again.');
             setIsLoading(false);
-        }
+        } 
     }
 
     return(

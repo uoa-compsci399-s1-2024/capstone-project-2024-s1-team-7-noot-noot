@@ -21,22 +21,17 @@ const StackLayout = () => {
 		}
 	};
 
-
-
 	useEffect(() => {
 		const inAuthGroup = segments[0] === '(entry)';
 
 		if (!authState?.authenticated && inAuthGroup) {
-			// console.log('Not authenticated')
 			router.replace('/');
 		} else if (authState?.authenticated === true) {
-			console.log('Authenticated')
 			fetchUserDetails().then(() => {
 				router.replace('/(entry)');
 			});
 		}
 	}, [authState]);
-
 
 	return (
 		<Stack>
