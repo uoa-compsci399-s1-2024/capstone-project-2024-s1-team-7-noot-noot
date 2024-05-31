@@ -58,48 +58,40 @@ export const AuthProvider = ({ children }: any) => {
 
   //Register User
   const register = async (email: string, password: string, username: string) => {
-    try {
-      const result = await axios.post(`${API_URL}/auth/register`, {
-        username: username,
-        email: email,
-        password: password,
-        parent: true,
-      });
-      setAuthState({
-        token: result.data.token,
-        authenticated: true,
-      });
-      axios.defaults.headers.common['Authorization'] = `Bearer ${result.data.token}`;
+    const result = await axios.post(`${API_URL}/auth/register`, {
+      username: username,
+      email: email,
+      password: password,
+      parent: true,
+    });
+    setAuthState({
+      token: result.data.token,
+      authenticated: true,
+    });
+    axios.defaults.headers.common['Authorization'] = `Bearer ${result.data.token}`;
 
-      await SecureStore.setItemAsync(TOKEN_KEY, result.data.token);
-      await SecureStore.setItemAsync(USERNAME, username);
-      await SecureStore.setItemAsync(EMAIL, email);
-      await SecureStore.setItemAsync(DAILY_GOAL, '2');
-    } catch (error: any) {
-      console.log(error);
-    }
+    await SecureStore.setItemAsync(TOKEN_KEY, result.data.token);
+    await SecureStore.setItemAsync(USERNAME, username);
+    await SecureStore.setItemAsync(EMAIL, email);
+    await SecureStore.setItemAsync(DAILY_GOAL, '2');
   };
 
   //Login User
   const login = async (email: string, password: string) => {
-    try {
-      const result = await axios.post(`${API_URL}/auth/authenticate`, {
-        email: email,
-        password: password,
-      });
+    const result = await axios.post(`${API_URL}/auth/authenticate`, {
+      email: email,
+      password: password,
+    });
 
-      setAuthState({
-        token: result.data.token,
-        authenticated: true,
-      });
-      axios.defaults.headers.common['Authorization'] = `Bearer ${result.data.token}`;
+    setAuthState({
+      token: result.data.token,
+      authenticated: true,
+    });
+    axios.defaults.headers.common['Authorization'] = `Bearer ${result.data.token}`;
 
-      await SecureStore.setItemAsync(TOKEN_KEY, result.data.token);
-      await SecureStore.setItemAsync(EMAIL, email);
-      await SecureStore.setItemAsync(DAILY_GOAL, '2');
-    } catch (error: any) {
-      alert('Invalid email or password');
-    }
+    await SecureStore.setItemAsync(TOKEN_KEY, result.data.token);
+    await SecureStore.setItemAsync(EMAIL, email);
+    await SecureStore.setItemAsync(DAILY_GOAL, '2');
   };
 
   //Logout User
@@ -194,7 +186,7 @@ export const getChildrenInfo = async () => {
 export const newChildAdded = async (childName: string, sensorId: string) => {
   const email = await SecureStore.getItemAsync('email');
   try {
-    await axios.post(`https://sightsaver-api.azurewebsites.net/api/child/addChild`, {
+    await axios.post(`${API_URL}/child/addChild`, {
       email: email,
       name: childName,
       sensor_id: sensorId,
