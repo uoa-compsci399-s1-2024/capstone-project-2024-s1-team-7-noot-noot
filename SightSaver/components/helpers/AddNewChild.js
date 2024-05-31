@@ -41,14 +41,18 @@ export default function AddChildModal({ childrenInfo, visible, onClose, onAdd })
       if (childName === '') {
         alert('Please enter a child name');
       } else if (childrenInfo.length > 0) {
-        if (childrenInfo.some(child => child.sensorId == selectedDevice.id)) {
-          alert('This device is already assigned to a child');
-        } else {
-          onAdd(childName, selectedDevice.id);
-          setCurrentPage(1);
-          onClose();
-        }
-      } else {
+        // if (childrenInfo.some(child => child.sensorId == selectedDevice.id)) {
+        //   alert('This device is already assigned to a child');
+        // } else {
+        //   onAdd(childName, selectedDevice.id);
+        //   setCurrentPage(1);
+        //   onClose();
+        // }
+      // } else {
+        onAdd(childName, selectedDevice.id);
+        setCurrentPage(1);
+        onClose();
+      } else if (childrenInfo.length === 0) {
         onAdd(childName, selectedDevice.id);
         setCurrentPage(1);
         onClose();
@@ -93,15 +97,19 @@ export default function AddChildModal({ childrenInfo, visible, onClose, onAdd })
             ) : (
               <View style={[styles.pageContainer, {backgroundColor: Colors[colorScheme ?? 'light'].background}]}>
                 <Text style={[styles.title,{color:Colors[colorScheme ?? 'light'].text}, {alignSelf:'center', marginBottom:10}, {fontSize: 21, fontWeight: 'bold'}]}>Set Child Name</Text>
-                <CustomInput
-                  style={styles.input}
-                  placeholder="Child Name"
-                  value={childName}
-                  setValue={setChildName}
-                  keyboardType="default"
-                />
+                <View style={styles.input}>
+                  <CustomInput
+                    placeholder="Child Name"
+                    value={childName}
+                    setValue={setChildName}
+                    keyboardType="default"
+                  />
+                </View>
                 <View style={styles.buttonContainer}>
-                  <CustomButton onPress={handleSync} text={"Add Child"}/>
+                  <CustomButton                    
+                    onPress={handleSync} 
+                    text={"Add Child"}
+                  />
                 </View>
               </View>
             )}
@@ -114,6 +122,10 @@ export default function AddChildModal({ childrenInfo, visible, onClose, onAdd })
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+  },
+  input: {
+    marginTop: '5%',
+    marginBottom: '-5%',
   },
   deviceModal: {
     paddingTop: '20%',

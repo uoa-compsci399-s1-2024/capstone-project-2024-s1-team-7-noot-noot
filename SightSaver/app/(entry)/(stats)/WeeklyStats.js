@@ -25,6 +25,7 @@ export default function WeeklyScreen({selectedDate, changeSelectedItem, dropdown
   const [totalHours, setTotalHours] = useState(0);
   const [completedPercentage, setCompletedPercentage] = useState(0);
   const [notCompletedPercentage, setNotCompletedPercentage] = useState(100);
+  const [sensorId, setSensorId] = useState('');
   const fadeAnim = useRef(new Animated.Value(0)).current;
   const [dailyGoal, setDailyGoal] = useState(2);
   const isFocus = useIsFocused();
@@ -42,19 +43,25 @@ export default function WeeklyScreen({selectedDate, changeSelectedItem, dropdown
 
   const goToNextWeek = () => {
     setSearchWeek(moment(searchWeek, "YYYY:WW").add(1, 'weeks').format("YYYY:WW"));
+    fadeAnim.stopAnimation();
+    fadeAnim.setValue(0);
     setIsLoading(true);
   };
   
   const goToPreviousWeek = () => {
     setSearchWeek(moment(searchWeek, "YYYY:WW").subtract(1, 'weeks').format("YYYY:WW"));
+    fadeAnim.stopAnimation();
+    fadeAnim.setValue(0);
     setIsLoading(true);
   };
   
   useEffect(() => {
+    fadeAnim.stopAnimation();
+    fadeAnim.setValue(0);
     if (!isLoading) {
       Animated.timing(fadeAnim, {
         toValue: 1,
-        duration: 300,
+        duration: 1000,
         useNativeDriver: true,
       }).start();
     }
@@ -62,30 +69,33 @@ export default function WeeklyScreen({selectedDate, changeSelectedItem, dropdown
 
   useFocusEffect(
     useCallback(() => {
-      setIsLoading(true);
-      SecureStore.getItemAsync('dailyGoal').then((goal) => {
-        const parsedGoal = parseInt(goal, 10);
-        setDailyGoal(parsedGoal);
+      SecureStore.getItemAsync('sensorId').then((sensorId) => {
+        setSensorId(sensorId);
+        setIsLoading(true);
+        SecureStore.getItemAsync('dailyGoal').then((goal) => {
+          const parsedGoal = parseInt(goal, 10);
+          setDailyGoal(parsedGoal);
 
-        updateWeekData(searchWeek).then((weekData) => {
-          setMonday((weekData[0]));
-          setTuesday((weekData[1]));
-          setWednesday((weekData[2]));
-          setThursday((weekData[3]));
-          setFriday((weekData[4]));
-          setSaturday((weekData[5]));
-          setSunday((weekData[6]));
+          updateWeekData(searchWeek).then((weekData) => {
+            setMonday((weekData[0]));
+            setTuesday((weekData[1]));
+            setWednesday((weekData[2]));
+            setThursday((weekData[3]));
+            setFriday((weekData[4]));
+            setSaturday((weekData[5]));
+            setSunday((weekData[6]));
 
-          const newTotalTime = (weekData[0] + weekData[1] + weekData[2] + weekData[3] + weekData[4] + weekData[5] + weekData[6]).toFixed(1);
-          const newCompletedPercentage = Math.round(Math.min(newTotalTime / (parsedGoal*7) * 100, 100));
-          const newNotCompletedPercentage = 100 - newCompletedPercentage;
+            const newTotalTime = (weekData[0] + weekData[1] + weekData[2] + weekData[3] + weekData[4] + weekData[5] + weekData[6]).toFixed(1);
+            const newCompletedPercentage = Math.round(Math.min(newTotalTime / (parsedGoal*7) * 100, 100));
+            const newNotCompletedPercentage = 100 - newCompletedPercentage;
 
-          setTotalHours(newTotalTime);
-          setCompletedPercentage(newCompletedPercentage);
-          setNotCompletedPercentage(newNotCompletedPercentage);
-          setTimeout(() => {
-            setIsLoading(false);
-          }, 100);
+            setTotalHours(newTotalTime);
+            setCompletedPercentage(newCompletedPercentage);
+            setNotCompletedPercentage(newNotCompletedPercentage);
+            setTimeout(() => {
+              setIsLoading(false);
+            }, 100);
+          });
         });
       });
     }, [searchWeek])

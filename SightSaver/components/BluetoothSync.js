@@ -2,136 +2,143 @@ import { View, Text } from './Themed';
 import { useColorScheme } from './useColorScheme';
 import React, { useState, useEffect } from 'react';
 import useBLE from "../app/(entry)/useBLE.ts";
-import { StyleSheet, TouchableOpacity, Modal, ScrollView, } from 'react-native';
+import { StyleSheet, TouchableOpacity, StatusBar, Modal, ScrollView } from 'react-native';
+import { Ionicons } from '@expo/vector-icons';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import Colors from '../constants/Colors';
 
-export default function BluetoothSync( { childrenInfo, visible, onClose, selectedChildIndex } ) {
-  const [selectedDevice, setSelectedDevice] = useState(null);
-  const [alertMessage, setAlertMessage] = useState('');
-  const [deviceFound, setDeviceFound] = useState(false);
+export default function BluetoothSync({ childrenInfo, visible, onClose, selectedChildIndex }) {
   const colorScheme = useColorScheme();
+  const [activeButton, setActiveButton] = useState(2); // Changed state for active button
+  const [showDevices, setShowDevices] = useState(false); // Whether to show the list of devices
+  const [modalVisible, setModalVisible] = useState(false);
+  const [selectedDevice, setSelectedDevice] = useState(null);
+  const [alertVisible, setAlertVisible] = useState(false);
+  const [alertMessage, setAlertMessage] = useState('');
   const {
-      requestPermissions,
-      scanForPeripherals,
-      allDevices,
-      connectToDevice,
-      setAllDevices,
-      dataSyncCompleted,
+    requestPermissions,
+    scanForPeripherals,
+    allDevices,
+    connectToDevice,
+    connectedDevice,
+    SensorData,
+    disconnectFromDevice,
+    setAllDevices,
+    dataSyncCompleted,
   } = useBLE();
 
-  useEffect(() => {
-      const requestAndScan = async () => {
-        const permissionsGranted = await requestPermissions();
-        if (permissionsGranted) {
-          scanForPeripherals();
-        }
-      };
-      requestAndScan();
-      try {
-        handleSync(childrenInfo[selectedChildIndex].sensorId);
-      } catch (error) {
-        console.log('Error Loading Details:', error);
-      }
-  }, [visible]);
+  const [triggerSync, setTriggerSync] = useState(false);
 
   useEffect(() => {
-      if (dataSyncCompleted) {
-        setAlertMessage('Data Synced');
-        setDeviceFound(false);
+    if (selectedDevice && triggerSync) {
+      handleSync();
+      setTriggerSync(false);
+    }
+  }, [selectedDevice, triggerSync]);
+
+  useEffect(() => {
+    const requestAndScan = async () => {
+      const permissionsGranted = await requestPermissions();
+      if (permissionsGranted) {
+        scanForPeripherals();
       }
+    };
+
+    requestAndScan();
+  }, []);
+
+  useEffect(() => {
+    if (dataSyncCompleted) {
+      setAlertMessage('Data Synced');
+    }
   }, [dataSyncCompleted]);
 
-  const handleSync = async (sensorId) => {
-    setAlertMessage('Searching for Device...');
-    setAllDevices([]);
-    scanForPeripherals();
-  
-    const checkDevicesInterval = setInterval(() => {
-      for (let i = 0; i < allDevices.length; i++) {
-        if (allDevices[i].id === sensorId) {
-          setAlertMessage('Device found');
-          setSelectedDevice(allDevices[i]);
-          clearInterval(checkDevicesInterval);
-          handleDeviceConnection(allDevices[i]);
-          break;
-        }
-      }
-    }, 1000);
-  
-    setTimeout(() => {
-      clearInterval(checkDevicesInterval);
-      if (!selectedDevice) {
-        setAlertMessage('Device not found');
-      }
-    }, 30000);
-  };
-  
-  const handleDeviceConnection = async (device) => {
-    const connected = await connectToDevice(device);
-    if (connected) {
-      if (dataSyncCompleted) {
-        setAlertMessage('Data Synced');
-        setDeviceFound(false);
-      } else {
+  const handleSync = async () => {
+    if (selectedDevice) {
+      setAlertMessage('Connecting...');
+      setAlertVisible(true);
+      try {
+        setAlertMessage('Connected. Syncing...');
+        await connectToDevice(selectedDevice, true);
+      } catch (error) {
         setAlertMessage('Device Connecting Failed');
+      } finally {
+        setShowDevices(false);
+        setModalVisible(false);
       }
     } else {
-      setAlertMessage('Device Connecting Failed');
+      setAlertMessage('No device selected');
+      setAlertVisible(true);
+    }
+  };
+
+  const getChildNameBySensorId = (sensorId) => {
+    if (childrenInfo.length > 0) {
+      const child = childrenInfo.find(child => child.sensorId === sensorId);
+      return child ? child.childName : '';
+    } else {
+      return '';
     }
   };
 
   return (
-    <View style={styles.container}>
+    <View style={[styles.container]}>
+      {/* Device Modal */}
       <Modal
           animationType="fade"
           transparent={true}
           visible={visible}
           onRequestClose={() => {
-          if (
-              alertMessage === 'Data Synced' ||
-              alertMessage === 'Device Connecting Failed' ||
-              alertMessage === 'No device selected' ||
-              alertMessage === 'Device not found' ||
-              alertMessage === 'Searching for Device...' ||
-              alertMessage === ''
-          ) {
-              onClose();
-              setAllDevices([]);
-              setAlertMessage('');
-          }
+            onClose();
           }}
-      >
-        <TouchableOpacity 
-          style={styles.overlay} 
-          activeOpacity={1} 
-          onPressOut={() => {
-              if (
-              alertMessage === 'Data Synced' ||
-              alertMessage === 'Device Connecting Failed' ||
-              alertMessage === 'No device selected' ||
-              alertMessage === 'Device not found' ||
-              alertMessage === 'Searching for Device...' ||
-              alertMessage === ''
-              ) {
-                onClose();
-                setAllDevices([]);
-                setAlertMessage('');
-              }
-          }}
-          >
-          <View style={styles.alertModal}>
-            <Text style={[styles.alertMessage, {color:'white'}]}>{alertMessage}</Text>
-            {(
-              alertMessage === 'Data Synced' || 
-              alertMessage === 'Device Connecting Failed' || 
-              alertMessage === 'No device selected' || 
-              alertMessage === 'Device not found' ||
-              alertMessage === 'Searching for Device...' ||
-              alertMessage === ''
-            ) && (
-            <TouchableOpacity
-                onPress={() => {onClose(), setAllDevices([]), setAlertMessage('');}}
-            >
+        >
+        <View style={styles.overlay}>
+          <View style={styles.deviceModal}>
+            <TouchableOpacity style={styles.closeButton} onPress={() => { setAllDevices([]); onClose(); scanForPeripherals(); }}>
+              <Ionicons name="close" size={22} color={Colors[colorScheme ?? 'light'].text} />
             </TouchableOpacity>
+            <Text style={[styles.title, { color: Colors[colorScheme ?? 'light'].text }, { alignSelf: 'center', marginBottom: 10 }, { fontSize: 21, fontWeight: 'bold' }]}>Searching for devices...</Text>
+            <ScrollView>
+              {allDevices.map((device) => (
+                <TouchableOpacity
+                  key={device.id}
+                  onPress={() => {
+                    setSelectedDevice(device);
+                    setAllDevices([]);
+                    onClose();
+                    setTriggerSync(true);
+                  }}
+                  style={styles.deviceButton}
+                >
+                  <Text style={styles.deviceButtonText}>{getChildNameBySensorId(device?.id)} - {device?.id}</Text>
+                </TouchableOpacity>
+              ))}
+            </ScrollView>
+          </View>
+        </View>
+      </Modal>
+
+      {/* Alert Modal */}
+      <Modal
+        animationType="fade"
+        transparent={true}
+        visible={alertVisible}
+        onRequestClose={() => {
+          setAlertVisible(!alertVisible);
+        }}
+      >
+        <TouchableOpacity
+          style={styles.overlay}
+          activeOpacity={1}
+          onPressOut={() => { setAlertVisible(false); }}
+        >
+          <View style={styles.alertModal}>
+            <Text style={styles.alertMessage}>{alertMessage}</Text>
+            {(alertMessage === 'Data Synced' || alertMessage === 'Device Connecting Failed' || alertMessage === 'No device selected') && (
+              <TouchableOpacity
+                onPress={() => { setAlertVisible(false); setAllDevices([]); }}
+              >
+              </TouchableOpacity>
             )}
           </View>
         </TouchableOpacity>
@@ -143,44 +150,46 @@ export default function BluetoothSync( { childrenInfo, visible, onClose, selecte
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-  },
-  overlay: {
-    flex: 1,
-    backgroundColor: 'rgba(0, 0, 0, 0.8)',
-    justifyContent: 'center',
     alignItems: 'center',
-    width: '100%',
-    height: '100%',
-  },
-  deviceModal: {
-    width: '80%',
-    height: '50%',
-    borderRadius: 10,
-    padding: 40,
-  },
-  closeButton: {
-    flex: 1,
-    right: 0,
-    padding: 15,
-    position: 'absolute',
-  },
-  title: {
-    fontSize: 20,
-    fontWeight: 'bold',
-  },
-  deviceButton: {
-    width: '100%',
-    height: '100%',
-    marginVertical: 0,
     justifyContent: 'center',
-    paddingVertical: 10,
+  },
+  syncButton: {
+    width: '85%',
+    marginVertical: 20,
+    justifyContent: 'center',
+    paddingVertical: 20,
     borderWidth: 0,
     alignItems: 'center',
     borderRadius: 5,
     alignSelf: 'center',
   },
-  deviceButtonText: {
+  syncButtonText: {
     fontSize: 18,
+  },
+  title: {
+    fontSize: 18,
+    marginBottom: 5,
+  },
+  buttonText: {
+    fontSize: 16,
+  },
+  button: {
+    flexDirection: 'row', // Set the button layout to row
+    alignItems: 'center', // Center the text and circle within the button
+    justifyContent: 'space-between', // Center the text and circle within the button
+    width: '85%',
+    paddingHorizontal: 20, // Add padding on the left and right (20px from the edge)
+    paddingVertical: 20, // Add padding on the top and bottom (10px from the edge)
+    borderWidth: 0,
+    borderRadius: 5, // Rounded corners
+    marginVertical: 5, // Add vertical margin for spacing between buttons
+  },
+  deviceModal: {
+    paddingTop: '20%',
+    justifyContent: 'center',
+    alignItems: 'center',
+    height: '100%',
+    width: '100%',
   },
   alertModal: {
     width: '80%',
@@ -196,19 +205,33 @@ const styles = StyleSheet.create({
     fontSize: 18,
     fontWeight: 'bold',
   },
-  syncButton: {
-    width: '85%',
+  overlay: {
+    flex: 1,
+    backgroundColor: 'rgba(0, 0, 0, 0.7)',
     justifyContent: 'center',
-    paddingVertical: 20,
+    alignItems: 'center',
+    width: '100%',
+    height: '100%',
+  },
+  closeButton: {
+    flex: 1,
+    right: 0,
+    top: 0,
+    padding: 15,
+    position: 'absolute',
+  },
+  deviceButton: {
+    width: '100%',
+    height: '100%',
+    marginVertical: 0,
+    justifyContent: 'center',
+    paddingVertical: 10,
     borderWidth: 0,
     alignItems: 'center',
     borderRadius: 5,
     alignSelf: 'center',
-    backgroundColor: '#1970B4',
   },
-  syncButtonText: {
-    fontSize: 20,
-    color: 'white',
-    fontWeight: 'bold',
-  },
+  deviceButtonText: {
+    fontSize: 18,
+  }
 });

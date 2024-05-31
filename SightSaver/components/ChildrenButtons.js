@@ -1,9 +1,12 @@
 import React, { Children, useEffect, useState, useRef } from 'react';
-import { TouchableOpacity, Text, View, StyleSheet, ScrollView, Animated, ActivityIndicator } from 'react-native';
+import { TouchableOpacity, Text, View, StyleSheet, ScrollView, Animated, ActivityIndicator, Button } from 'react-native';
 import Colors from '../constants/Colors'; 
 import AddChildModal from './helpers/AddNewChild'; 
 import { useColorScheme } from './useColorScheme';
 import BluetoothSync from './BluetoothSync';
+import CustomButton from './CustomButton';
+import useBLE from '../app/(entry)/useBLE.ts';
+import * as SecureStore from 'expo-secure-store';
 
 // Define the component for rendering children buttons
 export const ChildrenButtons = ({ childrenInfo, handleAddChild }) => {
@@ -11,12 +14,31 @@ export const ChildrenButtons = ({ childrenInfo, handleAddChild }) => {
   const [selectedChildIndex, setSelectedChildIndex] = useState(0);
   const [modalVisible, setModalVisible] = useState(false);
   const [syncVisible, setSyncVisible] = useState(false);
-  const [isLoading, setIsLoading] = useState(false);
   const colorScheme = useColorScheme();
+  const {
+    setAllDevices,
+  } = useBLE();
 
   const handleChildButtonPress = (childIndex) => {
     setSelectedChildIndex(childIndex);
   };
+
+  useEffect(() => {
+    SecureStore.getItemAsync('sensorId').then((sensorId) => {
+      if (sensorId) {
+        const index = childrenInfo.findIndex((child) => child.sensorId === sensorId);
+        if (index !== -1) {
+          setSelectedChildIndex(index);
+        }
+      }
+    });
+  }, []);
+
+  useEffect(() => {
+    if (childrenInfo.length > 0) {
+      SecureStore.setItemAsync('sensorId', childrenInfo[selectedChildIndex].sensorId);
+    }
+  }, [selectedChildIndex]);
 
   return (
     <View style={[styles.container]}>
@@ -44,23 +66,27 @@ export const ChildrenButtons = ({ childrenInfo, handleAddChild }) => {
       )}
       {childrenInfo.length > 0 && (
         <View style={styles.syncContainer}>
-          <TouchableOpacity
-            style={[styles.syncDataButton]} // Apply syncButton and addButton styles
-            onPress={() => setSyncVisible(true)}
-          >
-            <Text style={styles.syncButtonText}>Sync Data</Text>
-          </TouchableOpacity>
+          <CustomButton
+            onPress={() => [setSyncVisible(true), setAllDevices([])]}
+            text="Sync Data"
+          />
         </View>
       )}
-  
-      {/* Add New Button */}
-      <TouchableOpacity
-        style={[styles.addButton]} // Apply syncButton and addButton styles
-        onPress={() => setModalVisible(true)}
-      >
-        <Text style={styles.syncButtonText}>Add New Child</Text>
-      </TouchableOpacity>
-  
+
+      <View style={styles.addChildContainer}>
+        <CustomButton
+          onPress={() => [setModalVisible(true), setAllDevices([])]}
+          text="Add New Child"
+        />
+      </View>
+
+      <View style={styles.dummyChild}>
+        <Button 
+          title="Add Dummy Child"
+          onPress={() => handleAddChild('Test 4', '52:74:A2:97:91:42')}
+        />
+      </View>
+
       {/* Modal for adding a new child */}
       <AddChildModal childrenInfo={childrenInfo} visible={modalVisible} onClose={() => setModalVisible(false)} onAdd={handleAddChild} />
       <BluetoothSync childrenInfo={childrenInfo} visible={syncVisible} onClose={() => setSyncVisible(false)} selectedChildIndex={selectedChildIndex}/>
@@ -75,10 +101,9 @@ const styles = StyleSheet.create({
     alignItems: 'center', // Align items to the center horizontally
   },
   syncContainer: {
-    width: '100%',
+    width: '85%',
     alignItems: 'center',
-    justifyContent: 'center',
-    marginTop: '30%',
+    marginTop: '5%',
   },
   buttonText: {
     fontSize: 18,
@@ -95,6 +120,12 @@ const styles = StyleSheet.create({
     borderRadius: 5, // Rounded corners
     marginVertical: 5, // Add vertical margin for spacing between buttons
   },
+  dummyChild: {
+    width: '85%',
+    alignItems: 'center',
+    bottom: '32.5%',
+    position: 'absolute',
+  },
   circle: {
     width: 20, // Circle size
     height: 20, // Circle size
@@ -108,29 +139,15 @@ const styles = StyleSheet.create({
     marginTop: 0, // Add marginTop to create space between ScrollView and the title
     marginBottom: 10, // Add marginBottom to create space between ScrollView and Add new button
   },
-  syncButtonText: {
-    fontSize: 20,
-    color: 'white',
-    fontWeight: 'bold',
-  },
   addButton: {
+    justifyContent: 'center',
+    position: 'absolute',
+    bottom: 20,
+  },    
+  addChildContainer: {
     width: '85%',
-    paddingVertical: 20,
-    borderWidth: 0,
     alignItems: 'center',
-    borderRadius: 5,
-    backgroundColor: '#1970B4',
     bottom: '5%',
     position: 'absolute',
-  },    
-  syncDataButton: {
-    width: '85%',
-    paddingVertical: 20,
-    borderWidth: 0,
-    alignItems: 'center',
-    borderRadius: 5,
-    backgroundColor: '#1970B4',
-    bottom: '18%',
-    position: 'absolute',
-  },  
+  },
 });

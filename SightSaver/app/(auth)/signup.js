@@ -25,17 +25,20 @@ export default function SignupScreen() {
 
         if (!termsAccepted && !privacyAccepted) {
             alert('Please accept the Terms of Service and Privacy Policy.');
+            setIsLoading(false);
             return; 
         }
 
         const passwordRegex = /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{8,}$/;
         if (!passwordRegex.test(password)) {
             alert('Password does not meet constraints. Password must be at least 8 characters long and contain at least one uppercase letter, one lowercase letter, and one number.');
+            setIsLoading(false);
             return; 
         }
 
         if (password !== confirmPassword) {
             alert('Passwords do not match.');
+            setIsLoading(false);
             return; 
         }
         
@@ -44,11 +47,8 @@ export default function SignupScreen() {
             setIsLoading(true); 
             await onRegister(email, password, username);
         } catch (error) {
-            console.log('Registration failed', error);
-        } finally {
-            setTimeout(() => {
-                setIsLoading(false); 
-            }, 1000)
+            alert('Registration failed. Please try again.');
+            setIsLoading(false);
         }
     }
 

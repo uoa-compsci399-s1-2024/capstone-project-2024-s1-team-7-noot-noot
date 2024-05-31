@@ -1,7 +1,11 @@
 package NootNoot.SightSaver.model;
 
 import jakarta.persistence.*;
+import lombok.Getter;
+import lombok.Setter;
 
+@Setter
+@Getter
 @Entity
 public class Sensor {
 
@@ -13,13 +17,12 @@ public class Sensor {
     public Sensor() {
     }
 
-    public Sensor(Long child_id) {
-        this.child_id = child_id;
-    }
-
-
     public String getId() {return this.id;}
     public Long getChild_id() {return this.child_id;}
+
+    public void setChild_id(Long child_id) {
+        this.child_id = child_id;
+    }
 
     public String toString() {
         return "Sensor [id=" + id + ", userId=" + child_id + "]";

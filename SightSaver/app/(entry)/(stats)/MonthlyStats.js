@@ -93,7 +93,6 @@ export default function MonthlyScreen({ selectedDate, changeSelectedItem, dropdo
     }
     return customDatesStyles;
   }
-
   useFocusEffect(
     useCallback(() => {
       setIsLoading(true);
@@ -111,10 +110,12 @@ export default function MonthlyScreen({ selectedDate, changeSelectedItem, dropdo
   );
 
   useEffect(() => {
+    fadeAnim.stopAnimation();
+    fadeAnim.setValue(0);
     if (!isLoading) {
       Animated.timing(fadeAnim, {
         toValue: 1,
-        duration: 300,
+        duration: 500,
         useNativeDriver: true,
       }).start();
     }

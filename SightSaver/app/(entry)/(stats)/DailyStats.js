@@ -20,6 +20,7 @@ export default function DailyScreen({selectedDate, dayDataInput, totalTimeInput,
   const [notCompletedPercentage, setNotCompletedPercentage] = useState(notCompletedPercentageInput);
   const [dayData, setDayData] = useState(dayDataInput);
   const [totalTime, setTotalTime] = useState(totalTimeInput);
+  const [sensorId, setSensorId] = useState('');
   const fadeAnim = useRef(new Animated.Value(0)).current;
   const [dailyGoal, setDailyGoal] = useState(2);
   const isFocus = useIsFocused();
@@ -27,20 +28,26 @@ export default function DailyScreen({selectedDate, dayDataInput, totalTimeInput,
   const goToNextDay = () => {
     setSearchDate(moment(searchDate, "YYYY:MM:DD").add(1, 'days').format("YYYY:MM:DD"));
     setDate(moment(date, "dddd Do MMMM").add(1, 'days').format("dddd Do MMMM"));
+    fadeAnim.stopAnimation();
+    fadeAnim.setValue(0);
     setIsLoading(true);
   };
   
   const goToPreviousDay = () => {
     setSearchDate(moment(searchDate, "YYYY:MM:DD").subtract(1, 'days').format("YYYY:MM:DD"));
     setDate(moment(date, "dddd Do MMMM").subtract(1, 'days').format("dddd Do MMMM"));
+    fadeAnim.stopAnimation();
+    fadeAnim.setValue(0);
     setIsLoading(true);
   };
 
   useEffect(() => {
+    fadeAnim.stopAnimation();
+    fadeAnim.setValue(0);
     if (!isLoading) {
       Animated.timing(fadeAnim, {
         toValue: 1,
-        duration: 300,
+        duration: 500,
         useNativeDriver: true,
       }).start();
     }
@@ -53,6 +60,10 @@ export default function DailyScreen({selectedDate, dayDataInput, totalTimeInput,
       SecureStore.getItemAsync('dailyGoal').then((goal) => {
         const parsedGoal = parseInt(goal, 10);
         setDailyGoal(parsedGoal);
+        
+        SecureStore.getItemAsync('sensorId').then((sensorId) => {
+          setSensorId(sensorId);
+        });
 
         updateDayData(searchDate).then((values) => {
           const newDayData = values[0];

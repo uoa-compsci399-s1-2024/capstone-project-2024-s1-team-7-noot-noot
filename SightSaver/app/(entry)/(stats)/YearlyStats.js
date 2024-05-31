@@ -56,19 +56,25 @@ export default function YearlyScreen({ selectedDate, changeSelectedItem, dropdow
 
   const goToNextYear = () => {
     setSearchYear(moment(searchYear, "YYYY").add(1, 'years').format("YYYY"));
+    fadeAnim.stopAnimation();
+    fadeAnim.setValue(0);
     setIsLoading(true);
   };
 
   const goToPreviousYear = () => {
     setSearchYear(moment(searchYear, "YYYY").subtract(1, 'years').format("YYYY"));
+    fadeAnim.stopAnimation();
+    fadeAnim.setValue(0);
     setIsLoading(true);
   };
 
   useEffect(() => {
+    fadeAnim.stopAnimation();
+    fadeAnim.setValue(0);
     if (!isLoading) {
       Animated.timing(fadeAnim, {
         toValue: 1,
-        duration: 300,
+        duration: 500,
         useNativeDriver: true,
       }).start();
     }
@@ -81,8 +87,6 @@ export default function YearlyScreen({ selectedDate, changeSelectedItem, dropdow
       SecureStore.getItemAsync('dailyGoal').then((goal) => {
         const parsedGoal = parseInt(goal, 10);
         setDailyGoal(parsedGoal);
-
-        console.log(parsedGoal);
 
         getCompletedDays(searchYear, parsedGoal).then((yearData) => {
           setYearData(yearData);
