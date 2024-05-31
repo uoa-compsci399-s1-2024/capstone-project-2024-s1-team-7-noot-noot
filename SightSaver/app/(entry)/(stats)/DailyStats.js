@@ -63,20 +63,19 @@ export default function DailyScreen({selectedDate, dayDataInput, totalTimeInput,
         
         SecureStore.getItemAsync('sensorId').then((sensorId) => {
           setSensorId(sensorId);
-        });
-
-        updateDayData(searchDate).then((values) => {
-          const newDayData = values[0];
-          const newTotalTime = values[1];
-          const newCompletedPercentage = Math.round(Math.min(newTotalTime / (parsedGoal * 60) * 100, 100));
-          const newNotCompletedPercentage = 100 - newCompletedPercentage;
-
-          setDayData(newDayData);
-          setTotalTime(newTotalTime);
-          setCompletedPercentage(newCompletedPercentage);
-          setNotCompletedPercentage(newNotCompletedPercentage);
-
-          setIsLoading(false);
+          updateDayData(searchDate, sensorId).then((values) => {
+            const newDayData = values[0];
+            const newTotalTime = values[1];
+            const newCompletedPercentage = Math.round(Math.min(newTotalTime / (parsedGoal * 60) * 100, 100));
+            const newNotCompletedPercentage = 100 - newCompletedPercentage;
+  
+            setDayData(newDayData);
+            setTotalTime(newTotalTime);
+            setCompletedPercentage(newCompletedPercentage);
+            setNotCompletedPercentage(newNotCompletedPercentage);
+  
+            setIsLoading(false);
+          });
         });
       });
     }, [searchDate])
@@ -151,6 +150,7 @@ export default function DailyScreen({selectedDate, dayDataInput, totalTimeInput,
 </>
   );
 }
+
 const styles = StyleSheet.create({
   container: {
     alignContent: 'center',

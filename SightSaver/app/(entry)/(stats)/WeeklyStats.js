@@ -1,17 +1,17 @@
 import { StyleSheet, Animated, ActivityIndicator } from 'react-native';
-import React, {useState, useEffect, useRef, useCallback} from 'react';
+import React, { useState, useEffect, useRef, useCallback } from 'react';
 import { Text, View } from '../../../components/Themed';
 import moment from "moment";
 moment.locale('en-gb'); 
 import Colors from '../../../constants/Colors';
 import { useColorScheme } from '../../../components/useColorScheme';
 import { updateWeekData } from '../../../components/helpers/WeekData';
-import { BarChart, LineChart, PieChart, PopulationPyramid } from 'react-native-gifted-charts';
+import { BarChart, PieChart } from 'react-native-gifted-charts';
 import { Ionicons } from '@expo/vector-icons';
 import * as SecureStore from 'expo-secure-store';
 import { useIsFocused, useFocusEffect } from '@react-navigation/native';
 
-export default function WeeklyScreen({selectedDate, changeSelectedItem, dropdownData}) {
+export default function WeeklyScreen({ selectedDate, changeSelectedItem, dropdownData }) {
   const colorScheme = useColorScheme();
   const [isLoading, setIsLoading] = useState(true);
   const [monday, setMonday] = useState(0);
@@ -29,11 +29,11 @@ export default function WeeklyScreen({selectedDate, changeSelectedItem, dropdown
   const fadeAnim = useRef(new Animated.Value(0)).current;
   const [dailyGoal, setDailyGoal] = useState(2);
   const isFocus = useIsFocused();
-  
+
   const onDateChange = (date) => {
     changeSelectedItem(dropdownData.find(item => item.label === 'Daily'), date);
   };
-  
+
   // Helper function to get date of a day in a specific week and year
   function getDateOfWeek(week, year, dayIndex) {
     // Offset dayIndex by 1 because your week starts on Monday
@@ -47,14 +47,14 @@ export default function WeeklyScreen({selectedDate, changeSelectedItem, dropdown
     fadeAnim.setValue(0);
     setIsLoading(true);
   };
-  
+
   const goToPreviousWeek = () => {
     setSearchWeek(moment(searchWeek, "YYYY:WW").subtract(1, 'weeks').format("YYYY:WW"));
     fadeAnim.stopAnimation();
     fadeAnim.setValue(0);
     setIsLoading(true);
   };
-  
+
   useEffect(() => {
     fadeAnim.stopAnimation();
     fadeAnim.setValue(0);
@@ -69,9 +69,11 @@ export default function WeeklyScreen({selectedDate, changeSelectedItem, dropdown
 
   useFocusEffect(
     useCallback(() => {
+      setIsLoading(true);
+
       SecureStore.getItemAsync('sensorId').then((sensorId) => {
         setSensorId(sensorId);
-        setIsLoading(true);
+
         SecureStore.getItemAsync('dailyGoal').then((goal) => {
           const parsedGoal = parseInt(goal, 10);
           setDailyGoal(parsedGoal);
@@ -112,8 +114,8 @@ export default function WeeklyScreen({selectedDate, changeSelectedItem, dropdown
   }
 
   var pieData = [
-    {value: completedPercentage, color: '#FFBC1F'},
-    {value: notCompletedPercentage, color: '#F6D78D'}
+    { value: completedPercentage, color: '#FFBC1F' },
+    { value: notCompletedPercentage, color: '#F6D78D' }
   ];
 
   function getColor(value) {
@@ -129,47 +131,47 @@ export default function WeeklyScreen({selectedDate, changeSelectedItem, dropdown
   return (
     <>
       {isFocus && (
-        <Animated.View style={[styles.container, {backgroundColor:Colors[colorScheme ?? 'light'].background}, {opacity: fadeAnim}]}>
+        <Animated.View style={[styles.container, { backgroundColor: Colors[colorScheme ?? 'light'].background }, { opacity: fadeAnim }]}>
           <View style={styles.dateSpace}>
-            <Text style={{color:Colors[colorScheme ?? 'light'].text}}>{`Week ${week}, ${year}`}</Text>
+            <Text style={{ color: Colors[colorScheme ?? 'light'].text }}>{`Week ${week}, ${year}`}</Text>
           </View>
-          <View style={{ flexDirection: 'row', justifyContent: 'space-between', top: '25%'}}>
-            <Ionicons style={{ left: '-4%', position: 'absolute', opacity: 0.4  }} name="chevron-back" size={50} color={Colors[colorScheme ?? 'light'].text} onPress={goToPreviousWeek} />
+          <View style={{ flexDirection: 'row', justifyContent: 'space-between', top: '25%' }}>
+            <Ionicons style={{ left: '-4%', position: 'absolute', opacity: 0.4 }} name="chevron-back" size={50} color={Colors[colorScheme ?? 'light'].text} onPress={goToPreviousWeek} />
             <Ionicons style={{ right: '-4%', position: 'absolute', opacity: 0.4 }} name="chevron-forward" size={50} color={Colors[colorScheme ?? 'light'].text} onPress={goToNextWeek} />
           </View>
           <View style={styles.pieSpace}>
-            <PieChart style= {styles.PieChart}
+            <PieChart style={styles.PieChart}
               donut
               innerRadius={80}
               borderRadius={15}
               data={pieData}
               innerCircleColor={Colors[colorScheme ?? 'light'].background}
               centerLabelComponent={() => {
-                return <Text style={{fontSize: 30, color:Colors[colorScheme ?? 'light'].text}}>{completedPercentage}%</Text>;
+                return <Text style={{ fontSize: 30, color: Colors[colorScheme ?? 'light'].text }}>{completedPercentage}%</Text>;
               }}
             />
           </View>
           <View style={styles.goal}>
-            <Text style={{color:Colors[colorScheme ?? 'light'].text}}>{totalHours}/{dailyGoal*7} Hours</Text>
+            <Text style={{ color: Colors[colorScheme ?? 'light'].text }}>{totalHours}/{dailyGoal * 7} Hours</Text>
           </View>
           <View style={styles.barSpace}>
-            <BarChart 
+            <BarChart
               barWidth={22}
               noOfSections={4}
               height={100}
               barBorderRadius={8}
-              yAxisTextStyle={{color:Colors[colorScheme ?? 'light'].text}}
-              xAxisLabelTextStyle={{color:Colors[colorScheme ?? 'light'].text}}
+              yAxisTextStyle={{ color: Colors[colorScheme ?? 'light'].text }}
+              xAxisLabelTextStyle={{ color: Colors[colorScheme ?? 'light'].text }}
               stepValue={1}
               hideRules={true}
               data={[
-                {value: monday, label: 'Mo', frontColor: getColor(monday), onPress: () => {onDateChange(getDateOfWeek(week, year, 0))}},
-                {value: tuesday, label: 'Tu', frontColor: getColor(tuesday), onPress: () => {onDateChange(getDateOfWeek(week, year, 1))}},
-                {value: wednesday, label: 'We', frontColor: getColor(wednesday), onPress: () => {onDateChange(getDateOfWeek(week, year, 2))}},
-                {value: thursday, label: 'Th', frontColor: getColor(thursday), onPress: () => {onDateChange(getDateOfWeek(week, year, 3))}},
-                {value: friday, label: 'Fr', frontColor: getColor(friday), onPress: () => {onDateChange(getDateOfWeek(week, year, 4))}},
-                {value: saturday, label: 'Sa', frontColor: getColor(saturday), onPress: () => {onDateChange(getDateOfWeek(week, year, 5))}},
-                {value: sunday, label: 'Su', frontColor: getColor(sunday), onPress: () => {onDateChange(getDateOfWeek(week, year, 6))}},
+                { value: monday, label: 'Mo', frontColor: getColor(monday), onPress: () => { onDateChange(getDateOfWeek(week, year, 0)) } },
+                { value: tuesday, label: 'Tu', frontColor: getColor(tuesday), onPress: () => { onDateChange(getDateOfWeek(week, year, 1)) } },
+                { value: wednesday, label: 'We', frontColor: getColor(wednesday), onPress: () => { onDateChange(getDateOfWeek(week, year, 2)) } },
+                { value: thursday, label: 'Th', frontColor: getColor(thursday), onPress: () => { onDateChange(getDateOfWeek(week, year, 3)) } },
+                { value: friday, label: 'Fr', frontColor: getColor(friday), onPress: () => { onDateChange(getDateOfWeek(week, year, 4)) } },
+                { value: saturday, label: 'Sa', frontColor: getColor(saturday), onPress: () => { onDateChange(getDateOfWeek(week, year, 5)) } },
+                { value: sunday, label: 'Su', frontColor: getColor(sunday), onPress: () => { onDateChange(getDateOfWeek(week, year, 6)) } },
               ]}
               yAxisThickness={0}
               xAxisThickness={0}
@@ -181,8 +183,7 @@ export default function WeeklyScreen({selectedDate, changeSelectedItem, dropdown
             />
           </View>
         </Animated.View>
-      )
-    }
+      )}
     </>
   );
 }
@@ -192,7 +193,7 @@ const styles = StyleSheet.create({
     alignContent: 'center',
     flex: 1,
   },
-  dateSpace:{
+  dateSpace: {
     height: '5%',
     marginTop: '5%',
     width: '100%',
