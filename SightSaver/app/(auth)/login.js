@@ -48,7 +48,7 @@ const Login = () => {
         try {
             Keyboard.dismiss();
             setIsLoading(true);
-            await onLogin('iru007@gmail.com', 'Iru007!!')
+            await onLogin('SightSaver@gmail.com', 'Test123!!')
         } catch (error) {
             alert('Invalid email or password. Please try again.');
             setIsLoading(false);

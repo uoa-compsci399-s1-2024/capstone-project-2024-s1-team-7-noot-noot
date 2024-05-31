@@ -17,7 +17,8 @@ export default function ProfileScreen() {
   const [email, setEmail] = useState('');
   const [username, setUsername] = useState('');
 
-  const addChild = async (childName, sensorId) => {
+  const addChild = (childName, sensorId) => {
+    setIsLoading(true);
     newChildAdded(childName, sensorId).then(() => {
       const newChild = { childName, sensorId };
       setChildrenInfo([...childrenInfo, newChild]);

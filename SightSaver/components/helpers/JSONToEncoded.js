@@ -1,4 +1,5 @@
 import * as FileSystem from 'expo-file-system';
+import { pushData } from '../../ctx';
 
 // Function to convert data from file
 export const JSONToEncoded = async (inputFilePath, outputFilePath) => {
@@ -8,6 +9,7 @@ export const JSONToEncoded = async (inputFilePath, outputFilePath) => {
     const outputUri = `${outputFilePath}`;
     const fileContent = await FileSystem.readAsStringAsync(fileUri);
     const lines = fileContent.trim().split('\n');
+    const tempOutput = [];
 
     let outputLines = [];
     let previousTime = null;
@@ -15,6 +17,7 @@ export const JSONToEncoded = async (inputFilePath, outputFilePath) => {
 
     lines.forEach(line => {
       // Convert the line to a dictionary
+      tempOutput.push(JSON.parse(line.trim()));
       const record = JSON.parse(line.trim());
 
       // Parse the current record's date and time
@@ -46,10 +49,15 @@ export const JSONToEncoded = async (inputFilePath, outputFilePath) => {
       );
     }
 
-    // Write the output to a file
     await FileSystem.writeAsStringAsync(outputUri, outputLines.join(''));
-
     console.log(`Data has been converted and written to ${outputFilePath}`);
+
+    if (await pushData(tempOutput)) {
+      await FileSystem.deleteAsync(fileUri);
+    } else {
+      console.log('Error pushing data');
+    }
+
   } catch (error) {
     console.log('Error converting data:', error);
   }
