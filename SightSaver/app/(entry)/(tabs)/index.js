@@ -7,7 +7,6 @@ import DailyScreen from '../(stats)/DailyStats';
 import WeeklyScreen from '../(stats)/WeeklyStats';
 import MonthlyScreen from '../(stats)/MonthlyStats';
 import YearlyScreen from '../(stats)/YearlyStats';
-import DataScreen from '../(stats)/Data';
 import moment from "moment";
 moment.locale('en-gb'); 
 import { updateDayData } from '../../../components/helpers/DayData'
@@ -17,7 +16,6 @@ var dropdownData = [
   { label: 'Weekly', value: 'Weekly Sunlight' },
   { label: 'Monthly', value: 'Monthly Sunlight' },
   { label: 'Yearly', value: 'Yearly Sunlight' },
-  { label: 'Data', value: 'Raw Data' },
 ];
 
 export default function IndexScreen() {
@@ -56,8 +54,6 @@ export default function IndexScreen() {
         return <MonthlyScreen selectedDate={selectedDate} changeSelectedItem={changeSelectedItem} dropdownData={dropdownData}/>;
       case 'Yearly Sunlight':
         return <YearlyScreen selectedDate={selectedDate} changeSelectedItem={changeSelectedItem} dropdownData={dropdownData}/>;
-      case 'Raw Data':
-        return <DataScreen/>;
       default:
         return <WeeklyScreen/>;
     }

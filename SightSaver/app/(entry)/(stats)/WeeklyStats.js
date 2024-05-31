@@ -38,19 +38,25 @@ export default function WeeklyScreen({selectedDate, changeSelectedItem, dropdown
 
   const goToNextWeek = () => {
     setSearchWeek(moment(searchWeek, "YYYY:WW").add(1, 'weeks').format("YYYY:WW"));
+    fadeAnim.stopAnimation();
+    fadeAnim.setValue(0);
     setIsLoading(true);
   };
   
   const goToPreviousWeek = () => {
     setSearchWeek(moment(searchWeek, "YYYY:WW").subtract(1, 'weeks').format("YYYY:WW"));
+    fadeAnim.stopAnimation();
+    fadeAnim.setValue(0);
     setIsLoading(true);
   };
 
   useEffect(() => {
+    fadeAnim.stopAnimation();
+    fadeAnim.setValue(0);
     if (!isLoading) {
       Animated.timing(fadeAnim, {
         toValue: 1,
-        duration: 300,
+        duration: 1000,
         useNativeDriver: true,
       }).start();
     }
@@ -73,9 +79,9 @@ export default function WeeklyScreen({selectedDate, changeSelectedItem, dropdown
       setTotalHours(newTotalTime);
       setCompletedPercentage(newCompletedPercentage);
       setNotCompletedPercentage(newNotCompletedPercentage);
-      setTimeout(() => {
-        setIsLoading(false);
-      }, 100);
+      
+      setIsLoading(false);
+      
     });
   }, [searchWeek]);
 

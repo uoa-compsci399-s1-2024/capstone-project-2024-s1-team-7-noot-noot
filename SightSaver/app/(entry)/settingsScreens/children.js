@@ -1,60 +1,31 @@
-import React, { useState } from 'react';
-import { View, Text, StyleSheet, Switch } from 'react-native';
+import React, { useEffect, useState } from 'react';
+import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
 import { useColorScheme } from '../../../components/useColorScheme';
 import Colors from '../../../constants/Colors';
-import { Slider } from '@rneui/themed';
+import * as SecureStore from 'expo-secure-store';
+import CustomButton from '../../../components/CustomButton';
 
 export default function NotificationSettings() {
-    const [pushNotifications, setPushNotifications] = useState(false);
-    const [emailNotifications, setEmailNotifications] = useState(false);
-    const [notificationSound, setNotificationSound] = useState(true);
-    const [notificationFrequency, setNotificationFrequency] = useState('Daily');
     const colorScheme = useColorScheme();
+    const [dailyGoal, setDailyGoal] = useState(2);
+    const [initialGoal, setInitialGoal] = useState(2);
 
     return (
-        <View style={[styles.container, {backgroundColor:Colors[colorScheme ?? 'light'].background}]}>
-            {/* <Text style={[styles.title, {color:Colors[colorScheme ?? 'light'].text}]}>Notification Settings</Text> */}
-            <Text style={[styles.text, {color:Colors[colorScheme ?? 'light'].text}]}>Customize your notification preferences here.</Text>
-
-            <View style={styles.setting}>
-                <Text style={[styles.settingLabel, {color:Colors[colorScheme ?? 'light'].text}]}>Push Notifications</Text>
-                <Switch value={pushNotifications} onValueChange={setPushNotifications} />
+        <View style={[styles.container, { backgroundColor: Colors[colorScheme ?? 'light'].background }]}>
+            <View style={styles.textArea}>
+                <Text style={[styles.title, { color: Colors[colorScheme ?? 'light'].text }]}>Daily Goal:</Text>
+                <Text style={[styles.text, { color: Colors[colorScheme ?? 'light'].text, marginLeft: '5%' }]}>{dailyGoal} Hours</Text>
             </View>
-
-            <View style={styles.setting}>
-                <Text style={[styles.settingLabel, {color:Colors[colorScheme ?? 'light'].text}]}>Email Notifications</Text>
-                <Switch value={emailNotifications} onValueChange={setEmailNotifications} />
+            <View>
+                <CustomButton 
+                    style={styles.saveButton}
+                    onPress={() => {
+                        //SecureStore.setItemAsync('dailyGoal', dailyGoal.toString());
+                    }}
+                    text="Save Daily Goal"
+                >
+                </CustomButton>
             </View>
-
-            <View style={styles.setting}>
-                <Text style={[styles.settingLabel, {color:Colors[colorScheme ?? 'light'].text}]}>Notification Sound</Text>
-                <Switch value={notificationSound} onValueChange={setNotificationSound} />
-            </View>
-
-            <View style={styles.setting}>
-                <Text style={[styles.settingLabel, {color:Colors[colorScheme ?? 'light'].text}]}>Notification Frequency</Text>
-                <Text style={{color:Colors[colorScheme ?? 'light'].text}}>{notificationFrequency}</Text>
-                {/* Replace the text with a dropdown or other input component for selecting frequency */}
-            </View>
-            <Slider
-                animateTransitions
-                animationType="timing"
-                maximumTrackTintColor="#ccc"
-                maximumValue={12}
-                minimumTrackTintColor="#1970B4"
-                minimumValue={2}
-                onValueChange={value =>
-                    console.log("onValueChange()", value)
-                }
-                orientation="horizontal"
-                step={1}
-                style={{ width: "80%", height: 200 }}
-                thumbStyle={{ height: 20, width: 20 }}
-                thumbTintColor="#1970B4"
-                thumbTouchSize={{ width: 40, height: 40 }}
-                trackStyle={{ height: 10, borderRadius: 20 }}
-                value={50}
-        />
         </View>
     );
 }
@@ -67,18 +38,32 @@ const styles = StyleSheet.create({
     title: {
         fontSize: 24,
         fontWeight: 'bold',
-        marginBottom: 20,
+    },
+    goalContainer: {
+        flexDirection: 'row',
+        alignItems: 'center',
+    },
+    section: {
+        alignItems: 'center',
+        minWidth: '80%',
     },
     text: {
-        marginBottom: 20,
+        fontSize: 24,
     },
-    setting: {
+    textArea: {
         flexDirection: 'row',
-        justifyContent: 'space-between',
         alignItems: 'center',
-        marginBottom: 10,
+        marginBottom: '5%',
     },
-    settingLabel: {
-        fontSize: 18,
+    saveButton: {
+        marginTop: 20,
+        backgroundColor: '#1970B4',
+        width: '85%',
+        alignSelf: 'center',
+        borderRadius: 5,
     },
+    slider: {
+        minWidth: '85%',
+        height: 40
+    }
 });

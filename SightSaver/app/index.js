@@ -1,42 +1,48 @@
 import Colors from '../constants/Colors';
 import { View, Text } from '../components/Themed';
 import CustomButton from '../components/CustomButton';
-import CustomInput from '../components/CustomInput';
 import { useColorScheme } from '../components/useColorScheme';
 import { router } from 'expo-router';
-import {useAuth} from '../ctx';
-import React, { useState } from 'react';
-import { TextInput, Button, StyleSheet, useWindowDimensions, Image, TouchableOpacity} from 'react-native';
-import axios from 'axios';
+import React from 'react';
+import { StyleSheet, useWindowDimensions, Image, TouchableOpacity, ActivityIndicator} from 'react-native';
+import { useAuth } from '../ctx';
 
-export default function WelcomeScreen({ navigation }) {
-    // // console.log('Welcome Screen');
+export default function WelcomeScreen() {
     const colorScheme = useColorScheme();
     const { height } = useWindowDimensions();
- 
-    return (
-        <View style={[styles.root, {backgroundColor:Colors[colorScheme ?? 'light'].background}]}>
-            {/* Sightsaver Logo */}
-            <View style={styles.imageContainer}>
-                <Image 
-                    source={Colors[colorScheme ?? 'light'].image}
-                    style={[styles.logo, {height: height * 0.04}]}
-                    resizeMode='contain'
-                />
+	const { authState } = useAuth();
+
+    if (authState?.authenticated) {
+        return (
+            <View style={[styles.activityContainer, {backgroundColor:Colors[colorScheme ?? 'light'].background}]}>
+                <ActivityIndicator size="large" color="#23A0FF" />
             </View>
-             <View style={styles.container}>    
-                {/* Signup button */}
-                <CustomButton style={[styles.signUpButton]}onPress={() => router.replace('/(auth)/signup')} text={"Sign up"} />
-                {/* Signin text */}
-                <View style={styles.signInContainer}>
-                    <Text style={{fontSize:15}}>Already have an account?</Text>
-                    <TouchableOpacity onPress={() => router.replace('/(auth)/login')}>
-                        <Text style={[styles.signInText, {color:Colors[colorScheme ?? 'light'].clickableText}]}>Login</Text>
-                    </TouchableOpacity>
+        );
+    } else {
+        return (
+            <View style={[styles.root, {backgroundColor:Colors[colorScheme ?? 'light'].background}]}>
+                {/* Sightsaver Logo */}
+                <View style={styles.imageContainer}>
+                    <Image 
+                        source={Colors[colorScheme ?? 'light'].image}
+                        style={[styles.logo, {height: height * 0.04}]}
+                        resizeMode='contain'
+                    />
+                </View>
+                 <View style={styles.container}>    
+                    {/* Signup button */}
+                    <CustomButton style={[styles.signUpButton]}onPress={() => router.replace('/(auth)/signup')} text={"Sign up"} />
+                    {/* Signin text */}
+                    <View style={styles.signInContainer}>
+                        <Text style={{fontSize:15}}>Already have an account?</Text>
+                        <TouchableOpacity onPress={() => router.replace('/(auth)/login')}>
+                            <Text style={[styles.signInText, {color:Colors[colorScheme ?? 'light'].clickableText}]}>Login</Text>
+                        </TouchableOpacity>
+                    </View>
                 </View>
             </View>
-        </View>
-    );
+        );
+    }
 }
 
 
@@ -69,15 +75,19 @@ const styles = StyleSheet.create({
     root: {
         flex: 1,
         flexDirection: 'column',
-        minHeight: "600",
-        // minHeight: '100%',
-        // alignItems: 'center',
-        // justifyContent: 'space-between',
         paddingHorizontal: '10%',
         paddingBottom: '10%',
     },
+    activityContainer: {
+        flex: 1,
+        flexDirection: 'column',
+        paddingHorizontal: '10%',
+        paddingBottom: '10%',
+        justifyContent: 'center',
+    },
     imageContainer: {
         flex: 1,
+        marginTop: '52%',
         // marginTop: '100%',
         width: '100%',
         justifyContent: 'center',
