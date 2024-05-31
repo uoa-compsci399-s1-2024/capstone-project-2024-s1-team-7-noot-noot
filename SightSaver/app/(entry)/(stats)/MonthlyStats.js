@@ -21,6 +21,7 @@ export default function MonthlyScreen({ selectedDate, changeSelectedItem, dropdo
   const currentMonth = searchMonth.month();
   const [dailyGoal, setDailyGoal] = useState(2);
   const isFocus = useIsFocused();
+  const [sensorId, setSensorId] = useState('');
 
   const onDateChange = (date) => {
     let finalDate = '';
@@ -43,10 +44,10 @@ export default function MonthlyScreen({ selectedDate, changeSelectedItem, dropdo
     return new Date(year, month + 1, 0).getDate();
   }
 
-  async function getCustomStyling(year, month, parsedGoal) {
+  async function getCustomStyling(year, month, parsedGoal, sensorId) {
     const customDatesStyles = [];
     const totalDays = getTotalDays(year, month);
-    const monthArray = await getMonthData(searchMonth, totalDays);
+    const monthArray = await getMonthData(searchMonth, totalDays, sensorId);
     for (let i = 0; i < totalDays; i++) {
       const newDate = new Date(year, month, i + 1, 13);
       if (monthArray[i] >= parsedGoal) {
@@ -96,14 +97,17 @@ export default function MonthlyScreen({ selectedDate, changeSelectedItem, dropdo
   useFocusEffect(
     useCallback(() => {
       setIsLoading(true);
-      SecureStore.getItemAsync('dailyGoal').then((goal) => {
-        const parsedGoal = parseInt(goal, 10);
-        setDailyGoal(parsedGoal);
-        getCustomStyling(currentYear, currentMonth, parsedGoal).then((customDatesStyles) => {
-          setDatesStyles(customDatesStyles);
-          setTimeout(() => {
-            setIsLoading(false);
-          }, 100);
+      SecureStore.getItemAsync('sensorId').then((sensorId) => {
+        setSensorId(sensorId);
+        SecureStore.getItemAsync('dailyGoal').then((goal) => {
+          const parsedGoal = parseInt(goal, 10);
+          setDailyGoal(parsedGoal);
+          getCustomStyling(currentYear, currentMonth, parsedGoal, sensorId).then((customDatesStyles) => {
+            setDatesStyles(customDatesStyles);
+            setTimeout(() => {
+              setIsLoading(false);
+            }, 100);
+          });
         });
       });
     }, [searchMonth])

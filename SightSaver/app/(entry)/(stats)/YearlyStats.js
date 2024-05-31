@@ -6,30 +6,32 @@ import Colors from '../../../constants/Colors';
 import moment from "moment";
 import { Ionicons } from '@expo/vector-icons';
 import * as SecureStore from 'expo-secure-store';
-import { useFocusEffect } from '@react-navigation/native';
 import { getMonthData } from '../../../components/helpers/MonthlyData';
+import { useIsFocused, useFocusEffect } from '@react-navigation/native';
 
 moment.locale('en-gb');
 
 export default function YearlyScreen({ selectedDate, changeSelectedItem, dropdownData }) {
-  const colorScheme = useColorScheme(); 
+  const colorScheme = useColorScheme();
   const [isLoading, setIsLoading] = useState(true);
   const [yearData, setYearData] = useState(Array(12).fill([0, 0, 0]));
   const [searchYear, setSearchYear] = useState(moment(selectedDate, "YYYY:MM:DD").utcOffset('+12:00').format("YYYY"));
   const fadeAnim = useRef(new Animated.Value(0)).current;
   const [dailyGoal, setDailyGoal] = useState(2);
+  const isFocus = useIsFocused();
+  const [sensorId, setSensorId] = useState('');
 
   function getTotalDays(year, month) {
     return new Date(year, month + 1, 0).getDate();
   }
 
-  async function getCompletedDays(year, parsedGoal) {
+  async function getCompletedDays(year, parsedGoal, sensorId) {
     const yearArray = new Array(12).fill(0).map(() => [0, 0, 0]);
-    
+
     try {
-      const promises = Array.from({ length: 12 }, (_, month) => getMonthData(new Date(year, month), getTotalDays(year, month)));
+      const promises = Array.from({ length: 12 }, (_, month) => getMonthData(new Date(year, month), getTotalDays(year, month), sensorId));
       const allMonthData = await Promise.all(promises);
-      
+
       allMonthData.forEach((monthData, month) => {
         const totalDays = getTotalDays(year, month);
         const completedDays = monthData.filter(hours => hours >= parsedGoal).length;
@@ -83,14 +85,17 @@ export default function YearlyScreen({ selectedDate, changeSelectedItem, dropdow
   useFocusEffect(
     useCallback(() => {
       setIsLoading(true);
+      SecureStore.getItemAsync('sensorId').then((sensorId) => {
+        setSensorId(sensorId);
 
-      SecureStore.getItemAsync('dailyGoal').then((goal) => {
-        const parsedGoal = parseInt(goal, 10);
-        setDailyGoal(parsedGoal);
+        SecureStore.getItemAsync('dailyGoal').then((goal) => {
+          const parsedGoal = parseInt(goal, 10);
+          setDailyGoal(parsedGoal);
 
-        getCompletedDays(searchYear, parsedGoal).then((yearData) => {
-          setYearData(yearData);
-          setIsLoading(false);
+          getCompletedDays(searchYear, parsedGoal, sensorId).then((yearData) => {
+            setYearData(yearData);
+            setIsLoading(false);
+          });
         });
       });
     }, [searchYear])
@@ -107,37 +112,41 @@ export default function YearlyScreen({ selectedDate, changeSelectedItem, dropdow
   }
 
   return (
-    <Animated.View style={[styles.container, { backgroundColor: Colors[colorScheme ?? 'light'].background }, { opacity: fadeAnim }]}>
-      <View style={styles.dateSpace}>
-        <Text style={{ color: Colors[colorScheme ?? 'light'].text }}>{`${searchYear}`}</Text>
-      </View>
-      <View style={{ flexDirection: 'row', justifyContent: 'space-between', top: '25%' }}>
-        <Ionicons 
-          style={{ left: '-23%', position: 'absolute', opacity: 0.4  }} 
-          name="chevron-back" 
-          size={50} 
-          color={Colors[colorScheme ?? 'light'].text} 
-          onPress={goToPreviousYear} 
-        />
-        <Ionicons 
-          style={{ right: '-23%', position: 'absolute', opacity: 0.4 }} 
-          name="chevron-forward" 
-          size={50} 
-          color={Colors[colorScheme ?? 'light'].text} 
-          onPress={goToNextYear} 
-        />
-      </View>
-      {yearData.map((month, index) => (
-        <View style={styles.progressBars} key={index}>
-          <Pressable onPress={() => {
-            onDateChange(getMonthofYear(searchYear, index));
-          }}>
-            <Progress.Bar progress={month[2]} width={250} height={25} borderWidth={0} color={'#FFBD20'} unfilledColor={'rgba(255, 189, 32, 0.5)'} />
-            <Text style={[styles.text, { color: Colors[colorScheme ?? 'light'].text }]}>{`${moment().month(index).format('MMMM')} ${month[0]}/${month[1]}`}</Text>
-          </Pressable>
-        </View>
-      ))}
-    </Animated.View>
+    <>
+      {isFocus && (
+        <Animated.View style={[styles.container, { backgroundColor: Colors[colorScheme ?? 'light'].background }, { opacity: fadeAnim }]}>
+          <View style={styles.dateSpace}>
+            <Text style={{ color: Colors[colorScheme ?? 'light'].text }}>{`${searchYear}`}</Text>
+          </View>
+          <View style={{ flexDirection: 'row', justifyContent: 'space-between', top: '25%' }}>
+            <Ionicons 
+              style={{ left: '-23%', position: 'absolute', opacity: 0.4  }} 
+              name="chevron-back" 
+              size={50} 
+              color={Colors[colorScheme ?? 'light'].text} 
+              onPress={goToPreviousYear} 
+            />
+            <Ionicons 
+              style={{ right: '-23%', position: 'absolute', opacity: 0.4 }} 
+              name="chevron-forward" 
+              size={50} 
+              color={Colors[colorScheme ?? 'light'].text} 
+              onPress={goToNextYear} 
+            />
+          </View>
+          {yearData.map((month, index) => (
+            <View style={styles.progressBars} key={index}>
+              <Pressable onPress={() => {
+                onDateChange(getMonthofYear(searchYear, index));
+              }}>
+                <Progress.Bar progress={month[2]} width={250} height={25} borderWidth={0} color={'#FFBD20'} unfilledColor={'rgba(255, 189, 32, 0.5)'} />
+                <Text style={[styles.text, { color: Colors[colorScheme ?? 'light'].text }]}>{`${moment().month(index).format('MMMM')} ${month[0]}/${month[1]}`}</Text>
+              </Pressable>
+            </View>
+          ))}
+        </Animated.View>
+      )}
+    </>
   );
 }
 
