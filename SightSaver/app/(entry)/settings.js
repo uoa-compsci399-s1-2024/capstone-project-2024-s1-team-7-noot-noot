@@ -1049,11 +1049,12 @@ function Settings({navigation}) {
                 <Text style={[styles.optionText, {color:Colors[colorScheme ?? 'light'].text}]}>Data Safety</Text>
             </TouchableOpacity>
             <TouchableOpacity style={[styles.option, {borderBottomColor:Colors[colorScheme ?? 'light'].seperator}]} onPress={() => navigation.navigate('Children')}>
-                <Text style={[styles.optionText, {color:Colors[colorScheme ?? 'light'].text}]}>Children</Text>
+                <Text style={[styles.optionText, {color:Colors[colorScheme ?? 'light'].text}]}>Goal</Text>
             </TouchableOpacity>
             <TouchableOpacity style={[styles.option, {borderBottomColor:Colors[colorScheme ?? 'light'].seperator}]} onPress={() => navigation.navigate('Support')}>
                 <Text style={[styles.optionText, {color:Colors[colorScheme ?? 'light'].text}]}>Support</Text>
             </TouchableOpacity>
+
             <View style={styles.signout}>
                 <CustomButton
                     onPress={() => {

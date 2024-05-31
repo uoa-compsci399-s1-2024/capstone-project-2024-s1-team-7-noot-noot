@@ -226,4 +226,4 @@ export const pushData = async (data: Array<JSON>) => {
     console.log('Data pushed');
     return true;
   }
-}
+};

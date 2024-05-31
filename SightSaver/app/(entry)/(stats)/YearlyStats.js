@@ -1,60 +1,54 @@
-import React, {useState, useEffect, useRef} from 'react';
-import { Text, View, StyleSheet, Animated, ActivityIndicator, Pressable} from 'react-native';
+import React, { useState, useEffect, useRef, useCallback } from 'react';
+import { Text, View, StyleSheet, Animated, ActivityIndicator, Pressable } from 'react-native';
 import * as Progress from 'react-native-progress';
 import { useColorScheme } from '../../../components/useColorScheme';
 import Colors from '../../../constants/Colors';
-import { getMonthData } from '../../../components/helpers/MonthlyData';
-moment.locale('en-gb'); 
 import moment from "moment";
-import { TouchableOpacity } from 'react-native'; // Import the TouchableOpacity component
 import { Ionicons } from '@expo/vector-icons';
+import * as SecureStore from 'expo-secure-store';
+import { useFocusEffect } from '@react-navigation/native';
+import { getMonthData } from '../../../components/helpers/MonthlyData';
 
-export default function YearlyScreen({selectedDate, changeSelectedItem, dropdownData}) {
+moment.locale('en-gb');
+
+export default function YearlyScreen({ selectedDate, changeSelectedItem, dropdownData }) {
   const colorScheme = useColorScheme(); 
   const [isLoading, setIsLoading] = useState(true);
-  const [January, setJanuary] = useState(0);
-  const [February, setFebruary] = useState(0);
-  const [March, setMarch] = useState(0);
-  const [April, setApril] = useState(0);
-  const [May, setMay] = useState(0);
-  const [June, setJune] = useState(0);
-  const [July, setJuly] = useState(0);
-  const [August, setAugust] = useState(0);
-  const [September, setSeptember] = useState(0);
-  const [October, setOctober] = useState(0);
-  const [November, setNovember] = useState(0);
-  const [December, setDecember] = useState(0);
+  const [yearData, setYearData] = useState(Array(12).fill([0, 0, 0]));
   const [searchYear, setSearchYear] = useState(moment(selectedDate, "YYYY:MM:DD").utcOffset('+12:00').format("YYYY"));
   const fadeAnim = useRef(new Animated.Value(0)).current;
+  const [dailyGoal, setDailyGoal] = useState(2);
 
-  function getTotalDays(month) {
-    const totalDays = new Date(searchYear, month+1, 0).getDate();
-    return totalDays; 
+  function getTotalDays(year, month) {
+    return new Date(year, month + 1, 0).getDate();
   }
 
-  async function getCompletedDays(year) {
-    yearArray = new Array(12).fill(0);
-    for (let i = 0; i < 12; i++) {
-      const searchMonth = new Date(year, i, 1, 13); 
-      const totalDays = getTotalDays(i);
-      const monthArray = await getMonthData(searchMonth, totalDays);
-      var completedDays = 0;
-      for (let i of monthArray) {
+  async function getCompletedDays(year, parsedGoal) {
+    const yearArray = new Array(12).fill(0).map(() => [0, 0, 0]);
+    
+    try {
+      const promises = Array.from({ length: 12 }, (_, month) => getMonthData(new Date(year, month), getTotalDays(year, month)));
+      const allMonthData = await Promise.all(promises);
+      
+      allMonthData.forEach((monthData, month) => {
+        const totalDays = getTotalDays(year, month);
+        const completedDays = monthData.filter(hours => hours >= parsedGoal).length;
+        const progress = completedDays / totalDays;
+        yearArray[month] = [completedDays, totalDays, progress];
+      });
 
-        if (i >= 2) {
-          completedDays += 1;
-        }
-      }
-      const progress = (completedDays / totalDays);
-      yearArray[i] = [completedDays, totalDays, progress];
+    } catch (error) {
+      console.error("Failed to read data file:", error);
+      return yearArray;
     }
+
     return yearArray;
   }
 
   const onDateChange = (date) => {
     changeSelectedItem(dropdownData.find(item => item.label === 'Monthly'), date);
   };
-  
+
   function getMonthofYear(year, monthIndex) {
     const date = moment().year(year).month(monthIndex);
     return date.format('YYYY:MM');
@@ -66,7 +60,7 @@ export default function YearlyScreen({selectedDate, changeSelectedItem, dropdown
     fadeAnim.setValue(0);
     setIsLoading(true);
   };
-  
+
   const goToPreviousYear = () => {
     setSearchYear(moment(searchYear, "YYYY").subtract(1, 'years').format("YYYY"));
     fadeAnim.stopAnimation();
@@ -86,41 +80,38 @@ export default function YearlyScreen({selectedDate, changeSelectedItem, dropdown
     }
   }, [isLoading]);
 
-  useEffect(() => {
-    getCompletedDays(searchYear).then((yearData) => {
-      setJanuary((yearData[0]));
-      setFebruary((yearData[1]));
-      setMarch((yearData[2]));
-      setApril((yearData[3]));
-      setMay((yearData[4]));
-      setJune((yearData[5]));
-      setJuly((yearData[6]));
-      setAugust((yearData[7]));
-      setSeptember((yearData[8]));
-      setOctober((yearData[9]));
-      setNovember((yearData[10]));
-      setDecember((yearData[11]));
+  useFocusEffect(
+    useCallback(() => {
+      setIsLoading(true);
 
-      setIsLoading(false);
-    });
-  }, [searchYear]);
+      SecureStore.getItemAsync('dailyGoal').then((goal) => {
+        const parsedGoal = parseInt(goal, 10);
+        setDailyGoal(parsedGoal);
+
+        getCompletedDays(searchYear, parsedGoal).then((yearData) => {
+          setYearData(yearData);
+          setIsLoading(false);
+        });
+      });
+    }, [searchYear])
+  );
 
   if (isLoading) {
     fadeAnim.stopAnimation();
     fadeAnim.setValue(0);
     return (
-      <View style={[styles.container, {justifyContent: 'center'}]}>
+      <View style={[styles.container, { justifyContent: 'center' }]}>
         <ActivityIndicator size="large" color="#23A0FF" />
       </View>
     );
   }
 
   return (
-    <Animated.View style={[styles.container, {backgroundColor:Colors[colorScheme ?? 'light'].background}, {opacity: fadeAnim}]}>
+    <Animated.View style={[styles.container, { backgroundColor: Colors[colorScheme ?? 'light'].background }, { opacity: fadeAnim }]}>
       <View style={styles.dateSpace}>
-        <Text style={{color:Colors[colorScheme ?? 'light'].text}}>{`${searchYear}`}</Text>
+        <Text style={{ color: Colors[colorScheme ?? 'light'].text }}>{`${searchYear}`}</Text>
       </View>
-      <View style={{ flexDirection: 'row', justifyContent: 'space-between', top: '25%'}}>
+      <View style={{ flexDirection: 'row', justifyContent: 'space-between', top: '25%' }}>
         <Ionicons 
           style={{ left: '-23%', position: 'absolute', opacity: 0.4  }} 
           name="chevron-back" 
@@ -136,102 +127,16 @@ export default function YearlyScreen({selectedDate, changeSelectedItem, dropdown
           onPress={goToNextYear} 
         />
       </View>
-      <View style={styles.progressBars}>
-        <Pressable onPress={() => {
-          onDateChange(getMonthofYear(searchYear, 0));
-        }}>
-          <Progress.Bar progress={January[2]} label={'January'} width= {250} height={25} borderWidth={0} color={'#FFBD20'} unfilledColor={'rgba(255, 189, 32, 0.5)'}/>
-          <Text style={[styles.text, {color:Colors[colorScheme ?? 'light'].text}]}>January {January[0]}/{January[1]}</Text>
-        </Pressable>
-      </View>
-      <View style={styles.progressBars}>
-        <Pressable onPress={() => {
-          onDateChange(getMonthofYear(searchYear, 1));
-        }}>
-          <Progress.Bar progress={February[2]} label={'February'} width= {250} height={25} borderWidth={0} color={'#FFBD20'} unfilledColor={'rgba(255, 189, 32, 0.5)'}/>
-          <Text style={[styles.text, {color:Colors[colorScheme ?? 'light'].text}]}>February {February[0]}/{February[1]}</Text>
-        </Pressable> 
-      </View>
-      <View style={styles.progressBars}>
-        <Pressable onPress={() => {
-          onDateChange(getMonthofYear(searchYear, 2));
-        }}>
-          <Progress.Bar progress={March[2]} label={'March'} width= {250} height={25} borderWidth={0} color={'#FFBD20'} unfilledColor={'rgba(255, 189, 32, 0.5)'}/>
-          <Text style={[styles.text, {color:Colors[colorScheme ?? 'light'].text}]}>March {March[0]}/{March[1]}</Text>
-        </Pressable> 
-      </View>
-      <View style={styles.progressBars}>
-        <Pressable onPress={() => {
-          onDateChange(getMonthofYear(searchYear, 3));
-        }}>
-          <Progress.Bar progress={April[2]} label={'April'} width= {250} height={25} borderWidth={0} color={'#FFBD20'} unfilledColor={'rgba(255, 189, 32, 0.5)'}/>
-          <Text style={[styles.text, {color:Colors[colorScheme ?? 'light'].text}]}>April {April[0]}/{April[1]}</Text>
-        </Pressable> 
-      </View>
-      <View style={styles.progressBars}>
-        <Pressable onPress={() => {
-          onDateChange(getMonthofYear(searchYear, 4));
-        }}>
-          <Progress.Bar progress={May[2]} label={'May'} width= {250} height={25} borderWidth={0} color={'#FFBD20'} unfilledColor={'rgba(255, 189, 32, 0.5)'}/>
-          <Text style={[styles.text, {color:Colors[colorScheme ?? 'light'].text}]}>May {May[0]}/{May[1]}</Text>
-        </Pressable> 
-      </View>
-      <View style={styles.progressBars}>
-        <Pressable onPress={() => {
-          onDateChange(getMonthofYear(searchYear, 5));
-        }}>
-          <Progress.Bar progress={June[2]} label={'June'} width= {250} height={25} borderWidth={0} color={'#FFBD20'} unfilledColor={'rgba(255, 189, 32, 0.5)'}/>
-          <Text style={[styles.text, {color:Colors[colorScheme ?? 'light'].text}]}>June {June[0]}/{June[1]}</Text>
-        </Pressable> 
-      </View>
-      <View style={styles.progressBars}>
-        <Pressable onPress={() => {
-          onDateChange(getMonthofYear(searchYear, 6));
-        }}>
-          <Progress.Bar progress={July[2]} label={'July'} width= {250} height={25} borderWidth={0} color={'#FFBD20'} unfilledColor={'rgba(255, 189, 32, 0.5)'}/>
-          <Text style={[styles.text, {color:Colors[colorScheme ?? 'light'].text}]}>July {July[0]}/{July[1]}</Text>
-        </Pressable> 
-      </View>
-      <View style={styles.progressBars}>
-        <Pressable onPress={() => {
-          onDateChange(getMonthofYear(searchYear, 7));
-        }}>
-          <Progress.Bar progress={August[2]} label={'August'} width= {250} height={25} borderWidth={0} color={'#FFBD20'} unfilledColor={'rgba(255, 189, 32, 0.5)'}/>
-          <Text style={[styles.text, {color:Colors[colorScheme ?? 'light'].text}]}>August {August[0]}/{August[1]}</Text>
-        </Pressable> 
-      </View>
-      <View style={styles.progressBars}>
-        <Pressable onPress={() => {
-          onDateChange(getMonthofYear(searchYear, 8));
-        }}>
-          <Progress.Bar progress={September[2]} label={'September'} width= {250} height={25} borderWidth={0} color={'#FFBD20'} unfilledColor={'rgba(255, 189, 32, 0.5)'}/>
-          <Text style={[styles.text, {color:Colors[colorScheme ?? 'light'].text}]}>September {September[0]}/{September[1]}</Text>
-        </Pressable> 
-      </View>
-      <View style={styles.progressBars}>
-        <Pressable onPress={() => {
-          onDateChange(getMonthofYear(searchYear, 9));
-        }}>
-          <Progress.Bar progress={October[2]} label={'October'} width= {250} height={25} borderWidth={0} color={'#FFBD20'} unfilledColor={'rgba(255, 189, 32, 0.5)'}/>
-          <Text style={[styles.text, {color:Colors[colorScheme ?? 'light'].text}]}>October {October[0]}/{October[1]}</Text>
-        </Pressable> 
-      </View>
-      <View style={styles.progressBars}>
-        <Pressable onPress={() => {
-          onDateChange(getMonthofYear(searchYear, 10));
-        }}>
-          <Progress.Bar progress={November[2]} label={'November'} width= {250} height={25} borderWidth={0} color={'#FFBD20'} unfilledColor={'rgba(255, 189, 32, 0.5)'}/>
-          <Text style={[styles.text, {color:Colors[colorScheme ?? 'light'].text}]}>November {November[0]}/{November[1]}</Text>
-        </Pressable> 
-      </View>
-      <View style={styles.progressBars}>
-        <Pressable onPress={() => {
-          onDateChange(getMonthofYear(searchYear, 11));
-        }}>
-          <Progress.Bar progress={December[2]} label={'December'} width= {250} height={25} borderWidth={0} color={'#FFBD20'} unfilledColor={'rgba(255, 189, 32, 0.5)'}/>
-          <Text style={[styles.text, {color:Colors[colorScheme ?? 'light'].text}]}>December {December[0]}/{December[1]}</Text>
-        </Pressable> 
-      </View>
+      {yearData.map((month, index) => (
+        <View style={styles.progressBars} key={index}>
+          <Pressable onPress={() => {
+            onDateChange(getMonthofYear(searchYear, index));
+          }}>
+            <Progress.Bar progress={month[2]} width={250} height={25} borderWidth={0} color={'#FFBD20'} unfilledColor={'rgba(255, 189, 32, 0.5)'} />
+            <Text style={[styles.text, { color: Colors[colorScheme ?? 'light'].text }]}>{`${moment().month(index).format('MMMM')} ${month[0]}/${month[1]}`}</Text>
+          </Pressable>
+        </View>
+      ))}
     </Animated.View>
   );
 }
@@ -241,7 +146,7 @@ const styles = StyleSheet.create({
     alignContent: 'center',
     flex: 1,
   },
-  dateSpace:{
+  dateSpace: {
     height: '5%',
     marginTop: '5%',
     width: '100%',

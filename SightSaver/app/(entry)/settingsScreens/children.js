@@ -8,7 +8,32 @@ import CustomButton from '../../../components/CustomButton';
 export default function NotificationSettings() {
     const colorScheme = useColorScheme();
     const [dailyGoal, setDailyGoal] = useState(2);
-    const [initialGoal, setInitialGoal] = useState(2);
+    const [confirmationMessage, setConfirmationMessage] = useState('');
+
+    const saveDailyGoal = async () => {
+        await SecureStore.setItemAsync('dailyGoal', dailyGoal.toString());
+        setConfirmationMessage('Daily goal saved successfully!');
+        setTimeout(() => {
+            setConfirmationMessage('');
+        }, 3000);
+    };
+
+    useEffect(() => {
+        const fetchDailyGoal = async () => {
+            const goal = await SecureStore.getItemAsync('dailyGoal');
+            setDailyGoal(parseInt(goal, 10));
+        };
+
+        fetchDailyGoal();
+    }, []);
+
+    const incrementGoal = () => {
+        setDailyGoal((prevGoal) => Math.min(prevGoal + 1, 4));
+    };
+
+    const decrementGoal = () => {
+        setDailyGoal((prevGoal) => Math.max(prevGoal - 1, 1));
+    };
 
     return (
         <View style={[styles.container, { backgroundColor: Colors[colorScheme ?? 'light'].background }]}>
