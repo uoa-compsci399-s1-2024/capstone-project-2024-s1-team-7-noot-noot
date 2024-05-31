@@ -23,21 +23,33 @@ export default function MonthlyScreen({ selectedDate, changeSelectedItem, dropdo
   const isFocus = useIsFocused();
 
   const onDateChange = (date) => {
-    const formattedDate = moment(date).format('YYYY:MM:DD');
-    changeSelectedItem(dropdownData.find(item => item.label === 'Daily'), formattedDate);
+    let finalDate = '';
+    const formattedDate = moment(date, 'YYYY:MM:DD').format('YYYY:MM:DD');
+    console.log('formattedDate', formattedDate);
+  
+    // Check if the formattedDate is within DST
+    if (moment(formattedDate, "YYYY:MM:DD").isDST()) {
+      console.log('dst', formattedDate);
+      finalDate = moment(formattedDate, 'YYYY:MM:DD').add(1, 'days').format('YYYY:MM:DD');
+    } else {
+      finalDate = moment(formattedDate, 'YYYY:MM:DD').format('YYYY:MM:DD');
+    }
+  
+    changeSelectedItem(dropdownData.find(item => item.label === 'Daily'), finalDate);
   };
+  
 
   function getTotalDays(year, month) {
     return new Date(year, month + 1, 0).getDate();
   }
 
-  async function getCustomStyling(year, month) {
+  async function getCustomStyling(year, month, parsedGoal) {
     const customDatesStyles = [];
     const totalDays = getTotalDays(year, month);
     const monthArray = await getMonthData(searchMonth, totalDays);
     for (let i = 0; i < totalDays; i++) {
       const newDate = new Date(year, month, i + 1, 13);
-      if (monthArray[i] >= dailyGoal) {
+      if (monthArray[i] >= parsedGoal) {
         customDatesStyles.push({
           date: newDate,
           style: { backgroundColor: '#efa800' },
@@ -45,7 +57,7 @@ export default function MonthlyScreen({ selectedDate, changeSelectedItem, dropdo
           containerStyle: [],
           allowDisabled: true,
         });
-      } else if (monthArray[i] >= (dailyGoal / 3) * 2 && monthArray[i] < dailyGoal) {
+      } else if (monthArray[i] >= (parsedGoal / 3) * 2 && monthArray[i] < parsedGoal) {
         customDatesStyles.push({
           date: newDate,
           style: { backgroundColor: '#ffba17' },
@@ -53,7 +65,7 @@ export default function MonthlyScreen({ selectedDate, changeSelectedItem, dropdo
           containerStyle: [],
           allowDisabled: true,
         });
-      } else if (monthArray[i] >= (dailyGoal / 3) && monthArray[i] < (dailyGoal / 3) * 2) {
+      } else if (monthArray[i] >= (parsedGoal / 3) && monthArray[i] < (parsedGoal / 3) * 2) {
         customDatesStyles.push({
           date: newDate,
           style: { backgroundColor: '#ffcc55' },
@@ -61,7 +73,7 @@ export default function MonthlyScreen({ selectedDate, changeSelectedItem, dropdo
           containerStyle: [],
           allowDisabled: true,
         });
-      } else if (monthArray[i] < (dailyGoal / 3 && monthArray[i] > 0)) {
+      } else if (monthArray[i] < (parsedGoal / 3 && monthArray[i] > 0)) {
         customDatesStyles.push({
           date: newDate,
           style: { backgroundColor: '#ffe9b7' },
@@ -85,19 +97,18 @@ export default function MonthlyScreen({ selectedDate, changeSelectedItem, dropdo
   useFocusEffect(
     useCallback(() => {
       setIsLoading(true);
-      const fetchDailyGoal = async () => {
-        const dailyGoal = await SecureStore.getItemAsync('dailyGoal');
-        setDailyGoal(parseInt(dailyGoal, 10));
-      };
-      fetchDailyGoal();
-    getCustomStyling(currentYear, currentMonth).then((customDatesStyles) => {
-      setDatesStyles(customDatesStyles);
-      setTimeout(() => {
-        setIsLoading(false);
-      }, 100);
-    });
-  }, [searchMonth])
-);
+      SecureStore.getItemAsync('dailyGoal').then((goal) => {
+        const parsedGoal = parseInt(goal, 10);
+        setDailyGoal(parsedGoal);
+        getCustomStyling(currentYear, currentMonth, parsedGoal).then((customDatesStyles) => {
+          setDatesStyles(customDatesStyles);
+          setTimeout(() => {
+            setIsLoading(false);
+          }, 100);
+        });
+      });
+    }, [searchMonth])
+  );
 
   useEffect(() => {
     if (!isLoading) {

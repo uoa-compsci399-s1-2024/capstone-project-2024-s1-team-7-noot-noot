@@ -23,7 +23,7 @@ export default function YearlyScreen({ selectedDate, changeSelectedItem, dropdow
     return new Date(year, month + 1, 0).getDate();
   }
 
-  async function getCompletedDays(year) {
+  async function getCompletedDays(year, parsedGoal) {
     const yearArray = new Array(12).fill(0).map(() => [0, 0, 0]);
     
     try {
@@ -32,7 +32,7 @@ export default function YearlyScreen({ selectedDate, changeSelectedItem, dropdow
       
       allMonthData.forEach((monthData, month) => {
         const totalDays = getTotalDays(year, month);
-        const completedDays = monthData.filter(hours => hours >= dailyGoal).length;
+        const completedDays = monthData.filter(hours => hours >= parsedGoal).length;
         const progress = completedDays / totalDays;
         yearArray[month] = [completedDays, totalDays, progress];
       });
@@ -76,22 +76,21 @@ export default function YearlyScreen({ selectedDate, changeSelectedItem, dropdow
 
   useFocusEffect(
     useCallback(() => {
-      const fetchDailyGoal = async () => {
-        const goal = await SecureStore.getItemAsync('dailyGoal');
-        setDailyGoal(parseInt(goal, 10));
-      };
-      fetchDailyGoal();
-    }, [])
-  );
+      setIsLoading(true);
 
-  useEffect(() => {
-    getCompletedDays(searchYear).then((yearData) => {
-      setYearData(yearData);
-      setTimeout(() => {
-        setIsLoading(false);
-      }, 100);
-    });
-  }, [searchYear]);
+      SecureStore.getItemAsync('dailyGoal').then((goal) => {
+        const parsedGoal = parseInt(goal, 10);
+        setDailyGoal(parsedGoal);
+
+        console.log(parsedGoal);
+
+        getCompletedDays(searchYear, parsedGoal).then((yearData) => {
+          setYearData(yearData);
+          setIsLoading(false);
+        });
+      });
+    }, [searchYear])
+  );
 
   if (isLoading) {
     fadeAnim.stopAnimation();

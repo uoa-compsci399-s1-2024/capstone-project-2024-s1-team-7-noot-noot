@@ -49,29 +49,27 @@ export default function DailyScreen({selectedDate, dayDataInput, totalTimeInput,
   useFocusEffect(
     useCallback(() => {
       setIsLoading(true);
-      const fetchDailyGoal = async () => {
-        const goal = await SecureStore.getItemAsync('dailyGoal');
-        setDailyGoal(parseInt(goal, 10));
-      };
-      fetchDailyGoal();
 
-    updateDayData(searchDate).then((values) => {
-      const newDayData = values[0];
-      const newTotalTime = values[1];
-      const newCompletedPercentage = Math.floor(Math.min(newTotalTime / dailyGoal*60 * 100, 100));
-      const newNotCompletedPercentage = 100 - newCompletedPercentage;
-  
-      setDayData(newDayData);
-      setTotalTime(newTotalTime);
-      setCompletedPercentage(newCompletedPercentage);
-      setNotCompletedPercentage(newNotCompletedPercentage);
-  
-      setTimeout(() => {
-        setIsLoading(false);
-      }, 100);
-    });
-  }, [searchDate])
-);
+      SecureStore.getItemAsync('dailyGoal').then((goal) => {
+        const parsedGoal = parseInt(goal, 10);
+        setDailyGoal(parsedGoal);
+
+        updateDayData(searchDate).then((values) => {
+          const newDayData = values[0];
+          const newTotalTime = values[1];
+          const newCompletedPercentage = Math.round(Math.min(newTotalTime / (parsedGoal * 60) * 100, 100));
+          const newNotCompletedPercentage = 100 - newCompletedPercentage;
+
+          setDayData(newDayData);
+          setTotalTime(newTotalTime);
+          setCompletedPercentage(newCompletedPercentage);
+          setNotCompletedPercentage(newNotCompletedPercentage);
+
+          setIsLoading(false);
+        });
+      });
+    }, [searchDate])
+  );
 
   if (isLoading) {
     fadeAnim.stopAnimation();
