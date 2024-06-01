@@ -12,7 +12,7 @@ import { useAuth, getChildrenInfo } from '../../ctx';
 import SupportScreen from './settingsScreens/support';
 import * as FileSystem from 'expo-file-system';
 
-let data = `2024:01:01 11:08:05 45 E4:5F\n
+let data = `2024:01:01 11:08:05 45 E4:5F:01:A8:95:2C\n
 2024:01:01 14:03:44 61 E4:5F:01:A8:95:2C\n
 2024:01:01 16:25:02 40 E4:5F:01:A8:95:2C\n
 2024:01:02 11:45:22 42 E4:5F:01:A8:95:2C\n
@@ -1125,6 +1125,7 @@ let data = `2024:01:01 11:08:05 45 E4:5F\n
 
 const dummyData = async () => {
     await FileSystem.writeAsStringAsync(FileSystem.documentDirectory + 'data.txt', data);
+    console.log('Data written');
 }
 
 function Settings({navigation}) {

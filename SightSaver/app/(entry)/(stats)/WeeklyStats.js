@@ -1,4 +1,4 @@
-import { StyleSheet, Animated, ActivityIndicator } from 'react-native';
+import { StyleSheet, Animated, ActivityIndicator, PanResponder, TouchableOpacity } from 'react-native';
 import React, { useState, useEffect, useRef, useCallback } from 'react';
 import { Text, View } from '../../../components/Themed';
 import moment from "moment";
@@ -29,27 +29,35 @@ export default function WeeklyScreen({ selectedDate, changeSelectedItem, dropdow
   const fadeAnim = useRef(new Animated.Value(0)).current;
   const [dailyGoal, setDailyGoal] = useState(2);
   const isFocus = useIsFocused();
+  const today = useState(moment().utcOffset('+12:00').format("YYYY:WW"));
 
   const onDateChange = (date) => {
     changeSelectedItem(dropdownData.find(item => item.label === 'Daily'), date);
   };
 
-  // Helper function to get date of a day in a specific week and year
   function getDateOfWeek(week, year, dayIndex) {
-    // Offset dayIndex by 1 because your week starts on Monday
     const date = moment().year(year).isoWeek(week).day(dayIndex + 1);
     return date.format('YYYY:MM:DD');
   }
 
+  const resetDate = () => {
+    if (searchWeek != moment(today, "YYYY:MM:DD").utcOffset('+12:00').format("YYYY:WW")) {
+      setSearchWeek(moment(today, "YYYY:WW").utcOffset('+12:00').format("YYYY:WW"));
+      fadeAnim.stopAnimation();
+      fadeAnim.setValue(0);
+      setIsLoading(true);
+    }
+  };
+
   const goToNextWeek = () => {
-    setSearchWeek(moment(searchWeek, "YYYY:WW").add(1, 'weeks').format("YYYY:WW"));
+    setSearchWeek(prev => moment(prev, "YYYY:WW").add(1, 'weeks').format("YYYY:WW"));
     fadeAnim.stopAnimation();
     fadeAnim.setValue(0);
     setIsLoading(true);
   };
 
   const goToPreviousWeek = () => {
-    setSearchWeek(moment(searchWeek, "YYYY:WW").subtract(1, 'weeks').format("YYYY:WW"));
+    setSearchWeek(prev => moment(prev, "YYYY:WW").subtract(1, 'weeks').format("YYYY:WW"));
     fadeAnim.stopAnimation();
     fadeAnim.setValue(0);
     setIsLoading(true);
@@ -61,7 +69,7 @@ export default function WeeklyScreen({ selectedDate, changeSelectedItem, dropdow
     if (!isLoading) {
       Animated.timing(fadeAnim, {
         toValue: 1,
-        duration: 1000,
+        duration: 500,
         useNativeDriver: true,
       }).start();
     }
@@ -71,43 +79,52 @@ export default function WeeklyScreen({ selectedDate, changeSelectedItem, dropdow
     useCallback(() => {
       setIsLoading(true);
 
-      SecureStore.getItemAsync('sensorId').then((sensorId) => {
-        setSensorId(sensorId);
+      SecureStore.getItemAsync('dailyGoal').then((goal) => {
+        const parsedGoal = parseInt(goal, 10);
+        setDailyGoal(parsedGoal);
 
-        SecureStore.getItemAsync('dailyGoal').then((goal) => {
-          const parsedGoal = parseInt(goal, 10);
-          setDailyGoal(parsedGoal);
-
-          updateWeekData(searchWeek).then((weekData) => {
-            setMonday((weekData[0]));
-            setTuesday((weekData[1]));
-            setWednesday((weekData[2]));
-            setThursday((weekData[3]));
-            setFriday((weekData[4]));
-            setSaturday((weekData[5]));
-            setSunday((weekData[6]));
-
+        SecureStore.getItemAsync('sensorId').then((sensorId) => {
+          setSensorId(sensorId);
+          updateWeekData(searchWeek, sensorId).then((weekData) => {;
             const newTotalTime = (weekData[0] + weekData[1] + weekData[2] + weekData[3] + weekData[4] + weekData[5] + weekData[6]).toFixed(1);
-            const newCompletedPercentage = Math.round(Math.min(newTotalTime / (parsedGoal*7) * 100, 100));
+            const newCompletedPercentage = Math.round(Math.min(newTotalTime / (parsedGoal * 7) * 100, 100));
             const newNotCompletedPercentage = 100 - newCompletedPercentage;
 
+            setMonday(weekData[0]);
+            setTuesday(weekData[1]);
+            setWednesday(weekData[2]);
+            setThursday(weekData[3]);
+            setFriday(weekData[4]);
+            setSaturday(weekData[5]);
+            setSunday(weekData[6]);
             setTotalHours(newTotalTime);
             setCompletedPercentage(newCompletedPercentage);
             setNotCompletedPercentage(newNotCompletedPercentage);
-            setTimeout(() => {
-              setIsLoading(false);
-            }, 100);
+
+            setIsLoading(false);
           });
         });
       });
     }, [searchWeek])
   );
 
+  const panResponder = useRef(
+    PanResponder.create({
+      onStartShouldSetPanResponder: () => true,
+      onMoveShouldSetPanResponder: () => true,
+      onPanResponderRelease: (evt, gestureState) => {
+        if (gestureState.dx > 10) {
+          goToPreviousWeek();
+        } else if (gestureState.dx < -10) {
+          goToNextWeek();
+        }
+      },
+    })
+  ).current;
+
   if (isLoading) {
-    fadeAnim.stopAnimation();
-    fadeAnim.setValue(0);
     return (
-      <View style={[styles.container, {justifyContent: 'center'}]}>
+      <View style={[styles.container, { justifyContent: 'center' }]}>
         <ActivityIndicator size="large" color="#23A0FF" />
       </View>
     );
@@ -119,28 +136,40 @@ export default function WeeklyScreen({ selectedDate, changeSelectedItem, dropdow
   ];
 
   function getColor(value) {
-    if (value >= 2) {
-      return '#B28009';
-    } else {
-      return '#E6AA1F';
-    }
+    return value >= 2 ? '#B28009' : '#E6AA1F';
   }
 
   const [year, week] = searchWeek.split(':');
+    // Calculate start and end dates of the week
+  const startDate = moment().year(year).isoWeek(week).startOf('isoWeek').format('D MMMM YYYY');
+  const endDate = moment().year(year).isoWeek(week).endOf('isoWeek').format('D MMMM YYYY');
 
   return (
     <>
       {isFocus && (
-        <Animated.View style={[styles.container, { backgroundColor: Colors[colorScheme ?? 'light'].background }, { opacity: fadeAnim }]}>
+        <Animated.View {...panResponder.panHandlers} style={[styles.container, { backgroundColor: Colors[colorScheme ?? 'light'].background }, { opacity: fadeAnim }]}>
           <View style={styles.dateSpace}>
-            <Text style={{ color: Colors[colorScheme ?? 'light'].text }}>{`Week ${week}, ${year}`}</Text>
-          </View>
-          <View style={{ flexDirection: 'row', justifyContent: 'space-between', top: '25%' }}>
-            <Ionicons style={{ left: '-4%', position: 'absolute', opacity: 0.4 }} name="chevron-back" size={50} color={Colors[colorScheme ?? 'light'].text} onPress={goToPreviousWeek} />
-            <Ionicons style={{ right: '-4%', position: 'absolute', opacity: 0.4 }} name="chevron-forward" size={50} color={Colors[colorScheme ?? 'light'].text} onPress={goToNextWeek} />
+            <Text style={{ color: Colors[colorScheme ?? 'light'].text }}>{`${startDate} - ${endDate}`}</Text>
+            {searchWeek != moment(today, "YYYY:WW").utcOffset('+12:00').format("YYYY:WW") && (
+              <TouchableOpacity style={{marginLeft: '1%'}} onPress={resetDate}>
+                <Ionicons name="refresh" size={15} color={Colors[colorScheme ?? 'light'].text} />
+              </TouchableOpacity>
+            )}
           </View>
           <View style={styles.pieSpace}>
-            <PieChart style={styles.PieChart}
+            <Ionicons 
+              style={{ left: '0%', position: 'absolute', opacity: 0.4, top: '40%'}} 
+              name="chevron-back" 
+              size={50} 
+              color={Colors[colorScheme ?? 'light'].buttonColor} 
+            />
+            <Ionicons 
+              style={{ right: '0%', position: 'absolute', opacity: 0.4, top: '40%' }} 
+              name="chevron-forward" 
+              size={50} 
+              color={Colors[colorScheme ?? 'light'].buttonColor} 
+            />
+            <PieChart
               donut
               innerRadius={80}
               borderRadius={15}
@@ -199,6 +228,7 @@ const styles = StyleSheet.create({
     width: '100%',
     alignSelf: 'center',
     marginBottom: '5%',
+    flexDirection: 'row',
   },
   goal: {
     height: '5%',
@@ -208,13 +238,14 @@ const styles = StyleSheet.create({
   },
   pieSpace: {
     height: '40%',
-    width: '100%',
-    alignSelf: 'center',
+    minWidth: '100%',
+    alignItems: 'center',
   },
   barSpace: {
     marginTop: '10%',
     width: '100%',
     height: '25%',
     right: '3%',
+    marginLeft: '5%',
   },
 });

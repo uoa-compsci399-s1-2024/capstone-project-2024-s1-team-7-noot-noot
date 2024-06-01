@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef, useCallback } from 'react';
-import { Text, View, StyleSheet, Animated, ActivityIndicator, Pressable } from 'react-native';
+import { Text, View, StyleSheet, Animated, ActivityIndicator, Pressable, PanResponder, TouchableOpacity } from 'react-native';
 import * as Progress from 'react-native-progress';
 import { useColorScheme } from '../../../components/useColorScheme';
 import Colors from '../../../constants/Colors';
@@ -56,15 +56,24 @@ export default function YearlyScreen({ selectedDate, changeSelectedItem, dropdow
     return date.format('YYYY:MM');
   }
 
+  const resetDate = () => {
+    if (searchYear != moment(selectedDate, "YYYY:MM:DD").utcOffset('+12:00').format("YYYY")) {
+      setSearchYear(moment(selectedDate, "YYYY:MM:DD").utcOffset('+12:00').format("YYYY"));
+      fadeAnim.stopAnimation();
+      fadeAnim.setValue(0);
+      setIsLoading(true);
+    }
+  };
+
   const goToNextYear = () => {
-    setSearchYear(moment(searchYear, "YYYY").add(1, 'years').format("YYYY"));
+    setSearchYear(prev => moment(prev, "YYYY").add(1, 'years').format("YYYY"));
     fadeAnim.stopAnimation();
     fadeAnim.setValue(0);
     setIsLoading(true);
   };
 
   const goToPreviousYear = () => {
-    setSearchYear(moment(searchYear, "YYYY").subtract(1, 'years').format("YYYY"));
+    setSearchYear(prev => moment(prev, "YYYY").subtract(1, 'years').format("YYYY"));
     fadeAnim.stopAnimation();
     fadeAnim.setValue(0);
     setIsLoading(true);
@@ -101,6 +110,20 @@ export default function YearlyScreen({ selectedDate, changeSelectedItem, dropdow
     }, [searchYear])
   );
 
+  const panResponder = useRef(
+    PanResponder.create({
+      onStartShouldSetPanResponder: () => true,
+      onMoveShouldSetPanResponder: () => true,
+      onPanResponderRelease: (evt, gestureState) => {
+        if (gestureState.dx > 10) {
+          goToPreviousYear();
+        } else if (gestureState.dx < -10) {
+          goToNextYear();
+        }
+      },
+    })
+  ).current;
+
   if (isLoading) {
     fadeAnim.stopAnimation();
     fadeAnim.setValue(0);
@@ -114,24 +137,27 @@ export default function YearlyScreen({ selectedDate, changeSelectedItem, dropdow
   return (
     <>
       {isFocus && (
-        <Animated.View style={[styles.container, { backgroundColor: Colors[colorScheme ?? 'light'].background }, { opacity: fadeAnim }]}>
+        <Animated.View {...panResponder.panHandlers} style={[styles.container, { backgroundColor: Colors[colorScheme ?? 'light'].background }, { opacity: fadeAnim }]}>
           <View style={styles.dateSpace}>
             <Text style={{ color: Colors[colorScheme ?? 'light'].text }}>{`${searchYear}`}</Text>
+            {searchYear != moment(selectedDate, "YYYY:MM:DD").utcOffset('+12:00').format("YYYY") && (
+              <TouchableOpacity style={{marginLeft: '1%'}} onPress={resetDate}>
+                <Ionicons name="refresh" size={15} color={Colors[colorScheme ?? 'light'].text} />
+              </TouchableOpacity>
+            )}
           </View>
-          <View style={{ flexDirection: 'row', justifyContent: 'space-between', top: '25%' }}>
+          <View style={{ flexDirection: 'row', justifyContent: 'space-between', top: '25%', minWidth: '100%' }}>
             <Ionicons 
-              style={{ left: '-23%', position: 'absolute', opacity: 0.4  }} 
+              style={{ left: '0%', position: 'absolute', opacity: 0.4  }} 
               name="chevron-back" 
               size={50} 
-              color={Colors[colorScheme ?? 'light'].text} 
-              onPress={goToPreviousYear} 
+              color={Colors[colorScheme ?? 'light'].buttonColor} 
             />
             <Ionicons 
-              style={{ right: '-23%', position: 'absolute', opacity: 0.4 }} 
+              style={{ right: '0%', position: 'absolute', opacity: 0.4 }} 
               name="chevron-forward" 
               size={50} 
-              color={Colors[colorScheme ?? 'light'].text} 
-              onPress={goToNextYear} 
+              color={Colors[colorScheme ?? 'light'].buttonColor} 
             />
           </View>
           {yearData.map((month, index) => (
@@ -161,6 +187,7 @@ const styles = StyleSheet.create({
     width: '100%',
     alignSelf: 'center',
     marginBottom: '5%',
+    flexDirection: 'row',
   },
   progressBars: {
     height: '7%',
