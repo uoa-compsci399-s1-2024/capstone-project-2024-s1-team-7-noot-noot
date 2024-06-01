@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef, useCallback } from 'react';
-import { Text, View, StyleSheet, Animated, ActivityIndicator, Pressable, PanResponder, TouchableOpacity } from 'react-native';
+import { Text, View, StyleSheet, Animated, ActivityIndicator, Pressable, PanResponder, TouchableOpacity, useWindowDimensions } from 'react-native';
 import * as Progress from 'react-native-progress';
 import { useColorScheme } from '../../../components/useColorScheme';
 import Colors from '../../../constants/Colors';
@@ -20,6 +20,7 @@ export default function YearlyScreen({ selectedDate, changeSelectedItem, dropdow
   const [dailyGoal, setDailyGoal] = useState(2);
   const isFocus = useIsFocused();
   const [sensorId, setSensorId] = useState('');
+  const { height, width } = useWindowDimensions();
 
   function getTotalDays(year, month) {
     return new Date(year, month + 1, 0).getDate();
@@ -165,7 +166,7 @@ export default function YearlyScreen({ selectedDate, changeSelectedItem, dropdow
               <Pressable onPress={() => {
                 onDateChange(getMonthofYear(searchYear, index));
               }}>
-                <Progress.Bar progress={month[2]} width={250} height={25} borderWidth={0} color={'#FFBD20'} unfilledColor={'rgba(255, 189, 32, 0.5)'} />
+                <Progress.Bar progress={month[2]} width={width*0.8} height={25} borderWidth={0} color={'#FFBD20'} unfilledColor={'rgba(255, 189, 32, 0.5)'} />
                 <Text style={[styles.text, { color: Colors[colorScheme ?? 'light'].text }]}>{`${moment().month(index).format('MMMM')} ${month[0]}/${month[1]}`}</Text>
               </Pressable>
             </View>

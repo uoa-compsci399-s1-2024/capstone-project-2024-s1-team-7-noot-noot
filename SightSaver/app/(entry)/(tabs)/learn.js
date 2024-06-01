@@ -7,7 +7,7 @@ import { StatusBar } from 'react-native';
 
 export default function LearnScreen() {
   const colorScheme = useColorScheme();
-  const { height } = useWindowDimensions();
+  const { height, width } = useWindowDimensions();
   return (
     <ScrollView>
     <View style={styles.container}>
@@ -27,7 +27,7 @@ export default function LearnScreen() {
               By 2050, that number is expected to skyrocket to nearly 50%. {"\n"}
           </Text>
         
-            <Image source={require('../../../assets/images/myopiaComp.jpg')}  style={[styles.logo, {height:height*0.3, width:height*0.435,}]}/>
+            <Image source={require('../../../assets/images/myopiaComp.jpg')}  style={[styles.logo, {height:height*0.3, width:width*0.9,}]}/>
         
             <Text style={[styles.subTitle, {color: Colors[colorScheme ?? 'light'].subTitle}]}>
             Sight Saver goals{"\n"}
