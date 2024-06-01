@@ -48,10 +48,8 @@ public class ChildService {
             }
         }
         child.setSensor_id(sensorid);
-        Sensor sensor = sensorRepository.findById(sensorid).orElse(null);
         Child finalChild = childRepository.save(child);
-        assert sensor != null;
-        sensor.setChild_id(finalChild.getId());
+        Sensor sensor = new Sensor(sensorid, finalChild.getId());
         sensorRepository.save(sensor);
         return finalChild;
     }

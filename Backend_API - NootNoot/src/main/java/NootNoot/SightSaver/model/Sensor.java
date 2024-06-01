@@ -16,6 +16,11 @@ public class Sensor {
     public Sensor() {
     }
 
+    public Sensor(String sensorid, Long id) {
+        this.id = sensorid;
+        this.child_id = id;
+    }
+
     public String getId() {return this.id;}
     public Long getChild_id() {return this.child_id;}
 
