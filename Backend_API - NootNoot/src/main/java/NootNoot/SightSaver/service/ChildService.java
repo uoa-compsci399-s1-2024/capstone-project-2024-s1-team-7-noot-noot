@@ -39,6 +39,9 @@ public class ChildService {
     }
 
     public Child saveChild(String email, String name, String sensorid) {
+        if(sensorRepository.findById(sensorid).isPresent()) {
+            throw new IllegalArgumentException("Sensor with ID is already tied with a child!");
+        }
         Child child = new Child();
         child.setName(name);
         List<User> users = userService.getAllUsers();
