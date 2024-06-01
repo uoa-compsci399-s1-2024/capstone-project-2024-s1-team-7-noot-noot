@@ -184,7 +184,12 @@ function useBLE(): BluetoothLowEnergyApi {
       };
   
       // Convert the JSON object to a string and append it to formattedData
-      formattedData += JSON.stringify(dataObject) + '\n';
+
+      if (dataObject.lux_value === "" || dataObject.date_time === "" || dataObject.sensorId === "") {
+        continue;
+      } else {
+        formattedData += JSON.stringify(dataObject) + '\n';
+      }
     }
   
     console.log('JSON data written to file');

@@ -44,17 +44,6 @@ const Login = () => {
         }
     }
 
-    const skipLogin = async () => {
-        try {
-            Keyboard.dismiss();
-            setIsLoading(true);
-            await onLogin('sightsaver@gmail.com', 'Test123!!')
-        } catch (error) {
-            alert('Invalid email or password. Please try again.');
-            setIsLoading(false);
-        } 
-    }
-
     return(
         <View style={[styles.root, {backgroundColor:Colors[colorScheme ?? 'light'].background}]}>
             {/* Sightsaver Logo */}
@@ -98,10 +87,6 @@ const Login = () => {
                     <Text style={[styles.signInText, {color:Colors[colorScheme ?? 'light'].clickableText}]}>Sign Up</Text>
                     </TouchableOpacity>
                 </View>
-            </View>
-
-            <View style={{marginTop: '10%'}}>
-                <Button title="Skip Login" onPress={skipLogin} />
             </View>
 
             {/* Loading Indicator */}
