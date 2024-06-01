@@ -80,13 +80,6 @@ export const ChildrenButtons = ({ childrenInfo, handleAddChild }) => {
         />
       </View>
 
-      <View style={styles.dummyChild}>
-        <Button 
-          title="Add Dummy Child"
-          onPress={() => handleAddChild('Test 2', 'E7:5F:02:12:95:2C')}
-        />
-      </View>
-
       {/* Modal for adding a new child */}
       <AddChildModal childrenInfo={childrenInfo} visible={modalVisible} onClose={() => setModalVisible(false)} onAdd={handleAddChild} />
       <BluetoothSync childrenInfo={childrenInfo} visible={syncVisible} onClose={() => setSyncVisible(false)} selectedChildIndex={selectedChildIndex}/>
@@ -147,7 +140,7 @@ const styles = StyleSheet.create({
   addChildContainer: {
     width: '85%',
     alignItems: 'center',
-    bottom: '5%',
+    bottom: '3%',
     position: 'absolute',
   },
 });
