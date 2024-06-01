@@ -10,11 +10,15 @@ import lombok.Setter;
 public class Sensor {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private String id;
     private Long child_id;
 
     public Sensor() {
+    }
+
+    public Sensor(String sensorid, Long id) {
+        this.id = sensorid;
+        this.child_id = id;
     }
 
     public String getId() {return this.id;}

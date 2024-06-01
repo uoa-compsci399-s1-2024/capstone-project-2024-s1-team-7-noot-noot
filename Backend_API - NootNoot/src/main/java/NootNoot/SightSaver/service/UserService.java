@@ -38,11 +38,11 @@ public class UserService {
 
     public String getUsernameByEmail (String email) {
         for (User user : getAllUsers()) {
-            if (user.getEmail().equals(email)) {
+            if (user.getEmail().equals(email.toLowerCase())) {
                 return user.getUsername();
             }
         }
-        return null;
+        return("User not found");
     }
 
     public User getUserByEmail (String email) {

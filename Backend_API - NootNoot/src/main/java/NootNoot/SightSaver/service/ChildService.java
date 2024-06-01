@@ -39,6 +39,9 @@ public class ChildService {
     }
 
     public Child saveChild(String email, String name, String sensorid) {
+        if(sensorRepository.findById(sensorid).isPresent()) {
+            throw new IllegalArgumentException("Sensor with ID is already tied with a child!");
+        }
         Child child = new Child();
         child.setName(name);
         List<User> users = userService.getAllUsers();
@@ -48,10 +51,8 @@ public class ChildService {
             }
         }
         child.setSensor_id(sensorid);
-        Sensor sensor = sensorRepository.findById(sensorid).orElse(null);
         Child finalChild = childRepository.save(child);
-        assert sensor != null;
-        sensor.setChild_id(finalChild.getId());
+        Sensor sensor = new Sensor(sensorid, finalChild.getId());
         sensorRepository.save(sensor);
         return finalChild;
     }
