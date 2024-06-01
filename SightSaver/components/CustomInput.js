@@ -4,7 +4,7 @@ import { MaterialCommunityIcons } from '@expo/vector-icons';
 import Colors from '../constants/Colors';
 import { useColorScheme } from '../components/useColorScheme';
 
-export default function CustomInput({ value, setValue, placeholder, secureTextEntry }) {
+export default function CustomInput({ value, setValue, placeholder, secureTextEntry, keyboardType }) {
     const colorScheme = useColorScheme();
     const [showPassword, setShowPassword] = useState(false);
 
@@ -21,6 +21,9 @@ export default function CustomInput({ value, setValue, placeholder, secureTextEn
                 onChangeText={setValue}
                 secureTextEntry={secureTextEntry && !showPassword}
                 placeholderTextColor={Colors[colorScheme ?? 'light'].text}
+                autoCapitalize='none'
+                color={Colors[colorScheme ?? 'light'].text}
+                keyboardType={keyboardType ?? 'default'}
             />
             {secureTextEntry && (
                 <MaterialCommunityIcons

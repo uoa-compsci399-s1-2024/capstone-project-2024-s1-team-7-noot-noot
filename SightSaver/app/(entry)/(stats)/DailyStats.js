@@ -1,5 +1,5 @@
 import { Text, View, StyleSheet, Animated, ActivityIndicator } from 'react-native';
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef, useCallback } from 'react';
 import { BarChart, EdgePosition, LineChart, PieChart, PopulationPyramid } from 'react-native-gifted-charts';
 import { useColorScheme } from '../../../components/useColorScheme';
 import Colors from '../../../constants/Colors';
@@ -8,7 +8,9 @@ import { Ionicons } from '@expo/vector-icons';
 import moment from "moment";
 moment.locale('en-gb'); 
 import { updateDayData } from '../../../components/helpers/DayData'
-      
+import { useIsFocused, useFocusEffect } from '@react-navigation/native';
+import * as SecureStore from 'expo-secure-store';
+
 export default function DailyScreen({selectedDate, dayDataInput, totalTimeInput, completedPercentageInput, notCompletedPercentageInput}) {
   const colorScheme = useColorScheme();
   const [isLoading, setIsLoading] = useState(true);
@@ -18,47 +20,66 @@ export default function DailyScreen({selectedDate, dayDataInput, totalTimeInput,
   const [notCompletedPercentage, setNotCompletedPercentage] = useState(notCompletedPercentageInput);
   const [dayData, setDayData] = useState(dayDataInput);
   const [totalTime, setTotalTime] = useState(totalTimeInput);
+  const [sensorId, setSensorId] = useState('');
   const fadeAnim = useRef(new Animated.Value(0)).current;
+  const [dailyGoal, setDailyGoal] = useState(2);
+  const isFocus = useIsFocused();
 
   const goToNextDay = () => {
     setSearchDate(moment(searchDate, "YYYY:MM:DD").add(1, 'days').format("YYYY:MM:DD"));
     setDate(moment(date, "dddd Do MMMM").add(1, 'days').format("dddd Do MMMM"));
+    fadeAnim.stopAnimation();
+    fadeAnim.setValue(0);
     setIsLoading(true);
   };
   
   const goToPreviousDay = () => {
     setSearchDate(moment(searchDate, "YYYY:MM:DD").subtract(1, 'days').format("YYYY:MM:DD"));
     setDate(moment(date, "dddd Do MMMM").subtract(1, 'days').format("dddd Do MMMM"));
+    fadeAnim.stopAnimation();
+    fadeAnim.setValue(0);
     setIsLoading(true);
   };
 
   useEffect(() => {
+    fadeAnim.stopAnimation();
+    fadeAnim.setValue(0);
     if (!isLoading) {
       Animated.timing(fadeAnim, {
         toValue: 1,
-        duration: 300,
+        duration: 500,
         useNativeDriver: true,
       }).start();
     }
   }, [isLoading]);
 
-  useEffect(() => {
-    updateDayData(searchDate).then((values) => {
-      const newDayData = values[0];
-      const newTotalTime = values[1];
-      const newCompletedPercentage = Math.floor(Math.min(newTotalTime / 120 * 100, 100));
-      const newNotCompletedPercentage = 100 - newCompletedPercentage;
+  useFocusEffect(
+    useCallback(() => {
+      setIsLoading(true);
+
+      SecureStore.getItemAsync('dailyGoal').then((goal) => {
+        const parsedGoal = parseInt(goal, 10);
+        setDailyGoal(parsedGoal);
+        
+        SecureStore.getItemAsync('sensorId').then((sensorId) => {
+          setSensorId(sensorId);
+          updateDayData(searchDate, sensorId).then((values) => {
+            const newDayData = values[0];
+            const newTotalTime = values[1];
+            const newCompletedPercentage = Math.round(Math.min(newTotalTime / (parsedGoal * 60) * 100, 100));
+            const newNotCompletedPercentage = 100 - newCompletedPercentage;
   
-      setDayData(newDayData);
-      setTotalTime(newTotalTime);
-      setCompletedPercentage(newCompletedPercentage);
-      setNotCompletedPercentage(newNotCompletedPercentage);
+            setDayData(newDayData);
+            setTotalTime(newTotalTime);
+            setCompletedPercentage(newCompletedPercentage);
+            setNotCompletedPercentage(newNotCompletedPercentage);
   
-      setTimeout(() => {
-        setIsLoading(false);
-      }, 100);
-    });
-  }, [searchDate]);
+            setIsLoading(false);
+          });
+        });
+      });
+    }, [searchDate])
+  );
 
   if (isLoading) {
     fadeAnim.stopAnimation();
@@ -76,54 +97,60 @@ export default function DailyScreen({selectedDate, dayDataInput, totalTimeInput,
   ];
 
   return (
-    <Animated.View style={[styles.container, {backgroundColor:Colors[colorScheme ?? 'light'].background}, {opacity: fadeAnim}]}>
-      <View style={styles.dateSpace}>
-        <Text style={[{color:Colors[colorScheme ?? 'light'].text}, {}]}>{date}</Text>
-      </View>
-      <View style={{ flexDirection: 'row', justifyContent: 'space-between', top: '25%'}}>
-        <Ionicons style={{ left: '-1%', position: 'absolute', opacity: 0.4  }} name="chevron-back" size={50} color={Colors[colorScheme ?? 'light'].text} onPress={goToPreviousDay} />
-        <Ionicons style={{ right: '-1%', position: 'absolute', opacity: 0.4 }} name="chevron-forward" size={50} color={Colors[colorScheme ?? 'light'].text} onPress={goToNextDay} />
-      </View>
-      <View style={styles.pieSpace}>
-        <PieChart style= {styles.PieChart}
-          donut
-          innerRadius={80}
-          borderRadius={15}
-          data={PieDay}
-          innerCircleColor={Colors[colorScheme ?? 'light'].background}
-          centerLabelComponent={() => {
-            return (
-              <Text style={{fontSize: 30, color:Colors[colorScheme ?? 'light'].text}}>{completedPercentage}%</Text>
-            );
-          }}
-        />
-      </View>
-      <View style={styles.goal}>
-        <Text style={{color:Colors[colorScheme ?? 'light'].text}}>{totalTime}/120 Minutes</Text>
-      </View>
-      <View style={styles.lineSpace}>
-        <LineChart  
-          yAxisThickness={0}
-          noOfSections={1}
-          stepValue={1}
-          spacing={5}
-          stepHeight={100}
-          hideDataPoints
-          xAxisLabelTextStyle={{color:Colors[colorScheme ?? 'light'].text, width:40}}
-          data={dayData}
-          hideRules={true}
-          areaChart={true}
-          startFillColor={'#FFBC1F'}
-          endFillColor={'#F6D78D'}
-          color={Colors[colorScheme ?? 'light'].background}
-          xAxisColor={Colors[colorScheme ?? 'light'].background}
-          hideYAxisText={true}
-          initialSpacing={0}
-        />
-      </View>
-    </Animated.View>
+    <>
+      {isFocus && (
+        <Animated.View style={[styles.container, {backgroundColor:Colors[colorScheme ?? 'light'].background}, {opacity: fadeAnim}]}>
+          <View style={styles.dateSpace}>
+            <Text style={[{color:Colors[colorScheme ?? 'light'].text}, {}]}>{date}</Text>
+          </View>
+          <View style={{ flexDirection: 'row', justifyContent: 'space-between', top: '25%'}}>
+            <Ionicons style={{ left: '-1%', position: 'absolute', opacity: 0.4  }} name="chevron-back" size={50} color={Colors[colorScheme ?? 'light'].text} onPress={goToPreviousDay} />
+            <Ionicons style={{ right: '-1%', position: 'absolute', opacity: 0.4 }} name="chevron-forward" size={50} color={Colors[colorScheme ?? 'light'].text} onPress={goToNextDay} />
+          </View>
+          <View style={styles.pieSpace}>
+            <PieChart style= {styles.PieChart}
+              donut
+              innerRadius={80}
+              borderRadius={15}
+              data={PieDay}
+              innerCircleColor={Colors[colorScheme ?? 'light'].background}
+              centerLabelComponent={() => {
+                return (
+                  <Text style={{fontSize: 30, color:Colors[colorScheme ?? 'light'].text}}>{completedPercentage}%</Text>
+                );
+              }}
+            />
+          </View>
+          <View style={styles.goal}>
+            <Text style={{color:Colors[colorScheme ?? 'light'].text}}>{totalTime}/{dailyGoal*60} Minutes</Text>
+          </View>
+          <View style={styles.lineSpace}>
+            <LineChart  
+              yAxisThickness={0}
+              noOfSections={1}
+              stepValue={1}
+              spacing={5}
+              stepHeight={100}
+              hideDataPoints
+              xAxisLabelTextStyle={{color:Colors[colorScheme ?? 'light'].text, width:40}}
+              data={dayData}
+              hideRules={true}
+              areaChart={true}
+              startFillColor={'#FFBC1F'}
+              endFillColor={'#F6D78D'}
+              color={Colors[colorScheme ?? 'light'].background}
+              xAxisColor={Colors[colorScheme ?? 'light'].background}
+              hideYAxisText={true}
+              initialSpacing={0}
+            />
+          </View>
+        </Animated.View>
+  )
+}
+</>
   );
 }
+
 const styles = StyleSheet.create({
   container: {
     alignContent: 'center',

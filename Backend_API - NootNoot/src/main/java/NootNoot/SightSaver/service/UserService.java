@@ -42,7 +42,7 @@ public class UserService {
                 return user.getUsername();
             }
         }
-        return null;
+        return("User not found");
     }
 
     public User getUserByEmail (String email) {

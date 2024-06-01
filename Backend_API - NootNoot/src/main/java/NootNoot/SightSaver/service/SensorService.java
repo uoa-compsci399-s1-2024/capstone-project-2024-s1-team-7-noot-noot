@@ -35,7 +35,7 @@ public class SensorService {
         return sensorRepository.findAll();
     }
 
-    public Sensor getSensorById(Long id) {
+    public Sensor getSensorById(String id) {
         return sensorRepository.findById(id).orElse(null);
     }
 
@@ -45,7 +45,7 @@ public class SensorService {
 
     public Sensor saveSensor(Sensor sensor) {return sensorRepository.save(sensor);}
 
-    public void deleteSensorById(Long id) {
+    public void deleteSensorById(String id) {
         sensorRepository.deleteById(id);
     }
 

@@ -24,48 +24,36 @@ const Login = () => {
         const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
         if (!emailRegex.test(email)) {
             alert('Please enter a valid email address.');
+            setIsLoading(false);
             return;
         }
-        // Validate all fields filled 
+
         if (!email || !password) {
             alert("Please fill in all fields. If you don't have an account, please sign up.");
+            setIsLoading(false);
             return;
         }
-        // Call login function
+
         try {
             Keyboard.dismiss();
-            setIsLoading(true); // Start loading
-            // // console.log('Login');
-            const result = await onLogin(email, password);
-            if (result) {
-                // // console.log("Login Success", result.data);
-            } else {
-                // // console.log('Login failed');
-            }
+            setIsLoading(true);
+            await onLogin(email, password);
         } catch (error) {
-            // console.error('Login error:', error);
-        } finally {
-            setTimeout(() => {
-                setIsLoading(false); // Stop loading
-            },1000)
-
+            alert('Invalid email or password. Please try again.');
+            setIsLoading(false);
         }
     }
 
     const skipLogin = async () => {
-        setIsLoading(true);
-        // // console.log('Skip Login');
-        const result = await onLogin('iru007@gmail.com', 'Iru007!!')
-        if (result) {
-            // // console.log("Login Success", result.token);
-        } else {
-            // // console.log('Login failed');
-        }
-        setTimeout(() => {
+        try {
+            Keyboard.dismiss();
+            setIsLoading(true);
+            await onLogin('SightSaver@gmail.com', 'Test123!!')
+        } catch (error) {
+            alert('Invalid email or password. Please try again.');
             setIsLoading(false);
-        }, 2000)
+        } 
     }
-
 
     return(
         <View style={[styles.root, {backgroundColor:Colors[colorScheme ?? 'light'].background}]}>
@@ -83,7 +71,7 @@ const Login = () => {
                 placeholder="Email"
                 value={email}
                 setValue={setEmail}
-                autoCapitalize="none"
+                keyboardType={"email-address"}
             />
             {/* <CustomInput
                 style={styles.input}
@@ -97,6 +85,7 @@ const Login = () => {
                 value={password}
                 setValue={setPassword}
                 secureTextEntry={!showPassword}
+                keyboardType={"default"}
             />
 
             <View style={styles.container}>
@@ -111,14 +100,14 @@ const Login = () => {
                 </View>
             </View>
 
-            <View>
+            <View style={{marginTop: '10%'}}>
                 <Button title="Skip Login" onPress={skipLogin} />
             </View>
 
             {/* Loading Indicator */}
             {isLoading && (
                 <View style={[styles.loadingContainer]}>
-                    <ActivityIndicator size="large" color="#fff" />
+                    <ActivityIndicator size="large" color="#23A0FF" />
                 </View>
             )}
         </View>
@@ -154,24 +143,17 @@ const styles = StyleSheet.create({
     root: {
         flex: 1,
         flexDirection: 'column',
-        minHeight: "600",
-        // minHeight: '100%',
-        // alignItems: 'center',
-        // justifyContent: 'space-between',
+        paddingTop: '10%',
         paddingHorizontal: '10%',
         paddingBottom: '10%',
     },
     imageContainer: {
         flex: 1,
-        // marginTop: '100%',
         width: '100%',
         justifyContent: 'center',
     },
     logo: {
         width: '100%',
-        // maxWidth: 400,
-        // maxHeight: 300,
-        // paddingBottom: 20,
     },
     signInContainer: {
         flexDirection: 'row',

@@ -1,32 +1,64 @@
 import * as FileSystem from 'expo-file-system';
+import { pushData } from '../../ctx';
 
-export const JSONToEncoded = async () => {
-  const fileUri = FileSystem.documentDirectory + 'tempData.json';
+// Function to convert data from file
+export const JSONToEncoded = async (inputFilePath, outputFilePath) => {
+  try {
+    // Read the input file
+    const fileUri = `${inputFilePath}`;
+    const outputUri = `${outputFilePath}`;
+    const fileContent = await FileSystem.readAsStringAsync(fileUri);
+    const lines = fileContent.trim().split('\n');
+    const tempOutput = [];
 
-  // Read the file
-  const fileContent = await FileSystem.readAsStringAsync(fileUri);
+    let outputLines = [];
+    let previousTime = null;
+    let counter = 0;
 
-  // Split the file content into lines
-  const lines = fileContent.split('\n');
+    lines.forEach(line => {
+      // Convert the line to a dictionary
+      tempOutput.push(JSON.parse(line.trim()));
+      const record = JSON.parse(line.trim());
 
-  // Process each line
-  for (let line of lines) {
-    // Skip empty lines
-    if (!line) continue;
+      // Parse the current record's date and time
+      const currentTime = new Date(record.date_time);
 
-    // Parse the line as a JSON object
-    const dataObject = JSON.parse(line);
+      if (previousTime !== null) {
+        const timeDiff = (currentTime - previousTime) / 1000; // time difference in seconds
+        if (timeDiff === 1) {
+          counter++;
+        } else {
+          const minutes = Math.floor(counter / 60);
+          outputLines.push(
+            `${previousTime.getFullYear()}:${String(previousTime.getMonth() + 1).padStart(2, '0')}:${String(previousTime.getDate()).padStart(2, '0')} ${String(previousTime.getHours()).padStart(2, '0')}:${String(previousTime.getMinutes()).padStart(2, '0')}:${String(previousTime.getSeconds()).padStart(2, '0')} ${minutes} ${record.sensor_id}\n`
+          );
+          counter = 1;
+        }
+      } else {
+        counter = 1;
+      }
 
-    // Split the time into date and time parts
-    const [date, time] = dataObject.time.split(' ');
+      previousTime = currentTime;
+    });
 
-    // Calculate the amount of time in minutes from the time value
-    const [hour, minute, second] = time.split(':');
-    const timeInMinutes = parseInt(hour) * 60 + parseInt(minute) + parseInt(second) / 60;
+    // Add the last accumulated counter
+    if (previousTime !== null) {
+      const minutes = Math.floor(counter / 60);
+      outputLines.push(
+        `${previousTime.getFullYear()}:${String(previousTime.getMonth() + 1).padStart(2, '0')}:${String(previousTime.getDate()).padStart(2, '0')} ${String(previousTime.getHours()).padStart(2, '0')}:${String(previousTime.getMinutes()).padStart(2, '0')}:${String(previousTime.getSeconds()).padStart(2, '0')} ${minutes} ${JSON.parse(lines[lines.length - 1].trim()).sensor_id}\n`
+      );
+    }
 
-    // Format the data
-    const formattedData = `${date} ${time} ${timeInMinutes.toFixed(2)}`;
+    await FileSystem.writeAsStringAsync(outputUri, outputLines.join(''));
+    console.log(`Data has been converted and written to ${outputFilePath}`);
 
-    // // console.log(formattedData);
+    if (await pushData(tempOutput)) {
+      await FileSystem.deleteAsync(fileUri);
+    } else {
+      console.log('Error pushing data');
+    }
+
+  } catch (error) {
+    console.log('Error converting data:', error);
   }
 };

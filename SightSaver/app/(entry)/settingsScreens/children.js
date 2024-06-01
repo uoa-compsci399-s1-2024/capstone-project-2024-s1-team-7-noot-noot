@@ -1,60 +1,68 @@
-import React, { useState } from 'react';
-import { View, Text, StyleSheet, Switch } from 'react-native';
+import React, { useEffect, useState } from 'react';
+import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
 import { useColorScheme } from '../../../components/useColorScheme';
 import Colors from '../../../constants/Colors';
-import { Slider } from '@rneui/themed';
+import * as SecureStore from 'expo-secure-store';
 
 export default function NotificationSettings() {
-    const [pushNotifications, setPushNotifications] = useState(false);
-    const [emailNotifications, setEmailNotifications] = useState(false);
-    const [notificationSound, setNotificationSound] = useState(true);
-    const [notificationFrequency, setNotificationFrequency] = useState('Daily');
     const colorScheme = useColorScheme();
+    const [dailyGoal, setDailyGoal] = useState(2);
+    const [confirmationMessage, setConfirmationMessage] = useState('');
+
+    const saveDailyGoal = async () => {
+        await SecureStore.setItemAsync('dailyGoal', dailyGoal.toString());
+        setConfirmationMessage('Daily goal saved successfully!');
+        setTimeout(() => {
+            setConfirmationMessage('');
+        }, 3000);
+    };
+
+    useEffect(() => {
+        const fetchDailyGoal = async () => {
+            const goal = await SecureStore.getItemAsync('dailyGoal');
+            setDailyGoal(parseInt(goal, 10));
+        };
+
+        fetchDailyGoal();
+    }, []);
+
+    const incrementGoal = () => {
+        setDailyGoal((prevGoal) => Math.min(prevGoal + 1, 4));
+    };
+
+    const decrementGoal = () => {
+        setDailyGoal((prevGoal) => Math.max(prevGoal - 1, 1));
+    };
 
     return (
-        <View style={[styles.container, {backgroundColor:Colors[colorScheme ?? 'light'].background}]}>
-            {/* <Text style={[styles.title, {color:Colors[colorScheme ?? 'light'].text}]}>Notification Settings</Text> */}
-            <Text style={[styles.text, {color:Colors[colorScheme ?? 'light'].text}]}>Customize your notification preferences here.</Text>
-
-            <View style={styles.setting}>
-                <Text style={[styles.settingLabel, {color:Colors[colorScheme ?? 'light'].text}]}>Push Notifications</Text>
-                <Switch value={pushNotifications} onValueChange={setPushNotifications} />
+        <View style={[styles.container, { backgroundColor: Colors[colorScheme ?? 'light'].background }]}>
+            <View style={styles.textArea}>
+                <Text style={[styles.title, { color: Colors[colorScheme ?? 'light'].text }]}>Daily Goal:</Text>
+                <View style={styles.goalContainer}>
+                    <TouchableOpacity style={styles.arrowButton} onPress={decrementGoal}>
+                        <Text style={styles.arrowText}>-</Text>
+                    </TouchableOpacity>
+                    <View style={styles.goalTextContainer}>
+                        <Text style={[styles.text, { color: Colors[colorScheme ?? 'light'].text }]}>
+                            {dailyGoal} {dailyGoal === 1 ? 'Hour' : 'Hours'}
+                        </Text>
+                    </View>
+                    <TouchableOpacity style={styles.arrowButton} onPress={incrementGoal}>
+                        <Text style={styles.arrowText}>+</Text>
+                    </TouchableOpacity>
+                </View>
             </View>
-
-            <View style={styles.setting}>
-                <Text style={[styles.settingLabel, {color:Colors[colorScheme ?? 'light'].text}]}>Email Notifications</Text>
-                <Switch value={emailNotifications} onValueChange={setEmailNotifications} />
-            </View>
-
-            <View style={styles.setting}>
-                <Text style={[styles.settingLabel, {color:Colors[colorScheme ?? 'light'].text}]}>Notification Sound</Text>
-                <Switch value={notificationSound} onValueChange={setNotificationSound} />
-            </View>
-
-            <View style={styles.setting}>
-                <Text style={[styles.settingLabel, {color:Colors[colorScheme ?? 'light'].text}]}>Notification Frequency</Text>
-                <Text style={{color:Colors[colorScheme ?? 'light'].text}}>{notificationFrequency}</Text>
-                {/* Replace the text with a dropdown or other input component for selecting frequency */}
-            </View>
-            <Slider
-                animateTransitions
-                animationType="timing"
-                maximumTrackTintColor="#ccc"
-                maximumValue={12}
-                minimumTrackTintColor="#1970B4"
-                minimumValue={2}
-                onValueChange={value =>
-                    console.log("onValueChange()", value)
-                }
-                orientation="horizontal"
-                step={1}
-                style={{ width: "80%", height: 200 }}
-                thumbStyle={{ height: 20, width: 20 }}
-                thumbTintColor="#1970B4"
-                thumbTouchSize={{ width: 40, height: 40 }}
-                trackStyle={{ height: 10, borderRadius: 20 }}
-                value={50}
-        />
+            <TouchableOpacity
+                style={styles.saveButton}
+                onPress={saveDailyGoal}
+            >
+                <Text style={styles.saveButtonText}>Save Data</Text>
+            </TouchableOpacity>
+            {confirmationMessage ? (
+                <View style={styles.confirmationContainer}>
+                    <Text style={styles.confirmationText}>{confirmationMessage}</Text>
+                </View>
+            ) : null}
         </View>
     );
 }
@@ -67,18 +75,59 @@ const styles = StyleSheet.create({
     title: {
         fontSize: 24,
         fontWeight: 'bold',
-        marginBottom: 20,
+    },
+    goalContainer: {
+        flexDirection: 'row',
+        alignItems: 'center',
+    },
+    section: {
+        alignItems: 'center',
+        marginVertical: 20,
     },
     text: {
+        fontSize: 24,
+    },
+    textArea: {
+        flexDirection: 'row',
+        alignItems: 'center',
         marginBottom: 20,
     },
-    setting: {
-        flexDirection: 'row',
-        justifyContent: 'space-between',
+    goalTextContainer: {
+        width: 100,
         alignItems: 'center',
-        marginBottom: 10,
     },
-    settingLabel: {
+    arrowButton: {
+        backgroundColor: '#1970B4',
+        borderRadius: 5,
+        padding: 10,
+        marginHorizontal: 10,
+    },
+    arrowText: {
+        color: 'white',
+        fontSize: 20,
+        fontWeight: 'bold',
+    },
+    saveButton: {
+        marginTop: 20,
+        backgroundColor: '#1970B4',
+        width: '85%',
+        alignSelf: 'center',
+        borderRadius: 5,
+    },
+    saveButtonText: {
+        color: 'white',
+        fontSize: 20,
+        fontWeight: 'bold',
+        padding: 10,
+        textAlign: 'center',
+    },
+    confirmationContainer: {
+        marginTop: 20,
+        alignItems: 'center',
+    },
+    confirmationText: {
+        color: 'green',
         fontSize: 18,
+        fontWeight: 'bold',
     },
 });
