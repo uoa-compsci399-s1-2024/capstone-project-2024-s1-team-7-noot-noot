@@ -128,7 +128,7 @@ export default function DailyScreen({selectedDate, dayDataInput, totalTimeInput,
             <Text style={{ color: Colors[colorScheme ?? 'light'].text }}>{date}, {year}</Text>
             {date != moment(today, "YYYY:MM:DD").utcOffset('+12:00').format("dddd Do MMMM") && (
               <TouchableOpacity style={{marginLeft: '1%'}} onPress={resetDate}>
-                <Ionicons name="refresh" size={15} color={Colors[colorScheme ?? 'light'].text} />
+                <Ionicons name="return-down-back-outline" size={15} color={Colors[colorScheme ?? 'light'].text} />
               </TouchableOpacity>
             )}
           </View>

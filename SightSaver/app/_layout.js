@@ -1,7 +1,7 @@
 import {AuthProvider, useAuth } from '../ctx';
 import {Stack ,useRouter, useSegments } from 'expo-router';
 import React, { useEffect, useState } from 'react';
-import { getUserDetails, setUserDetails, getChildrenInfo } from '../ctx';
+import { pushTestData, getChildrenInfo } from '../ctx';
 
 const StackLayout = () => {
 	const { authState } = useAuth();
@@ -12,6 +12,7 @@ const StackLayout = () => {
 	const fetchUserDetails = async () => {
 		try {
 		  await getChildrenInfo();
+		  await pushTestData();
 		} catch (error) {
 		  // console.log('Error fetching user details:', error);
 		}

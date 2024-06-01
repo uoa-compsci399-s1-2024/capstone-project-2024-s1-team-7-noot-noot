@@ -152,7 +152,7 @@ export default function WeeklyScreen({ selectedDate, changeSelectedItem, dropdow
             <Text style={{ color: Colors[colorScheme ?? 'light'].text }}>{`${startDate} - ${endDate}`}</Text>
             {searchWeek != moment(today, "YYYY:WW").utcOffset('+12:00').format("YYYY:WW") && (
               <TouchableOpacity style={{marginLeft: '1%'}} onPress={resetDate}>
-                <Ionicons name="refresh" size={15} color={Colors[colorScheme ?? 'light'].text} />
+                <Ionicons name="return-down-back-outline" size={15} color={Colors[colorScheme ?? 'light'].text} />
               </TouchableOpacity>
             )}
           </View>

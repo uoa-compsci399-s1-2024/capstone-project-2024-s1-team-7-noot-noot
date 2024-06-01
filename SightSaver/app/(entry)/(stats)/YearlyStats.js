@@ -142,7 +142,7 @@ export default function YearlyScreen({ selectedDate, changeSelectedItem, dropdow
             <Text style={{ color: Colors[colorScheme ?? 'light'].text }}>{`${searchYear}`}</Text>
             {searchYear != moment(selectedDate, "YYYY:MM:DD").utcOffset('+12:00').format("YYYY") && (
               <TouchableOpacity style={{marginLeft: '1%'}} onPress={resetDate}>
-                <Ionicons name="refresh" size={15} color={Colors[colorScheme ?? 'light'].text} />
+                <Ionicons name="return-down-back-outline" size={15} color={Colors[colorScheme ?? 'light'].text} />
               </TouchableOpacity>
             )}
           </View>
