@@ -1,11 +1,12 @@
 import React, { Children, useEffect, useState, useRef } from 'react';
-import { TouchableOpacity, Text, View, StyleSheet, ScrollView, Animated, ActivityIndicator } from 'react-native';
+import { TouchableOpacity, Text, View, StyleSheet, ScrollView, Animated, ActivityIndicator, Button } from 'react-native';
 import Colors from '../constants/Colors'; 
 import AddChildModal from './helpers/AddNewChild'; 
 import { useColorScheme } from './useColorScheme';
 import BluetoothSync from './BluetoothSync';
 import CustomButton from './CustomButton';
 import useBLE from '../app/(entry)/useBLE.ts';
+import * as SecureStore from 'expo-secure-store';
 
 // Define the component for rendering children buttons
 export const ChildrenButtons = ({ childrenInfo, handleAddChild }) => {
@@ -21,6 +22,23 @@ export const ChildrenButtons = ({ childrenInfo, handleAddChild }) => {
   const handleChildButtonPress = (childIndex) => {
     setSelectedChildIndex(childIndex);
   };
+
+  useEffect(() => {
+    SecureStore.getItemAsync('sensorId').then((sensorId) => {
+      if (sensorId) {
+        const index = childrenInfo.findIndex((child) => child.sensorId === sensorId);
+        if (index !== -1) {
+          setSelectedChildIndex(index);
+        }
+      }
+    });
+  }, []);
+
+  useEffect(() => {
+    if (childrenInfo.length > 0) {
+      SecureStore.setItemAsync('sensorId', childrenInfo[selectedChildIndex].sensorId);
+    }
+  }, [selectedChildIndex]);
 
   return (
     <View style={[styles.container]}>
@@ -41,7 +59,7 @@ export const ChildrenButtons = ({ childrenInfo, handleAddChild }) => {
               >
                 Sensor: {child.sensorId}
               </Text>
-              <View style={[styles.circle, selectedChildIndex === index ? { backgroundColor: '#1970B4', borderColor: Colors[colorScheme ?? 'light'].borderColor } : null]} />
+              <View style={[styles.circle, selectedChildIndex === index ? { backgroundColor: '#1970B4', } : null]} />
             </TouchableOpacity>
           ))}
         </ScrollView>
@@ -54,13 +72,14 @@ export const ChildrenButtons = ({ childrenInfo, handleAddChild }) => {
           />
         </View>
       )}
+
       <View style={styles.addChildContainer}>
         <CustomButton
           onPress={() => [setModalVisible(true), setAllDevices([])]}
           text="Add New Child"
         />
       </View>
-  
+
       {/* Modal for adding a new child */}
       <AddChildModal childrenInfo={childrenInfo} visible={modalVisible} onClose={() => setModalVisible(false)} onAdd={handleAddChild} />
       <BluetoothSync childrenInfo={childrenInfo} visible={syncVisible} onClose={() => setSyncVisible(false)} selectedChildIndex={selectedChildIndex}/>
@@ -94,6 +113,12 @@ const styles = StyleSheet.create({
     borderRadius: 5, // Rounded corners
     marginVertical: 5, // Add vertical margin for spacing between buttons
   },
+  dummyChild: {
+    width: '85%',
+    alignItems: 'center',
+    bottom: '32.5%',
+    position: 'absolute',
+  },
   circle: {
     width: 20, // Circle size
     height: 20, // Circle size
@@ -115,7 +140,7 @@ const styles = StyleSheet.create({
   addChildContainer: {
     width: '85%',
     alignItems: 'center',
-    bottom: '5%',
+    bottom: '3%',
     position: 'absolute',
   },
 });

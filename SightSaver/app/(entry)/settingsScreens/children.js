@@ -3,29 +3,66 @@ import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
 import { useColorScheme } from '../../../components/useColorScheme';
 import Colors from '../../../constants/Colors';
 import * as SecureStore from 'expo-secure-store';
-import CustomButton from '../../../components/CustomButton';
 
 export default function NotificationSettings() {
     const colorScheme = useColorScheme();
     const [dailyGoal, setDailyGoal] = useState(2);
-    const [initialGoal, setInitialGoal] = useState(2);
+    const [confirmationMessage, setConfirmationMessage] = useState('');
+
+    const saveDailyGoal = async () => {
+        await SecureStore.setItemAsync('dailyGoal', dailyGoal.toString());
+        setConfirmationMessage('Daily goal saved successfully!');
+        setTimeout(() => {
+            setConfirmationMessage('');
+        }, 3000);
+    };
+
+    useEffect(() => {
+        const fetchDailyGoal = async () => {
+            const goal = await SecureStore.getItemAsync('dailyGoal');
+            setDailyGoal(parseInt(goal, 10));
+        };
+
+        fetchDailyGoal();
+    }, []);
+
+    const incrementGoal = () => {
+        setDailyGoal((prevGoal) => Math.min(prevGoal + 1, 4));
+    };
+
+    const decrementGoal = () => {
+        setDailyGoal((prevGoal) => Math.max(prevGoal - 1, 1));
+    };
 
     return (
         <View style={[styles.container, { backgroundColor: Colors[colorScheme ?? 'light'].background }]}>
             <View style={styles.textArea}>
                 <Text style={[styles.title, { color: Colors[colorScheme ?? 'light'].text }]}>Daily Goal:</Text>
-                <Text style={[styles.text, { color: Colors[colorScheme ?? 'light'].text, marginLeft: '5%' }]}>{dailyGoal} Hours</Text>
+                <View style={styles.goalContainer}>
+                    <TouchableOpacity style={styles.arrowButton} onPress={decrementGoal}>
+                        <Text style={styles.arrowText}>-</Text>
+                    </TouchableOpacity>
+                    <View style={styles.goalTextContainer}>
+                        <Text style={[styles.text, { color: Colors[colorScheme ?? 'light'].text }]}>
+                            {dailyGoal} {dailyGoal === 1 ? 'Hour' : 'Hours'}
+                        </Text>
+                    </View>
+                    <TouchableOpacity style={styles.arrowButton} onPress={incrementGoal}>
+                        <Text style={styles.arrowText}>+</Text>
+                    </TouchableOpacity>
+                </View>
             </View>
-            <View>
-                <CustomButton 
-                    style={styles.saveButton}
-                    onPress={() => {
-                        //SecureStore.setItemAsync('dailyGoal', dailyGoal.toString());
-                    }}
-                    text="Save Daily Goal"
-                >
-                </CustomButton>
-            </View>
+            <TouchableOpacity
+                style={styles.saveButton}
+                onPress={saveDailyGoal}
+            >
+                <Text style={styles.saveButtonText}>Save Data</Text>
+            </TouchableOpacity>
+            {confirmationMessage ? (
+                <View style={styles.confirmationContainer}>
+                    <Text style={styles.confirmationText}>{confirmationMessage}</Text>
+                </View>
+            ) : null}
         </View>
     );
 }
@@ -45,7 +82,7 @@ const styles = StyleSheet.create({
     },
     section: {
         alignItems: 'center',
-        minWidth: '80%',
+        marginVertical: 20,
     },
     text: {
         fontSize: 24,
@@ -53,7 +90,22 @@ const styles = StyleSheet.create({
     textArea: {
         flexDirection: 'row',
         alignItems: 'center',
-        marginBottom: '5%',
+        marginBottom: 20,
+    },
+    goalTextContainer: {
+        width: 100,
+        alignItems: 'center',
+    },
+    arrowButton: {
+        backgroundColor: '#1970B4',
+        borderRadius: 5,
+        padding: 10,
+        marginHorizontal: 10,
+    },
+    arrowText: {
+        color: 'white',
+        fontSize: 20,
+        fontWeight: 'bold',
     },
     saveButton: {
         marginTop: 20,
@@ -62,8 +114,20 @@ const styles = StyleSheet.create({
         alignSelf: 'center',
         borderRadius: 5,
     },
-    slider: {
-        minWidth: '85%',
-        height: 40
-    }
+    saveButtonText: {
+        color: 'white',
+        fontSize: 20,
+        fontWeight: 'bold',
+        padding: 10,
+        textAlign: 'center',
+    },
+    confirmationContainer: {
+        marginTop: 20,
+        alignItems: 'center',
+    },
+    confirmationText: {
+        color: 'green',
+        fontSize: 18,
+        fontWeight: 'bold',
+    },
 });

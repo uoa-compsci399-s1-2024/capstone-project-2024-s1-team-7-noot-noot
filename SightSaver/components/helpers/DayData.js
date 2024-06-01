@@ -2,7 +2,7 @@ import moment from "moment";
 moment.locale('en-gb'); 
 import * as FileSystem from 'expo-file-system';
 
-export const updateDayData = async (searchDate) => {
+export const updateDayData = async (searchDate, searchSensorId) => {
     var totalTime = 0;
     var dayData = [
     {value: 0, label:'8am'}, //8.00 
@@ -136,8 +136,9 @@ export const updateDayData = async (searchDate) => {
           const dateStr = parts[0];
           const timeStr = parts[1];
           const minutes = parts[2];
+          const sensorId = parts[3];
     
-          if (dateStr == searchDate) {
+          if (dateStr == searchDate && sensorId == searchSensorId) {
             totalTime += parseInt(minutes);
     
             const startTime = moment(timeStr, "HH:mm:ss");

@@ -3,7 +3,9 @@ package NootNoot.SightSaver.service;
 import java.util.ArrayList;
 import java.util.List;
 
+import NootNoot.SightSaver.model.Sensor;
 import NootNoot.SightSaver.model.User;
+import NootNoot.SightSaver.repository.SensorRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -17,6 +19,8 @@ public class ChildService {
     private ChildRepository childRepository;
     @Autowired
     private UserService userService;
+    @Autowired
+    private SensorRepository sensorRepository;
 
     public List<Child> getAllChildren() {
         return childRepository.findAll();
@@ -35,6 +39,9 @@ public class ChildService {
     }
 
     public Child saveChild(String email, String name, String sensorid) {
+        if(sensorRepository.findById(sensorid).isPresent()) {
+            throw new IllegalArgumentException("Sensor with ID is already tied with a child!");
+        }
         Child child = new Child();
         child.setName(name);
         List<User> users = userService.getAllUsers();
@@ -44,7 +51,10 @@ public class ChildService {
             }
         }
         child.setSensor_id(sensorid);
-        return childRepository.save(child);
+        Child finalChild = childRepository.save(child);
+        Sensor sensor = new Sensor(sensorid, finalChild.getId());
+        sensorRepository.save(sensor);
+        return finalChild;
     }
 
     public void deleteChildById(Long id) {

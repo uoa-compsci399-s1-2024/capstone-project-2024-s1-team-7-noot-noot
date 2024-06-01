@@ -23,6 +23,7 @@ const USERNAME = 'username';
 const EMAIL = 'email';
 const CHILDREN_INFO = 'childrenInfo';
 const DAILY_GOAL = 'dailyGoal';
+const SENSOR_ID = 'sensorId';
 
 export const API_URL = 'http://192.168.1.74:8080/api';
 const AuthContext = createContext<Partial<AuthProps>>({});
@@ -89,6 +90,8 @@ export const AuthProvider = ({ children }: any) => {
     });
     axios.defaults.headers.common['Authorization'] = `Bearer ${result.data.token}`;
 
+    await getUserDetails(email);
+
     await SecureStore.setItemAsync(TOKEN_KEY, result.data.token);
     await SecureStore.setItemAsync(EMAIL, email);
     await SecureStore.setItemAsync(DAILY_GOAL, '2');
@@ -101,6 +104,7 @@ export const AuthProvider = ({ children }: any) => {
     await SecureStore.deleteItemAsync(EMAIL);
     await SecureStore.deleteItemAsync(CHILDREN_INFO);
     await SecureStore.deleteItemAsync(DAILY_GOAL);
+    await SecureStore.deleteItemAsync(SENSOR_ID);
     axios.defaults.headers.common['Authorization'] = '';
     setAuthState({
       token: null,
@@ -118,35 +122,16 @@ export const AuthProvider = ({ children }: any) => {
 };
 
 // Get User Details
-export const getUserDetails = async () => {
-  try {
-    // console.log('getting user details');
-    let email = await SecureStore.getItemAsync(EMAIL);
-    let username = await SecureStore.getItemAsync(USERNAME);
-
-    if (!email || !username) {
-      // If email or username is not present, fetch them from the API
-      email = await SecureStore.getItemAsync(EMAIL);
-      username = await axios
-        .get(`${API_URL}/user/email/${email}`)
-        .then((res) => res.data);
+export const getUserDetails = async (email: string) => {
+  SecureStore.getItemAsync('username').then((username) => {
+    if (!username) {
+      axios.get(`${API_URL}/user/email/${email}`).then((response) => {
+        const username = response.data;
+        SecureStore.setItemAsync(USERNAME, username);
+        //console.log('Username:', username); 
+      });
     }
-    // console.log('Get User details:', { username, email });
-    return { username, email };
-  } catch (error) {
-    //console.error('Error retrieving user details:', error);
-    return null;
-  }
-};
-
-//Set username and email in async storage
-export const setUserDetails = async (username: string, email: string) => {
-  try {
-    await SecureStore.setItemAsync(USERNAME, username);
-    await SecureStore.setItemAsync(EMAIL, email);
-  } catch (error) {
-    // console.error('Error setting user details:', error);
-  }
+  });
 };
 
 //Get Token
@@ -180,6 +165,7 @@ export const getChildrenInfo = async () => {
     });
 
     await SecureStore.setItemAsync(CHILDREN_INFO, JSON.stringify(childrenInfo));
+    await SecureStore.setItemAsync(SENSOR_ID, childrenInfo[0].sensorId);
   }
 };
 
@@ -192,7 +178,7 @@ export const newChildAdded = async (childName: string, sensorId: string) => {
       sensor_id: sensorId,
     });
    } catch(error) {
-    console.log('Failed to add child:', error);
+    //console.log('Failed to add child:', error);
   } finally {
       type ChildJson = {childName: string; sensorId: string};
       let childrenInfo: ChildJson[] = [];
@@ -205,6 +191,21 @@ export const newChildAdded = async (childName: string, sensorId: string) => {
           childrenInfo.push({ childName: childName, sensorId: sensorId });
       }
       await SecureStore.setItemAsync(CHILDREN_INFO, JSON.stringify(childrenInfo));
-      console.log('New child added:', childrenInfo);
   }
+};
+
+export const pushData = async (data: Array<JSON>) => {
+  const email = await SecureStore.getItemAsync(EMAIL);
+  try {
+    console.log(data);
+    await axios.post(`${API_URL}/lux`, {
+      email: email,
+      luxList: data,
+    });
+    console.log('Data pushed');
+    return true;
+  } catch (error) {
+    console.log('Failed to push data:', error);
+    return false;
+  } 
 };

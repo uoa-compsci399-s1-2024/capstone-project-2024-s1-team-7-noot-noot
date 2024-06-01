@@ -16,4 +16,6 @@ public interface LuxRepository extends JpaRepository<Lux, Long> {
     @Query("SELECT lux FROM Lux lux WHERE lux.sensorId = :sensorId")
     List<Lux> findBySensorId(@Param("sensorId") String sensorId);
 
+    @Query("SELECT lux FROM Lux lux WHERE FUNCTION('STR_TO_DATE', lux.date_time, '%Y-%m-%d') >= :startDate AND FUNCTION('STR_TO_DATE', lux.date_time, '%Y-%m-%d') <= :endDate")
+    List<Lux> getAllLuxByDate(@Param("startDate") String startDate, @Param("endDate") String endDate);
 }

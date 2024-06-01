@@ -25,7 +25,7 @@ public class SensorController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<Sensor> getSensorByID(@PathVariable Long id) {
+    public ResponseEntity<Sensor> getSensorByID(@PathVariable String id) {
         return new ResponseEntity<>(sensorService.getSensorById(id), HttpStatus.OK);
     }
 
@@ -42,7 +42,7 @@ public class SensorController {
 
 
     @DeleteMapping("/{id}")
-    public HttpStatus deleteSensor(@PathVariable Long id) {
+    public HttpStatus deleteSensor(@PathVariable String id) {
 
         sensorService.deleteSensorById(id);
         return HttpStatus.NO_CONTENT;

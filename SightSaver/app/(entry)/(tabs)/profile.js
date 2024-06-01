@@ -1,43 +1,53 @@
 import { View, Text } from '../../../components/Themed';
 import Colors from '../../../constants/Colors';
 import { useColorScheme } from '../../../components/useColorScheme';
-import React, { useState, useEffect, useContext, useRef } from 'react';
+import React, { useState, useCallback, useEffect, useRef } from 'react';
 import { Ionicons } from '@expo/vector-icons';
-import useBLE from "../useBLE.ts";
-import { StyleSheet, TouchableOpacity, StatusBar, Modal, ScrollView, ActivityIndicator, Animated } from 'react-native';
-import { getChildrenInfo, newChildAdded } from '../../../ctx';
+import { StyleSheet, StatusBar, ActivityIndicator, Animated } from 'react-native';
+import { newChildAdded } from '../../../ctx';
 import { ChildrenButtons } from '../../../components/ChildrenButtons';
-import axios from 'axios';
 import * as SecureStore from 'expo-secure-store';
+import { useIsFocused, useFocusEffect } from '@react-navigation/native';
 
 export default function ProfileScreen() {
   const colorScheme = useColorScheme();
   const [childrenInfo, setChildrenInfo] = useState([]);
+  const [tempState, setTempState] = useState(0);
   const [isLoading, setIsLoading] = useState(true);
   const [email, setEmail] = useState('');
   const [username, setUsername] = useState('');
 
-  const addChild = async (childName, sensorId) => {
-    newChildAdded(childName, sensorId).then(() => {
-      const newChild = { childName, sensorId };
-      setChildrenInfo([...childrenInfo, newChild]);
-    });
+  const addChild = (childName, sensorId) => {
+    setIsLoading(true);
+    try {
+      newChildAdded(childName, sensorId).then(() => {
+        const newChild = { childName, sensorId };
+        setChildrenInfo([...childrenInfo, newChild]);
+        alert('Child added successfully!');
+        setTempState(tempState + 1);
+      });
+    } catch (error) {
+      alert('Error adding child. Please try again.');
+    }
   };
   
-  useEffect(() => {
-    SecureStore.getItemAsync('email').then((email) => {
-        setEmail(email);
-    });
-    SecureStore.getItemAsync('username').then((username) => {
-        setUsername(username);
-    });
-    SecureStore.getItemAsync('childrenInfo').then((children) => {
-        if (children) {
-            setChildrenInfo(JSON.parse(children));
-        }
-        setIsLoading(false);
-    });
-}, [childrenInfo]);
+  useEffect (() => {
+      setIsLoading(true);
+      SecureStore.getItemAsync('email').then((email) => {
+          setEmail(email);
+      });
+      SecureStore.getItemAsync('username').then((username) => {
+          setUsername(username);
+      });
+      SecureStore.getItemAsync('childrenInfo').then((children) => {
+          if (children) {
+              setChildrenInfo(JSON.parse(children));
+          }
+          setTimeout(() => {
+              setIsLoading(false);
+          }, 1000);
+      });
+    }, [tempState])
 
   if (isLoading) {
     return (
@@ -48,7 +58,7 @@ export default function ProfileScreen() {
   }
 
   return (
-    <Animated.View style={[styles.container, {backgroundColor: Colors[colorScheme ?? 'light'].background}]}>
+    <View style={[styles.container, {backgroundColor: Colors[colorScheme ?? 'light'].background}]}>
       <StatusBar barStyle={barStyle=Colors[colorScheme ?? 'light'].barStyle}/>
 
       {/* Parent Profile */}
@@ -64,7 +74,7 @@ export default function ProfileScreen() {
       <View style={[styles.childrenContainer]}>
         <ChildrenButtons childrenInfo={childrenInfo} handleAddChild={addChild}/>
       </View>
-    </Animated.View>
+    </View>
 );
 }
 
