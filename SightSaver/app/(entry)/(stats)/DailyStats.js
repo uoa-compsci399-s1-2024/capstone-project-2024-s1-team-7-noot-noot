@@ -137,13 +137,13 @@ export default function DailyScreen({selectedDate, dayDataInput, totalTimeInput,
               style={{ left: '0%', position: 'absolute', opacity: 0.4, top: '40%'}} 
               name="chevron-back" 
               size={50} 
-              color={Colors[colorScheme ?? 'light'].buttonColor} 
+              color={Colors[colorScheme ?? 'light'].chevron} 
             />
             <Ionicons 
               style={{ right: '0%', position: 'absolute', opacity: 0.4, top: '40%' }} 
               name="chevron-forward" 
               size={50} 
-              color={Colors[colorScheme ?? 'light'].buttonColor} 
+              color={Colors[colorScheme ?? 'light'].chevron} 
             />
             <PieChart
               donut

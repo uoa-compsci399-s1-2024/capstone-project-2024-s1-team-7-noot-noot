@@ -152,13 +152,13 @@ export default function YearlyScreen({ selectedDate, changeSelectedItem, dropdow
               style={{ left: '0%', position: 'absolute', opacity: 0.4  }} 
               name="chevron-back" 
               size={50} 
-              color={Colors[colorScheme ?? 'light'].buttonColor} 
+              color={Colors[colorScheme ?? 'light'].chevron} 
             />
             <Ionicons 
               style={{ right: '0%', position: 'absolute', opacity: 0.4 }} 
               name="chevron-forward" 
               size={50} 
-              color={Colors[colorScheme ?? 'light'].buttonColor} 
+              color={Colors[colorScheme ?? 'light'].chevron} 
             />
           </View>
           {yearData.map((month, index) => (
@@ -166,7 +166,7 @@ export default function YearlyScreen({ selectedDate, changeSelectedItem, dropdow
               <Pressable onPress={() => {
                 onDateChange(getMonthofYear(searchYear, index));
               }}>
-                <Progress.Bar progress={month[2]} width={width*0.8} height={25} borderWidth={0} color={'#FFBD20'} unfilledColor={'rgba(255, 189, 32, 0.5)'} />
+                <Progress.Bar progress={month[2]} width={width*0.75} height={height*0.03} borderWidth={0} color={'#FFBD20'} unfilledColor={'rgba(255, 189, 32, 0.5)'} />
                 <Text style={[styles.text, { color: Colors[colorScheme ?? 'light'].text }]}>{`${moment().month(index).format('MMMM')} ${month[0]}/${month[1]}`}</Text>
               </Pressable>
             </View>
