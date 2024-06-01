@@ -246,6 +246,6 @@ const styles = StyleSheet.create({
     width: '100%',
     height: '25%',
     right: '3%',
-    marginLeft: '5%',
+    marginLeft: '12.5%',
   },
 });
