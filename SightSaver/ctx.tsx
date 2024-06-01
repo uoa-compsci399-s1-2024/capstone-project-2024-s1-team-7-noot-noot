@@ -30,7 +30,7 @@ const SENSOR_ID = 'sensorId';
 //export const API_URL = 'http://{user ip address}:{port number of local server}/api';
 
 // For Azure Server
-export const API_URL = 'https://sightsaver.azurewebsites.net/api';
+export const API_URL = 'https://sightsaver-api.azurewebsites.net/api';
 
 const AuthContext = createContext<Partial<AuthProps>>({});
 
