@@ -1,8 +1,8 @@
 import React, { useState, useRef, useEffect, useCallback } from 'react';
-import { StyleSheet, Animated, ActivityIndicator } from 'react-native';
+import { StyleSheet, Animated, ActivityIndicator, View, PanResponder } from 'react-native'; // Import PanResponder along with other components
 import CalendarPicker from "react-native-calendar-picker";
 import Colors from '../../../constants/Colors';
-import { Text, View } from '../../../components/Themed';
+import { Text } from '../../../components/Themed';
 import { useColorScheme } from '../../../components/useColorScheme';
 import moment from 'moment';
 import { getMonthData } from '../../../components/helpers/MonthlyData';
@@ -26,11 +26,9 @@ export default function MonthlyScreen({ selectedDate, changeSelectedItem, dropdo
   const onDateChange = (date) => {
     let finalDate = '';
     const formattedDate = moment(date, 'YYYY:MM:DD').format('YYYY:MM:DD');
-    console.log('formattedDate', formattedDate);
   
     // Check if the formattedDate is within DST
     if (moment(formattedDate, "YYYY:MM:DD").isDST()) {
-      console.log('dst', formattedDate);
       finalDate = moment(formattedDate, 'YYYY:MM:DD').add(1, 'days').format('YYYY:MM:DD');
     } else {
       finalDate = moment(formattedDate, 'YYYY:MM:DD').format('YYYY:MM:DD');
@@ -44,6 +42,28 @@ export default function MonthlyScreen({ selectedDate, changeSelectedItem, dropdo
     return new Date(year, month + 1, 0).getDate();
   }
 
+  const panResponder = useRef(
+    PanResponder.create({
+      onStartShouldSetPanResponder: () => true,
+      onMoveShouldSetPanResponder: () => true,
+      onPanResponderRelease: (evt, gestureState) => {
+        if (gestureState.dx > 10) {
+          goToPreviousMonth();
+        } else if (gestureState.dx < -10) {
+          goToNextMonth();
+        }
+      },
+    })
+  ).current;
+  
+  const goToNextMonth = () => {
+    setSearchMonth(prev => prev.clone().add(1, 'month'));
+  };
+  
+  const goToPreviousMonth = () => {
+    setSearchMonth(prev => prev.clone().subtract(1, 'month'));
+  };
+
   async function getCustomStyling(year, month, parsedGoal, sensorId) {
     const customDatesStyles = [];
     const totalDays = getTotalDays(year, month);
@@ -53,31 +73,15 @@ export default function MonthlyScreen({ selectedDate, changeSelectedItem, dropdo
       if (monthArray[i] >= parsedGoal) {
         customDatesStyles.push({
           date: newDate,
-          style: { backgroundColor: '#efa800' },
+          style: { backgroundColor: '#EEA700' },
           textStyle: { color: 'black' },
           containerStyle: [],
           allowDisabled: true,
         });
-      } else if (monthArray[i] >= (parsedGoal / 3) * 2 && monthArray[i] < parsedGoal) {
+      } else if (monthArray[i] >= (parsedGoal / 2) && monthArray[i] < parsedGoal) {
         customDatesStyles.push({
           date: newDate,
-          style: { backgroundColor: '#ffba17' },
-          textStyle: { color: 'black' },
-          containerStyle: [],
-          allowDisabled: true,
-        });
-      } else if (monthArray[i] >= (parsedGoal / 3) && monthArray[i] < (parsedGoal / 3) * 2) {
-        customDatesStyles.push({
-          date: newDate,
-          style: { backgroundColor: '#ffcc55' },
-          textStyle: { color: 'black' },
-          containerStyle: [],
-          allowDisabled: true,
-        });
-      } else if (monthArray[i] < (parsedGoal / 3 && monthArray[i] > 0)) {
-        customDatesStyles.push({
-          date: newDate,
-          style: { backgroundColor: '#ffe9b7' },
+          style: { backgroundColor: '#FFDB86' },
           textStyle: { color: 'black' },
           containerStyle: [],
           allowDisabled: true,
@@ -85,7 +89,7 @@ export default function MonthlyScreen({ selectedDate, changeSelectedItem, dropdo
       } else {
         customDatesStyles.push({
           date: newDate,
-          style: { backgroundColor: '#fff5dd' },
+          style: { backgroundColor: '#FFECC0' },
           textStyle: { color: 'black' },
           containerStyle: [],
           allowDisabled: true,
@@ -139,7 +143,7 @@ export default function MonthlyScreen({ selectedDate, changeSelectedItem, dropdo
     <>
       {isFocus && (
         <Animated.View style={[styles.container, { opacity: fadeAnim }]}>
-          <View style={[styles.CalendarPicker]}>
+          <View style={[styles.CalendarPicker]} {...panResponder.panHandlers}>
             <CalendarPicker
               onDateChange={onDateChange}
               initialDate={searchMonth.toDate()}
@@ -149,6 +153,8 @@ export default function MonthlyScreen({ selectedDate, changeSelectedItem, dropdo
               borderColor={Colors[colorScheme].text}
               customDatesStyles={datesStyles}
               startFromMonday={true}
+              nextTitle=' '
+              previousTitle=' '
               onMonthChange={(date) => {
                 setSearchMonth(moment(date));
               }}
@@ -170,8 +176,8 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   CalendarPicker: {
-    width: '95%',
-    opacity: 0.8,
+    width: '100%',
+    opacity: 1,
     flex: 1,
     marginTop: '10%',
   }

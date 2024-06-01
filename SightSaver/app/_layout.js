@@ -11,11 +11,7 @@ const StackLayout = () => {
 	// State to hold user details upon launching app
 	const fetchUserDetails = async () => {
 		try {
-		  const userDetails = await getUserDetails();
 		  await getChildrenInfo();
-		  if (userDetails) {
-			await setUserDetails(userDetails.username, userDetails.email);
-		  }
 		} catch (error) {
 		  // console.log('Error fetching user details:', error);
 		}

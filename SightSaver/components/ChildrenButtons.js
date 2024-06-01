@@ -59,7 +59,7 @@ export const ChildrenButtons = ({ childrenInfo, handleAddChild }) => {
               >
                 Sensor: {child.sensorId}
               </Text>
-              <View style={[styles.circle, selectedChildIndex === index ? { backgroundColor: '#1970B4', borderColor: Colors[colorScheme ?? 'light'].borderColor } : null]} />
+              <View style={[styles.circle, selectedChildIndex === index ? { backgroundColor: '#1970B4', } : null]} />
             </TouchableOpacity>
           ))}
         </ScrollView>
@@ -83,7 +83,7 @@ export const ChildrenButtons = ({ childrenInfo, handleAddChild }) => {
       <View style={styles.dummyChild}>
         <Button 
           title="Add Dummy Child"
-          onPress={() => handleAddChild('Test 4', '52:74:A2:97:91:42')}
+          onPress={() => handleAddChild('Test 2', 'E7:5F:02:12:95:2C')}
         />
       </View>
 

@@ -54,9 +54,7 @@ export const JSONToEncoded = async (inputFilePath, outputFilePath) => {
 
     if (await pushData(tempOutput)) {
       await FileSystem.deleteAsync(fileUri);
-    } else {
-      console.log('Error pushing data');
-    }
+    } 
 
   } catch (error) {
     console.log('Error converting data:', error);

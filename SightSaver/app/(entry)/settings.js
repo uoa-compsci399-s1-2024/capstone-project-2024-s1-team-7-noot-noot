@@ -18,6 +18,7 @@ let data = `2024:01:01 11:08:05 45 E4:5F\n`;
 
 const dummyData = async () => {
     await FileSystem.writeAsStringAsync(FileSystem.documentDirectory + 'data.txt', data);
+    console.log('Data written');
 }
 
 function Settings({ navigation }) {
