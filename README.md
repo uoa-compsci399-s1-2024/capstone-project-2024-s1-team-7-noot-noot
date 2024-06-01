@@ -48,3 +48,32 @@
 8. If the build has been successful, run the local server:
 	- run `mvn spring-boot:run`
 	- local server should be running on port 'localhost:8080/'
+
+## Mac Set Up ##
+
+1. Ensure java JDK 17 is installed (Visit link to download)
+	- `https://www.oracle.com/nz/java/technologies/downloads/#jdk17-mac`
+	- Install macOS x64 DMG Installer
+	- Follow installation screen
+
+2. Homebrew installation (visit link for download)
+	- `https://brew.sh/`
+
+3. Open command prompt to install mvn via homebrew
+   	- Enter command `brew install maven`
+
+4. Once Java JDK and MAVEN has been installed and set up on the system, clone the backend repository from github
+	- https://github.com/uoa-compsci399-s1-2024/capstone-project-2024-s1-team-7-noot-noot
+	- `git clone` ...
+
+5. Navigate to backend code
+	- `cd Backend_API - NootNoot`
+
+6. Run the mvn build to install and set up pom.xml file
+	- `mvn clean install -U`
+	- Should return a build success message
+
+7. If the build has been successful, run the local server:
+	- run `mvn spring-boot:run`
+	- local server should be running on port 'localhost:8080/'
+
