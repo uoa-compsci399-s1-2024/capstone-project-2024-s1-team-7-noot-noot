@@ -48,10 +48,10 @@ function Settings({ navigation }) {
                     }}
                     text={"Sign Out"}
                 />
-                <Button
+                {/* <Button
                     title="TEST DUMMY DATA"
                     onPress={() => { dummyData() }}
-                />
+                /> */}
             </View>
         </View>
     );
