@@ -1,3 +1,4 @@
+import 'react-native-gesture-handler';
 import Colors from '../constants/Colors';
 import { View, Text } from '../components/Themed';
 import CustomButton from '../components/CustomButton';

@@ -78,7 +78,7 @@ export default function WeeklyScreen({ selectedDate, changeSelectedItem, dropdow
           const parsedGoal = parseInt(goal, 10);
           setDailyGoal(parsedGoal);
 
-          updateWeekData(searchWeek).then((weekData) => {
+          updateWeekData(searchWeek, sensorId).then((weekData) => {
             setMonday((weekData[0]));
             setTuesday((weekData[1]));
             setWednesday((weekData[2]));
