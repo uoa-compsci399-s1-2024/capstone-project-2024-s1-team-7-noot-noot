@@ -25,8 +25,8 @@ const CHILDREN_INFO = 'childrenInfo';
 const DAILY_GOAL = 'dailyGoal';
 const SENSOR_ID = 'sensorId';
 
-export const API_URL = 'https://sightsaver-api.azurewebsites.net/api';
-// export const API_URL = 'http://192.168.1.74:8080/api';
+// export const API_URL = 'https://sightsaver-api.azurewebsites.net/api';
+export const API_URL = 'http://192.168.68.101:8080/api';
 const AuthContext = createContext<Partial<AuthProps>>({});
 
 export const useAuth = () => {
@@ -134,10 +134,10 @@ export const getUserDetails = async () => {
         .get(`${API_URL}/user/email/${email}`)
         .then((res) => res.data);
     }
-    // console.log('Get User details:', { username, email });
+    console.log('Get User details:', { username, email });
     return { username, email };
   } catch (error) {
-    //console.error('Error retrieving user details:', error);
+    console.error('Error retrieving user details:', error);
     return null;
   }
 };
