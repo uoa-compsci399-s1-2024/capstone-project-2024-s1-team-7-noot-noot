@@ -25,8 +25,8 @@ const CHILDREN_INFO = 'childrenInfo';
 const DAILY_GOAL = 'dailyGoal';
 const SENSOR_ID = 'sensorId';
 
-//export const API_URL = 'https://sightsaver-api.azurewebsites.net/api';
-export const API_URL = 'http://192.168.1.74:8080/api';
+export const API_URL = 'https://sightsaver-api.azurewebsites.net/api';
+// export const API_URL = 'http://192.168.1.74:8080/api';
 const AuthContext = createContext<Partial<AuthProps>>({});
 
 export const useAuth = () => {
