@@ -71,15 +71,12 @@ public class LuxService {
     }
 
     public String saveLuxList(AddLuxRequest luxRequest) {
-        List<Sensor> sensors = sensorRepository.findAll();
-        for (Sensor sensor : sensors) {
-            for (Lux lux : luxRequest.getLuxList()) {
-                if (sensor.getId().equals(lux.getSensorId())) {
-                    luxRepository.save(lux);
-                }
-            }
-        }
+        luxRepository.saveAll(luxRequest.getLuxList());
         return "Lux data successfully inserted";
+    }
+
+    public List<Lux> getAllLuxByDate(String startDate, String endDate) {
+        return luxRepository.getAllLuxByDate(startDate, endDate);
     }
 
 }
