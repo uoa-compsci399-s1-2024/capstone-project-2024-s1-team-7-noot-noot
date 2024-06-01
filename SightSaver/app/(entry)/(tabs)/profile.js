@@ -18,12 +18,17 @@ export default function ProfileScreen() {
   const [username, setUsername] = useState('');
 
   const addChild = (childName, sensorId) => {
-    setTempState(tempState + 1);
     setIsLoading(true);
-    newChildAdded(childName, sensorId).then(() => {
-      const newChild = { childName, sensorId };
-      setChildrenInfo([...childrenInfo, newChild]);
-    });
+    try {
+      newChildAdded(childName, sensorId).then(() => {
+        const newChild = { childName, sensorId };
+        setChildrenInfo([...childrenInfo, newChild]);
+        alert('Child added successfully!');
+        setTempState(tempState + 1);
+      });
+    } catch (error) {
+      alert('Error adding child. Please try again.');
+    }
   };
   
   useEffect (() => {

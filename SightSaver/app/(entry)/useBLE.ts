@@ -172,7 +172,7 @@ function useBLE(): BluetoothLowEnergyApi {
       let minute = chunk.slice(10, 12);
       let second = chunk.slice(12, 14);
   
-      let time = year + '-' + month + '-' + day + 'T' + hour + ':' + minute + ':' + second;
+      let time = year + '-' + month + '-' + day + ' ' + hour + ':' + minute + ':' + second;
   
       let light = chunk.slice(14, 19);
   
@@ -180,7 +180,7 @@ function useBLE(): BluetoothLowEnergyApi {
       let dataObject = {
         lux_value: light,
         date_time: time,
-        sensor_id: sensor_id,
+        sensorId: sensor_id,
       };
   
       // Convert the JSON object to a string and append it to formattedData

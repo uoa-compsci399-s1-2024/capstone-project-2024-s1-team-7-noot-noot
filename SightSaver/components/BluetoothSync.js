@@ -124,13 +124,19 @@ export default function BluetoothSync({ childrenInfo, visible, onClose, selected
         transparent={true}
         visible={alertVisible}
         onRequestClose={() => {
-          setAlertVisible(!alertVisible);
+          if (alertMessage === 'Data Synced' || alertMessage === 'Device Connecting Failed' || alertMessage === 'No device selected') {
+            setAlertVisible(false);
+          }
         }}
       >
         <TouchableOpacity
           style={styles.overlay}
           activeOpacity={1}
-          onPressOut={() => { setAlertVisible(false); }}
+          onPressOut={() => {           
+            if (alertMessage === 'Data Synced' || alertMessage === 'Device Connecting Failed' || alertMessage === 'No device selected') {
+              setAlertVisible(false);
+            } 
+          }}
         >
           <View style={styles.alertModal}>
             <Text style={styles.alertMessage}>{alertMessage}</Text>

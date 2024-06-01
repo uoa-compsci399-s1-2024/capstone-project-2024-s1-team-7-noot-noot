@@ -25,7 +25,7 @@ const CHILDREN_INFO = 'childrenInfo';
 const DAILY_GOAL = 'dailyGoal';
 const SENSOR_ID = 'sensorId';
 
-export const API_URL = 'https://sightsaver-api.azurewebsites.net/api';
+export const API_URL = 'http://192.168.1.74:8080/api';
 const AuthContext = createContext<Partial<AuthProps>>({});
 
 export const useAuth = () => {
@@ -196,17 +196,16 @@ export const newChildAdded = async (childName: string, sensorId: string) => {
 
 export const pushData = async (data: Array<JSON>) => {
   const email = await SecureStore.getItemAsync(EMAIL);
-  console.log(data);
   try {
+    console.log(data);
     await axios.post(`${API_URL}/lux`, {
       email: email,
-      data: data,
+      luxList: data,
     });
+    console.log('Data pushed');
+    return true;
   } catch (error) {
     console.log('Failed to push data:', error);
     return false;
-  } finally {
-    console.log('Data pushed');
-    return true;
-  }
+  } 
 };
