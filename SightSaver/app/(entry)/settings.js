@@ -35,7 +35,7 @@ function Settings({ navigation }) {
                 <Text style={[styles.optionText, { color: Colors[colorScheme ?? 'light'].text }]}>Data Safety</Text>
             </TouchableOpacity>
             <TouchableOpacity style={[styles.option, { borderBottomColor: Colors[colorScheme ?? 'light'].seperator }]} onPress={() => navigation.navigate('Children')}>
-                <Text style={[styles.optionText, { color: Colors[colorScheme ?? 'light'].text }]}>Goal</Text>
+                <Text style={[styles.optionText, { color: Colors[colorScheme ?? 'light'].text }]}>Change Goal</Text>
             </TouchableOpacity>
             <TouchableOpacity style={[styles.option, { borderBottomColor: Colors[colorScheme ?? 'light'].seperator }]} onPress={() => navigation.navigate('Support')}>
                 <Text style={[styles.optionText, { color: Colors[colorScheme ?? 'light'].text }]}>Support</Text>
