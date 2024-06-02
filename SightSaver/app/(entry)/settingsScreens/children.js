@@ -56,7 +56,7 @@ export default function NotificationSettings() {
                 style={styles.saveButton}
                 onPress={saveDailyGoal}
             >
-                <Text style={styles.saveButtonText}>Save Data</Text>
+                <Text style={styles.saveButtonText}>Save Daily Goal</Text>
             </TouchableOpacity>
             {confirmationMessage ? (
                 <View style={styles.confirmationContainer}>

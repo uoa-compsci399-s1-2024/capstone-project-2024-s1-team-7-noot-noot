@@ -14,13 +14,6 @@ import * as FileSystem from 'expo-file-system';
 import { Ionicons } from '@expo/vector-icons'; // Add Ionicons for the back button
 import { TransitionPresets } from '@react-navigation/stack';
 
-let data = `2024:01:01 11:08:05 45 E4:5F\n`;
-
-const dummyData = async () => {
-    await FileSystem.writeAsStringAsync(FileSystem.documentDirectory + 'data.txt', data);
-    console.log('Data written');
-}
-
 function Settings({ navigation }) {
     const colorScheme = useColorScheme();
     const { onLogout } = useAuth();
@@ -34,8 +27,8 @@ function Settings({ navigation }) {
             <TouchableOpacity style={[styles.option, { borderBottomColor: Colors[colorScheme ?? 'light'].seperator }]} onPress={() => navigation.navigate('Data Safety')}>
                 <Text style={[styles.optionText, { color: Colors[colorScheme ?? 'light'].text }]}>Data Safety</Text>
             </TouchableOpacity>
-            <TouchableOpacity style={[styles.option, { borderBottomColor: Colors[colorScheme ?? 'light'].seperator }]} onPress={() => navigation.navigate('Children')}>
-                <Text style={[styles.optionText, { color: Colors[colorScheme ?? 'light'].text }]}>Change Goal</Text>
+            <TouchableOpacity style={[styles.option, { borderBottomColor: Colors[colorScheme ?? 'light'].seperator }]} onPress={() => navigation.navigate('Change Daily Goal')}>
+                <Text style={[styles.optionText, { color: Colors[colorScheme ?? 'light'].text }]}>Change Daily Goal</Text>
             </TouchableOpacity>
             <TouchableOpacity style={[styles.option, { borderBottomColor: Colors[colorScheme ?? 'light'].seperator }]} onPress={() => navigation.navigate('Support')}>
                 <Text style={[styles.optionText, { color: Colors[colorScheme ?? 'light'].text }]}>Support</Text>
@@ -47,10 +40,6 @@ function Settings({ navigation }) {
                         onLogout();
                     }}
                     text={"Sign Out"}
-                />
-                <Button
-                    title="TEST DUMMY DATA"
-                    onPress={() => { dummyData() }}
                 />
             </View>
         </View>

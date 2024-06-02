@@ -30,7 +30,7 @@ export const JSONToEncoded = async (inputFilePath, outputFilePath) => {
         } else {
           const minutes = Math.floor(counter / 60);
           outputLines.push(
-            `${previousTime.getFullYear()}:${String(previousTime.getMonth() + 1).padStart(2, '0')}:${String(previousTime.getDate()).padStart(2, '0')} ${String(previousTime.getHours()).padStart(2, '0')}:${String(previousTime.getMinutes()).padStart(2, '0')}:${String(previousTime.getSeconds()).padStart(2, '0')} ${minutes} ${record.sensor_id}\n`
+            `${previousTime.getFullYear()}:${String(previousTime.getMonth() + 1).padStart(2, '0')}:${String(previousTime.getDate()).padStart(2, '0')} ${String(previousTime.getHours()).padStart(2, '0')}:${String(previousTime.getMinutes()).padStart(2, '0')}:${String(previousTime.getSeconds()).padStart(2, '0')} ${minutes} ${record.sensorId}\n`
           );
           counter = 1;
         }
@@ -52,9 +52,9 @@ export const JSONToEncoded = async (inputFilePath, outputFilePath) => {
     await FileSystem.writeAsStringAsync(outputUri, outputLines.join(''));
     console.log(`Data has been converted and written to ${outputFilePath}`);
 
-    if (await pushData(tempOutput)) {
-      await FileSystem.deleteAsync(fileUri);
-    } 
+    // if (await pushData(tempOutput)) {
+    //   await FileSystem.deleteAsync(fileUri);
+    // } 
 
   } catch (error) {
     console.log('Error converting data:', error);

@@ -33,10 +33,11 @@ export default function WeeklyScreen({ selectedDate, changeSelectedItem, dropdow
 
   const onDateChange = (date) => {
     changeSelectedItem(dropdownData.find(item => item.label === 'Daily'), date);
-  };
+  };  
 
   function getDateOfWeek(week, year, dayIndex) {
-    const date = moment().year(year).isoWeek(week).day(dayIndex + 1);
+    const adjustedDayIndex = (dayIndex + 1) % 7;
+    const date = moment().year(year).week(week).day(adjustedDayIndex);
     return date.format('YYYY:MM:DD');
   }
 
