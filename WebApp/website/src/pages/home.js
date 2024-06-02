@@ -66,7 +66,7 @@ function Home() {
     return (
         <div className="Home">
             <div className="Home-header">
-                <img src={logo} className="Home-logo" alt="logo" />
+                <img src={logo} className="Home-logo" alt="sightsaver-logo" />
                 <div className="Home-title">
                     <button className='Login-button' onClick={exportData}>
                         <p className='button-text'>

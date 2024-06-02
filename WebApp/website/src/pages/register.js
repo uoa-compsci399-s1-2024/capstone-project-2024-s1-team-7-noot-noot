@@ -60,7 +60,7 @@ function Register() {
   return (
     <div className="Register">
       <div className="Register-header">
-        <img src={logo} className="Register-logo" alt="logo" />
+        <img src={logo} className="Register-logo" alt="sightsaver-logo" />
         <div className="Register-div">
           <form onSubmit={register} className="Login-div">
             <input 

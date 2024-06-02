@@ -6,7 +6,7 @@ function Welcome() {
   return (
     <div className="Welcome">
       <div className="Welcome-header">
-        <img src={logo} className="Welcome-logo" alt="logo" />
+        <img src={logo} className="Welcome-logo" alt="sightsaver-logo" />
         <div className="Welcome-title">
           <h2 className='header'>
             Welcome Researchers!

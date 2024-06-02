@@ -65,7 +65,7 @@ function Login() {
   return (
     <div className="Login">
       <div className="Login-header">
-        <img src={logo} className="Login-logo" alt="logo" />
+        <img src={logo} className="Login-logo" alt="sightsaver-logo" />
         <div className="Login-div">
           <form onSubmit={login} className="Login-div">
             <input 
