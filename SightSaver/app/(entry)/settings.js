@@ -29,6 +29,7 @@ function Settings({ navigation }) {
             </TouchableOpacity>
             <TouchableOpacity style={[styles.option, { borderBottomColor: Colors[colorScheme ?? 'light'].seperator }]} onPress={() => navigation.navigate('Change Daily Goal')}>
                 <Text style={[styles.optionText, { color: Colors[colorScheme ?? 'light'].text }]}>Change Daily Goal</Text>
+            </TouchableOpacity>
             <TouchableOpacity style={[styles.option, { borderBottomColor: Colors[colorScheme ?? 'light'].seperator }]} onPress={() => navigation.navigate('Change Daily Goal')}>
                 <Text style={[styles.optionText, { color: Colors[colorScheme ?? 'light'].text }]}>Change Daily Goal</Text>
             </TouchableOpacity>
