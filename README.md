@@ -133,10 +133,6 @@ mvn spring-boot:run
 
 1. Ensure you have changed the API_URL in ctx.tsx
 
-# Usage Examples #
-
-
-
 # Website URL #
 
 https://thankful-sea-02b4f450f.5.azurestaticapps.net
