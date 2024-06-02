@@ -11,6 +11,8 @@ export default {
     barStyle: 'dark-content',
     clickableText: "darkblue",
     borderColor: "black",
+    chevron: "#cfcfcf",
+
   },
   dark: {
     text: '#fff',
@@ -20,9 +22,10 @@ export default {
     seperator: '#BFC9D9',
     image: require("../assets/images/logo-dark.png"),
     buttonColor: "#5E5E5E",
-    subTitle: "#1970B4",
+    subTitle: "#4caffc",
     barStyle: 'light-content',
     clickableText: "lightblue",
     borderColor: "lightgrey",
+    chevron: "#5E5E5E",
   },
 };

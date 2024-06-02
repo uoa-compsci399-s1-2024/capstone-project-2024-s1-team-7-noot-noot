@@ -29,6 +29,8 @@ function Settings({ navigation }) {
             </TouchableOpacity>
             <TouchableOpacity style={[styles.option, { borderBottomColor: Colors[colorScheme ?? 'light'].seperator }]} onPress={() => navigation.navigate('Change Daily Goal')}>
                 <Text style={[styles.optionText, { color: Colors[colorScheme ?? 'light'].text }]}>Change Daily Goal</Text>
+            <TouchableOpacity style={[styles.option, { borderBottomColor: Colors[colorScheme ?? 'light'].seperator }]} onPress={() => navigation.navigate('Change Daily Goal')}>
+                <Text style={[styles.optionText, { color: Colors[colorScheme ?? 'light'].text }]}>Change Daily Goal</Text>
             </TouchableOpacity>
             <TouchableOpacity style={[styles.option, { borderBottomColor: Colors[colorScheme ?? 'light'].seperator }]} onPress={() => navigation.navigate('Support')}>
                 <Text style={[styles.optionText, { color: Colors[colorScheme ?? 'light'].text }]}>Support</Text>
@@ -76,7 +78,7 @@ export default function SettingsScreens() {
             <Stack.Screen name="Data Safety" component={DataSafetyScreen} options={{
                 ...TransitionPresets.FadeFromBottomAndroid,
                         }} />
-            <Stack.Screen name="Children" component={ChildrenScreen} options={{
+            <Stack.Screen name="Change Daily Goal" component={ChildrenScreen} options={{
                 ...TransitionPresets.FadeFromBottomAndroid,
                         }} />
             <Stack.Screen name="Support" component={SupportScreen} options={{

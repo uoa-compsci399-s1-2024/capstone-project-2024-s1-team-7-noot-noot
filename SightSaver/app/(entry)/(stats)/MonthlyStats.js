@@ -152,6 +152,7 @@ export default function MonthlyScreen({ selectedDate, changeSelectedItem, dropdo
               dayTextStyle={{ color: 'black' }}
               borderColor={Colors[colorScheme].text}
               customDatesStyles={datesStyles}
+              dayLabelsWrapper={{ borderColor: Colors[colorScheme].chevron }}
               startFromMonday={true}
               nextTitle=' '
               previousTitle=' '
