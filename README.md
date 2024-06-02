@@ -121,7 +121,7 @@ npx expo start
     	- Enter that ip address with the port number in that format into the SightSaver APK
 2. On the Android Emulator
 	- Ensure you have the Android Emulator running
- 	- In the terminal you just ran ```npx expo start```
+ 	- In the terminal you just run ```npx expo start```
   		- Press 'a' to open the app on the emulator
 
 ## Running the App on the Local Server ## 
